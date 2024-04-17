@@ -18,4 +18,10 @@ public class ListingRequest {
     public ListingRequest(String userId){
         this.userId=userId;
     }
+
+    public void validate() {
+        if (price < 0 || stock < 0 || rateCondition>3 || rateCondition<0) {
+            throw new IllegalArgumentException("Price and stock must be non-negative");
+        }
+    }
 }

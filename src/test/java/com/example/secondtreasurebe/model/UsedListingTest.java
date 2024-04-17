@@ -10,6 +10,7 @@ class UsedListingTest {
     @BeforeEach
     void setUp() {
         this.listing = new UsedListing();
+        this.listing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         this.listing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.listing.setName("Kemeja Linen Blend");
         this.listing.setStock(10);
@@ -22,6 +23,11 @@ class UsedListingTest {
     @Test
     void getListingId() {
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.listing.getListingId());
+    }
+
+    @Test
+    void getUserId() {
+        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.listing.getUserId());
     }
 
     @Test

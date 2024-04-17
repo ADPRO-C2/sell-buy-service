@@ -37,7 +37,6 @@ class ListingRequestTest {
     public void testNegativePrice() {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setPrice(-100);
-
         assertThrows(IllegalArgumentException.class, request::validate);
     }
 
@@ -45,7 +44,6 @@ class ListingRequestTest {
     public void testNegativeStock() {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setStock(-100);
-
         assertThrows(IllegalArgumentException.class, request::validate);
     }
 
@@ -53,7 +51,16 @@ class ListingRequestTest {
     public void testInvalidRateCondition() {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setRateCondition(10);
-
         assertThrows(IllegalArgumentException.class, request::validate);
     }
+
+    @Test
+    public void testValidateValidValues() {
+        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        request.setPrice(100);
+        request.setStock(10);
+        request.setRateCondition(1);
+        request.validate();
+    }
+
 }
