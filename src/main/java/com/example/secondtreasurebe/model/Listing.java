@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public abstract class Listing {
+    protected String userId;
     protected String listingId;
     protected String name;
     protected String description;
