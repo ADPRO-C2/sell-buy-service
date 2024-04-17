@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Iterator;
 
 @ExtendWith(MockitoExtension.class)
 class ListingRepositoryTest {
@@ -30,7 +31,7 @@ class ListingRepositoryTest {
         listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
         listing1.setPrice(299000);
         listing1.setRateCondition(0);
-        listingRepository.create(listing1);
+        listingRepository.createListing(listing1);
 
         Iterator<Listing> listingIterator = listingRepository.findAll();
         assertTrue(listingIterator.hasNext());
@@ -62,7 +63,7 @@ class ListingRepositoryTest {
         listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
         listing1.setPrice(299000);
         listing1.setRateCondition(0);
-        listingRepository.create(listing1);
+        listingRepository.createListing(listing1);
 
         Listing listing2 = new UsedListing();
         listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63bz9");
@@ -73,7 +74,7 @@ class ListingRepositoryTest {
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing2.setPrice(149000);
         listing2.setRateCondition(2);
-        listingRepository.create(listing2);
+        listingRepository.createListing(listing2);
 
         Iterator<Listing> listingIterator = listingRepository.findAll();
         assertTrue(listingIterator.hasNext());
