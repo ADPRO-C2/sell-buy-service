@@ -12,10 +12,11 @@ public class ListingRepository {
     private List<Listing> listings = new ArrayList<>();
 
     public Listing createListing(Listing listing) {
-        return null;
+        listings.add(listing);
+        return listing;
     }
 
     public Iterator<Listing> findAll() {
-        return null;
+        return listings.iterator();
     }
 }
