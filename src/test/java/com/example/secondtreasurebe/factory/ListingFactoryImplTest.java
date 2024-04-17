@@ -1,16 +1,19 @@
 package com.example.secondtreasurebe.factory;
 
 import org.junit.jupiter.api.Test;
+import com.example.secondtreasurebe.model.Listing;
+import com.example.secondtreasurebe.model.NewListing;
+import com.example.secondtreasurebe.model.UsedListing;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ListingFactoryImplTest {
     @Test
     public void testCreateListingWithInvalidRateCondition() {
         ListingFactoryImpl factory = new ListingFactoryImpl();
-        int invalidRateCondition = -1;
         assertThrows(IllegalArgumentException.class, () -> {
-            factory.createListing(invalidRateCondition);
+            Listing listing = factory.createListing(-1);
         });
     }
 
