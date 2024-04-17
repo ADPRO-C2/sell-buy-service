@@ -1,5 +1,6 @@
 package com.example.secondtreasurebe.model;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,9 +38,7 @@ class ListingRequestTest {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setPrice(-100);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            request.validate();
-        });
+        assertThrows(IllegalArgumentException.class, request::validate);
     }
 
     @Test
@@ -47,9 +46,7 @@ class ListingRequestTest {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setStock(-100);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            request.validate();
-        });
+        assertThrows(IllegalArgumentException.class, request::validate);
     }
 
     @Test
@@ -57,8 +54,6 @@ class ListingRequestTest {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setRateCondition(10);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            request.validate();
-        });
+        assertThrows(IllegalArgumentException.class, request::validate);
     }
 }
