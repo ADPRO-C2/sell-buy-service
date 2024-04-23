@@ -2,7 +2,6 @@ package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.model.ListingRequest;
-import com.example.secondtreasurebe.service
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
