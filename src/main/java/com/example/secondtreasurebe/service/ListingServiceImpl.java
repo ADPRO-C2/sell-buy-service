@@ -19,7 +19,6 @@ public class ListingServiceImpl implements ListingServiceInterface{
 
     @Override
     public Listing createListing(ListingRequest listingRequest) {
-        // this.listingFactory = new ListingFactoryImpl();
         Listing listing = listingFactory.createListing(listingRequest.getRateCondition());
         listing.setUserId(listingRequest.getUserId());
         listing.setListingId(listingRequest.getListingId());
