@@ -62,7 +62,7 @@ public class ListingServiceTest {
         request1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
         request1.setPrice(299000);
         request1.setRateCondition(0);
-        service.createListing(request1);
+        Listing listing1 = service.createListing(request1);
 
         ListingRequest request2 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63bz9");
         request2.setListingId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
@@ -72,7 +72,7 @@ public class ListingServiceTest {
         request2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         request2.setPrice(149000);
         request2.setRateCondition(2);
-        service.createListing(request2);
+        Listing listing2 = service.createListing(request2);
 
         List<Listing> listingList = service.findAll();
 
@@ -80,8 +80,10 @@ public class ListingServiceTest {
         assertFalse(listingList.isEmpty());
 
         System.out.println(listingList);
+        System.out.println(request1);
+        System.out.println(request2);
 
-        assertTrue(listingList.contains(request1));
-        assertTrue(listingList.contains(request2));
+        assertTrue(listingList.contains(listing1));
+        assertTrue(listingList.contains(listing2));
     }
 }
