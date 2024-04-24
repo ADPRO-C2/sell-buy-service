@@ -19,4 +19,17 @@ public class ListingRepository {
     public Iterator<Listing> findAll() {
         return listings.iterator();
     }
+
+    public void edit(Listing editedListing) {
+        for (Listing listing : listings) {
+            if (listing.getListingId().equals(editedListing.getListingId())) {
+                listing.setName(editedListing.getName());
+                listing.setDescription(editedListing.getDescription());
+                listing.setPrice(editedListing.getPrice());
+                listing.setStock(editedListing.getStock());
+                listing.setPhotoUrl(editedListing.getPhotoUrl());
+                listing.setRateCondition(editedListing.getRateCondition());
+            }
+        }
+    }
 }
