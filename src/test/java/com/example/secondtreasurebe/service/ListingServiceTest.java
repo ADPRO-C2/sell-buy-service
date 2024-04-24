@@ -117,8 +117,6 @@ public class ListingServiceTest {
         request.setPrice(299000);
         request.setRateCondition(0);
 
-        Listing createdListing = service.createListing(request);
-
         Listing foundListing = service.findListingById("non-existent-id");
         assertNull(foundListing);
     }
