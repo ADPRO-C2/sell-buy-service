@@ -12,8 +12,8 @@ public class CartListingTest {
 
     @BeforeEach
     void setUp() {
+        this.cartListing = new CartListing("eb558e9f-1c39-460e-8860-71af6af63bd6", 3);
         this.cartListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        this.cartListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.cartListing.setName("Nintando Swotch");
         this.cartListing.setDescription("The best console.");
         this.cartListing.setPrice(100000);
@@ -24,8 +24,6 @@ public class CartListingTest {
 
     @Test
     void testCreateValidCartListing() {
-        this.cartListing.setAmount(3);
-
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.cartListing.getUserId());
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.cartListing.getListingId());
         assertEquals("Nintando Swotch", this.cartListing.getName());
@@ -38,13 +36,13 @@ public class CartListingTest {
 
     @Test
     void testNegativeAmount() {
-        this.cartListing.setAmount(-2);
-        assertThrows(IllegalArgumentException.class, () -> cartListing.setAmount(-2));
+        assertThrows(IllegalArgumentException.class, cartListing::validateAmount);
+
     }
 
     @Test
     void testZeroAmount() {
         this.cartListing.setAmount(0);
-        assertThrows(IllegalArgumentException.class, () -> cartListing.setAmount(0));
+        assertThrows(IllegalArgumentException.class, cartListing::validateAmount);
     }
 }
