@@ -105,20 +105,8 @@ public class ListingServiceTest {
 
         assertNotNull(foundListing);
         assertEquals(createdListing.getListingId(), foundListing.getListingId());
-    }
 
-    @Test
-    void testFindProductByIdNotFound() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        request.setName("Kemeja Linen Blend");
-        request.setStock(10);
-        request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request.setPrice(299000);
-        request.setRateCondition(0);
-
-        Listing foundListing = service.findListingById("non-existent-id");
+        foundListing = service.findListingById("non-existent-id");
         assertNull(foundListing);
     }
 
