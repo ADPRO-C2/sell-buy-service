@@ -11,7 +11,7 @@ class ListingRequestTest {
     ListingRequest listing;
     @BeforeEach
     void setUp() {
-        this.listing = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        this.listing = new ListingRequest();
         this.listing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.listing.setName("Kemeja Linen Blend");
         this.listing.setStock(10);
@@ -23,7 +23,6 @@ class ListingRequestTest {
 
     @Test
     void testCreateListingRequestWithValidField() {
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.listing.getUserId());
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.listing.getListingId());
         assertEquals("Kemeja Linen Blend", this.listing.getName());
         assertEquals(10, this.listing.getStock());
@@ -35,28 +34,28 @@ class ListingRequestTest {
 
     @Test
     public void testNegativePrice() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setPrice(-100);
         assertThrows(IllegalArgumentException.class, request::validate);
     }
 
     @Test
     public void testNegativeStock() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setStock(-100);
         assertThrows(IllegalArgumentException.class, request::validate);
     }
 
     @Test
     public void testInvalidRateCondition() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setRateCondition(10);
         assertThrows(IllegalArgumentException.class, request::validate);
     }
 
     @Test
     public void testValidateValidValues() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setPrice(100);
         request.setStock(10);
         request.setRateCondition(1);

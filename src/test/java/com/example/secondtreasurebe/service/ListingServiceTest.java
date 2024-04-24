@@ -25,7 +25,7 @@ public class ListingServiceTest {
 
     @Test
     public void testCreateListing_Success() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setName("Kemeja Linen Blend");
         request.setStock(10);
         request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -55,7 +55,7 @@ public class ListingServiceTest {
 
     @Test
     void testFindAllIfMoreThanOneListing() {
-        ListingRequest request1 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request1 = new ListingRequest();
         request1.setName("Kemeja Linen Blend");
         request1.setStock(10);
         request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -64,7 +64,7 @@ public class ListingServiceTest {
         request1.setRateCondition(0);
         Listing listing1 = service.createListing(request1);
 
-        ListingRequest request2 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63bz9");
+        ListingRequest request2 = new ListingRequest();
         request2.setName("T-Shirt Kerah Bulat");
         request2.setStock(50);
         request2.setDescription("Enak dipakai");
@@ -88,7 +88,7 @@ public class ListingServiceTest {
 
     @Test
     void testFindProductById() {
-        ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request = new ListingRequest();
         request.setName("Kemeja Linen Blend");
         request.setStock(10);
         request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -109,7 +109,7 @@ public class ListingServiceTest {
 
     @Test
     void testEditListing() {
-        ListingRequest request1 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        ListingRequest request1 = new ListingRequest();
         request1.setName("Kemeja Linen Blend");
         request1.setStock(10);
         request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
