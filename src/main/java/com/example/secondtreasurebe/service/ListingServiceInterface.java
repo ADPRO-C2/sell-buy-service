@@ -8,4 +8,5 @@ import java.util.List;
 public interface ListingServiceInterface {
     public Listing createListing(ListingRequest listingRequest);
     public List<Listing> findAll();
+    public Listing findListingById(String id);
 }

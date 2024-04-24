@@ -39,4 +39,16 @@ public class ListingServiceImpl implements ListingServiceInterface{
         listingIterator.forEachRemaining(allListing::add);
         return allListing;
     }
+
+    @Override
+    public Listing findListingById(String id) {
+        Iterator<Listing> listingIterator = listingRepository.findAll();
+        while (listingIterator.hasNext()) {
+            Listing listing = listingIterator.next();
+            if (listing.getListingId().equals(id)) {
+                return listing;
+            }
+        }
+        return null;
+    }
 }
