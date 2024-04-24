@@ -26,7 +26,6 @@ public class ListingServiceTest {
     @Test
     public void testCreateListing_Success() {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         request.setName("Kemeja Linen Blend");
         request.setStock(10);
         request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -37,7 +36,8 @@ public class ListingServiceTest {
         Listing createdListing = service.createListing(request);
 
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", createdListing.getUserId());
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", createdListing.getListingId());
+        assertNotNull(createdListing);
+        assertNotNull(createdListing.getListingId());
         assertEquals("Kemeja Linen Blend", createdListing.getName());
         assertEquals(10, createdListing.getStock());
         assertEquals("Kerah terbuka, bahan nyaman dipakai.", createdListing.getDescription());
@@ -56,7 +56,6 @@ public class ListingServiceTest {
     @Test
     void testFindAllIfMoreThanOneListing() {
         ListingRequest request1 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         request1.setName("Kemeja Linen Blend");
         request1.setStock(10);
         request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -66,7 +65,6 @@ public class ListingServiceTest {
         Listing listing1 = service.createListing(request1);
 
         ListingRequest request2 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63bz9");
-        request2.setListingId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
         request2.setName("T-Shirt Kerah Bulat");
         request2.setStock(50);
         request2.setDescription("Enak dipakai");
@@ -91,7 +89,6 @@ public class ListingServiceTest {
     @Test
     void testFindProductById() {
         ListingRequest request = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         request.setName("Kemeja Linen Blend");
         request.setStock(10);
         request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -113,7 +110,6 @@ public class ListingServiceTest {
     @Test
     void testEditListing() {
         ListingRequest request1 = new ListingRequest("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         request1.setName("Kemeja Linen Blend");
         request1.setStock(10);
         request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -121,18 +117,18 @@ public class ListingServiceTest {
         request1.setPrice(299000);
         request1.setRateCondition(0);
         Listing listing1 = service.createListing(request1);
-        System.out.println(listing1.getName());
+        System.out.println(listing1.getListingId());
 
         Listing listing2 = new UsedListing();
         listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        listing2.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        listing2.setListingId(listing1.getListingId());
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing2.setPrice(149000);
         listing2.setRateCondition(2);
-        System.out.println(listing2.getName());
+        System.out.println(listing2.getListingId());
 
         service.edit(listing2);
 

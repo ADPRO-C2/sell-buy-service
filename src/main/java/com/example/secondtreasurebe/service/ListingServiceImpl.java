@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ListingServiceImpl implements ListingServiceInterface{
@@ -21,7 +22,12 @@ public class ListingServiceImpl implements ListingServiceInterface{
     public Listing createListing(ListingRequest listingRequest) {
         Listing listing = listingFactory.createListing(listingRequest.getRateCondition());
         listing.setUserId(listingRequest.getUserId());
-        listing.setListingId(listingRequest.getListingId());
+
+        if (listing.getListingId() == null) {
+            String id = generateListingId();
+            listing.setListingId(id);
+        }
+
         listing.setName(listingRequest.getName());
         listing.setDescription(listingRequest.getDescription());
         listing.setPrice(listingRequest.getPrice());
@@ -31,6 +37,11 @@ public class ListingServiceImpl implements ListingServiceInterface{
 
         listingRepository.createListing(listing);
         return listing;
+    }
+
+    private String generateListingId() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 
     public List<Listing> findAll() {
