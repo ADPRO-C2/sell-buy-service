@@ -17,4 +17,10 @@ public class CartListing extends Listing {
     public String getType() {
         return "cart";
     }
+
+    public void validateAmount() {
+        if (amount >= 0) {
+            throw new IllegalArgumentException("Amount of bought listings has to be over 0.");
+        }
+    }
 }
