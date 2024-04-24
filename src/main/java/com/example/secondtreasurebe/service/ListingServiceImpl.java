@@ -51,4 +51,9 @@ public class ListingServiceImpl implements ListingServiceInterface{
         }
         return null;
     }
+
+    @Override
+    public void edit(Listing newListing) {
+        listingRepository.edit(newListing);
+    }
 }
