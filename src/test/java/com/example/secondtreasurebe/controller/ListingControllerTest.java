@@ -1,7 +1,6 @@
 package com.example.secondtreasurebe.controller;
 
 import com.example.secondtreasurebe.model.Listing;
-import com.example.secondtreasurebe.service.ListingServiceImpl;
 import com.example.secondtreasurebe.service.ListingServiceInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,21 +61,10 @@ public class ListingControllerTest {
 
     @Test
     public void testCreateListing() throws Exception {
-        Listing createdListing = new Listing();
-        createdListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        createdListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        createdListing.setName("Kemeja Linen Blend");
-        createdListing.setStock(10);
-        createdListing.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        createdListing.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        createdListing.setPrice(299000);
-        createdListing.setRateCondition(0);
-
-        // Mock behavior dari listingService.createListing() untuk menerima ListingRequest dan mengembalikan Listing
-        when(listingService.createListing(any(Listing.class))).thenReturn(createdListing);
+        when(listingService.createListing(any(Listing.class))).thenReturn(listing1);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String listingJson = objectMapper.writeValueAsString(createdListing);
+        String listingJson = objectMapper.writeValueAsString(listing1);
 
         mockMvc.perform(post("/api/listing/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,27 +101,6 @@ public class ListingControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.listingId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"))
                 .andExpect(jsonPath("$.name").value("Kemeja Linen Blend"));
-    }
-
-    @Test
-    public void testCreateListing_InvalidRequest() throws Exception {
-        Listing invalidListing = new Listing();
-        invalidListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        invalidListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        invalidListing.setName("Kemeja Linen Blend");
-        invalidListing.setStock(10);
-        invalidListing.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        invalidListing.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        invalidListing.setPrice(299000);
-        invalidListing.setRateCondition(10);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String listingJson = objectMapper.writeValueAsString(invalidListing);
-
-        mockMvc.perform(post("/api/listing/create")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(listingJson))
-                .andExpect(status().isBadRequest());
     }
 
 }

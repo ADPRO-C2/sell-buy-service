@@ -8,5 +8,5 @@ public interface ListingServiceInterface {
     public Listing createListing(Listing listing);
     public List<Listing> findAll();
     public Listing findListingById(String id);
-    public void edit(Listing newListing);
+    public Listing edit(Listing newListing);
 }

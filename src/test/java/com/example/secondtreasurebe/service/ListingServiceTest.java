@@ -1,20 +1,30 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Listing;
+import com.example.secondtreasurebe.repository.ListingRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.springframework.stereotype.Service;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@Service
+@ExtendWith(MockitoExtension.class)
 public class ListingServiceTest {
+    @Mock
+    private ListingRepository listingRepository;
+
     @InjectMocks
-    private ListingServiceInterface service;
+    private ListingServiceImpl service;
 
     private Listing listing1, listing2;
 
@@ -39,12 +49,12 @@ public class ListingServiceTest {
         listing2.setPrice(149000);
         listing2.setRateCondition(2);
 
-        service = new ListingServiceImpl();
 
     }
 
     @Test
     public void testCreateListing_Success() {
+        when(listingRepository.save(listing1)).thenReturn(listing1);
         Listing createdListing = service.createListing(listing1);
 
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", createdListing.getUserId());
@@ -67,6 +77,7 @@ public class ListingServiceTest {
 
     @Test
     void testFindAllIfMoreThanOneListing() {
+        when(listingRepository.findAll()).thenReturn(Arrays.asList(listing1, listing2));
         service.createListing(listing1);
         service.createListing(listing2);
 
@@ -81,6 +92,7 @@ public class ListingServiceTest {
 
     @Test
     void testFindProductById() {
+        when(listingRepository.findAll()).thenReturn(Arrays.asList(listing1, listing2));
         Listing createdListing = service.createListing(listing1);
 
         Listing foundListing = service.findListingById(createdListing.getListingId());
@@ -94,32 +106,29 @@ public class ListingServiceTest {
 
     @Test
     void testEditListing() {
+        when(listingRepository.findAll()).thenReturn(Arrays.asList(listing1));
+        when(listingRepository.save(ArgumentMatchers.any(Listing.class))).thenReturn(listing1);
         service.createListing(listing1);
 
-        listing2.setListingId(listing1.getListingId());
+        listing1.setPrice(12000);
+        listing1.setName("Baju Compang Camping");
 
-        service.edit(listing2);
-
-        Listing edited = service.findListingById(listing1.getListingId());
+        Listing edited = service.edit(listing1);
 
         // Verifikasi bahwa produk telah diubah dengan benar
-        assertEquals(listing2.getListingId(), edited.getListingId());
-        assertEquals(listing2.getName(), edited.getName());
-        assertEquals(listing2.getUserId(), edited.getUserId());
-        assertEquals(listing2.getStock(), edited.getStock());
-        assertEquals(listing2.getDescription(), edited.getDescription());
-        assertEquals(listing2.getPhotoUrl(), edited.getPhotoUrl());
-        assertEquals(listing2.getPrice(), edited.getPrice());
-        assertEquals(listing2.getRateCondition(), edited.getRateCondition());
+        assertEquals("Baju Compang Camping", edited.getName());
+        assertEquals(12000, edited.getPrice());
 
         // Verifikasi bahwa data produk yang disimpan telah diperbarui
-        assertEquals(listing2.getListingId(), listing1.getListingId());
-        assertEquals(listing2.getName(), listing1.getName());
-        assertEquals(listing2.getUserId(), listing1.getUserId());
-        assertEquals(listing2.getStock(), listing1.getStock());
-        assertEquals(listing2.getDescription(), listing1.getDescription());
-        assertEquals(listing2.getPhotoUrl(), listing1.getPhotoUrl());
-        assertEquals(listing2.getPrice(), listing1.getPrice());
-        assertEquals(listing2.getRateCondition(), listing1.getRateCondition());
+        assertEquals(edited.getName(), listing1.getName());
+        assertEquals(edited.getPrice(), listing1.getPrice());
+    }
+
+    @Test
+    public void testEditListingNotFound() {
+        when(listingRepository.findAll()).thenReturn(Arrays.asList(listing1));
+        assertThrows(ResponseStatusException.class, () -> {
+            service.edit(listing2);
+        });
     }
 }

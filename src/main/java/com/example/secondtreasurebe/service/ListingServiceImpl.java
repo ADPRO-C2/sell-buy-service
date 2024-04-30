@@ -3,17 +3,17 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.ListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ListingServiceImpl implements ListingServiceInterface{
     @Autowired
-    private ListingRepository listingRepository = new ListingRepository();
+    private ListingRepository listingRepository;
 
     @Override
     public Listing createListing(Listing listing) {
@@ -22,14 +22,9 @@ public class ListingServiceImpl implements ListingServiceInterface{
             listing.setListingId(id);
         }
 
-        listing.setName(listing.getName());
-        listing.setDescription(listing.getDescription());
-        listing.setPrice(listing.getPrice());
-        listing.setStock(listing.getStock());
-        listing.setPhotoUrl(listing.getPhotoUrl());
-        listing.setRateCondition(listing.getRateCondition());
+        listing.validate();
 
-        listingRepository.createListing(listing);
+        listingRepository.save(listing);
         return listing;
     }
 
@@ -38,27 +33,37 @@ public class ListingServiceImpl implements ListingServiceInterface{
         return uuid.toString();
     }
 
+    @Override
     public List<Listing> findAll() {
-        Iterator<Listing> listingIterator = listingRepository.findAll();
-        List<Listing> allListing = new ArrayList<>();
-        listingIterator.forEachRemaining(allListing::add);
-        return allListing;
+        return listingRepository.findAll();
     }
 
     @Override
-    public Listing findListingById(String id) {
-        Iterator<Listing> listingIterator = listingRepository.findAll();
-        while (listingIterator.hasNext()) {
-            Listing listing = listingIterator.next();
-            if (listing.getListingId().equals(id)) {
-                return listing;
+    public Listing findListingById(String id){
+        for (Listing listing : findAll()) {
+            if(listing.getListingId()!=null) {
+                if (listing.getListingId().equals(id)) {
+                    return listing;
+                }
             }
         }
         return null;
     }
 
     @Override
-    public void edit(Listing newListing) {
-        listingRepository.edit(newListing);
+    public Listing edit(Listing updateListing) {
+        Listing listing = findListingById(updateListing.getListingId());
+        if(listing!=null){
+            listing.setName(updateListing.getName());
+            listing.setStock(updateListing.getStock());
+            listing.setDescription(updateListing.getDescription());
+            listing.setPhotoUrl(updateListing.getPhotoUrl());
+            listing.setPrice(updateListing.getPrice());
+            listing.setRateCondition(updateListing.getRateCondition());
+            listingRepository.save(updateListing);
+            return listing;
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing with ID " + updateListing.getListingId() + " not found");
+        }
     }
 }
