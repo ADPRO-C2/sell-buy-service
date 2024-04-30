@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ListingTest {
     Listing listing;
@@ -58,6 +59,36 @@ class ListingTest {
     @Test
     void getRateCondition() {
         assertEquals(0, this.listing.getRateCondition());
+    }
+
+        @Test
+    public void testValidateValidValues() {
+        listing = new Listing();
+        listing.setPrice(100);
+        listing.setStock(10);
+        listing.setRateCondition(1);
+        listing.validate();
+    }
+
+        @Test
+    public void testNegativePrice() {
+        listing = new Listing();
+        listing.setPrice(-100);
+        assertThrows(IllegalArgumentException.class, listing::validate);
+    }
+
+    @Test
+    public void testNegativeStock() {
+        listing = new Listing();
+        listing.setStock(-100);
+        assertThrows(IllegalArgumentException.class, listing::validate);
+    }
+
+    @Test
+    public void testInvalidRateCondition() {
+        listing = new Listing();
+        listing.setRateCondition(10);
+        assertThrows(IllegalArgumentException.class, listing::validate);
     }
 
 }
