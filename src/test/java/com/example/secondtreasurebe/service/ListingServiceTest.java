@@ -26,6 +26,7 @@ public class ListingServiceTest {
     @Test
     public void testCreateListing_Success() {
         ListingRequest request = new ListingRequest();
+        request.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request.setName("Kemeja Linen Blend");
         request.setStock(10);
         request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -110,6 +111,7 @@ public class ListingServiceTest {
     @Test
     void testEditListing() {
         ListingRequest request1 = new ListingRequest();
+        request1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         request1.setName("Kemeja Linen Blend");
         request1.setStock(10);
         request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");

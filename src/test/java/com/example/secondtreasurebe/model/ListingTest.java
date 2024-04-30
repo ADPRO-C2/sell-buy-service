@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class NewListingTest {
-    NewListing listing;
+class ListingTest {
+    Listing listing;
     @BeforeEach
     void setUp() {
-        this.listing = new NewListing();
+        this.listing = new Listing();
         this.listing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         this.listing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         this.listing.setName("Kemeja Linen Blend");
@@ -60,10 +60,4 @@ class NewListingTest {
         assertEquals(0, this.listing.getRateCondition());
     }
 
-    @Test
-    public void getType() {
-        NewListing newListing = new NewListing();
-        String type = newListing.getType();
-        assertEquals("new", type);
-    }
 }
