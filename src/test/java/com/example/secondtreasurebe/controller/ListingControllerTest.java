@@ -14,6 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -74,11 +78,41 @@ public class ListingControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String listingJson = objectMapper.writeValueAsString(createdListing);
 
-        mockMvc.perform(post("/api/sell/create")
+        mockMvc.perform(post("/api/listing/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(listingJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.listingId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"));
+    }
+
+    @Test
+    public void testgetAllListings() throws Exception {
+        List<Listing> listings = Arrays.asList(listing1,
+                listing2);
+        when(listingService.findAll()).thenReturn(listings);
+
+        mockMvc.perform(get("/api/listings"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].listingId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"))
+                .andExpect(jsonPath("$[1].listingId").value("eb558e9f-1c39-460e-8860-71af6af63bc8"));
+    }
+
+    @Test
+    public void testgetListingNotFound() throws Exception {
+        when(listingService.findListingById("1")).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/api/listing/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testgetListingFound() throws Exception {
+        when(listingService.findListingById("eb558e9f-1c39-460e-8860-71af6af63bd6")).thenReturn(listing1);
+        mockMvc.perform(get("/api/listing/eb558e9f-1c39-460e-8860-71af6af63bd6"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.listingId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"))
+                .andExpect(jsonPath("$.name").value("Kemeja Linen Blend"));
     }
 
 }

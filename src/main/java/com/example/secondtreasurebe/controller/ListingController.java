@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class ListingController {
     private ListingServiceInterface service;
 
 
-    @PostMapping("/sell/create")
+    @PostMapping("/listing/create")
     public ResponseEntity<Listing> createListing(@RequestBody Listing listing, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
@@ -39,7 +38,7 @@ public class ListingController {
         return new ResponseEntity<>(allListings, HttpStatus.OK);
     }
 
-    @GetMapping("/listings/{id}")
+    @GetMapping("/listing/{id}")
     public ResponseEntity<Listing> getListingById(@PathVariable("id") String id) {
         try {
             var listing = service.findListingById(id);
