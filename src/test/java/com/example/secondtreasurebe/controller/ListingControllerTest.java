@@ -103,4 +103,22 @@ public class ListingControllerTest {
                 .andExpect(jsonPath("$.name").value("Kemeja Linen Blend"));
     }
 
+    @Test
+    public void testUpdateReview() throws Exception {
+        Listing updatedListing = new Listing();
+        updatedListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd7");
+        updatedListing.setUserId("eb558e9f-1c39-460e-8860-12345678");
+        updatedListing.setName("Compang");
+        updatedListing.setPrice(30000);
+        when(listingService.edit(any(Listing.class))).thenReturn(updatedListing);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String reviewJson = objectMapper.writeValueAsString(updatedListing);
+
+        mockMvc.perform(put("/api/listing")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(reviewJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value(30000));
+    }
 }
