@@ -115,4 +115,25 @@ public class ListingControllerTest {
                 .andExpect(jsonPath("$.name").value("Kemeja Linen Blend"));
     }
 
+    @Test
+    public void testCreateListing_InvalidRequest() throws Exception {
+        Listing invalidListing = new Listing();
+        invalidListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        invalidListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        invalidListing.setName("Kemeja Linen Blend");
+        invalidListing.setStock(10);
+        invalidListing.setDescription("Kerah terbuka, bahan nyaman dipakai.");
+        invalidListing.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
+        invalidListing.setPrice(299000);
+        invalidListing.setRateCondition(10);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingJson = objectMapper.writeValueAsString(invalidListing);
+
+        mockMvc.perform(post("/api/listing/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingJson))
+                .andExpect(status().isBadRequest());
+    }
+
 }
