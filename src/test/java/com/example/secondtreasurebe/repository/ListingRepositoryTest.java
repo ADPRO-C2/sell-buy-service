@@ -1,8 +1,6 @@
 package com.example.secondtreasurebe.repository;
 
 import com.example.secondtreasurebe.model.Listing;
-import com.example.secondtreasurebe.model.NewListing;
-import com.example.secondtreasurebe.model.UsedListing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +20,7 @@ class ListingRepositoryTest {
     }
     @Test
     void testCreateAndFind() {
-        Listing listing1 = new NewListing();
+        Listing listing1 = new Listing();
         listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Kemeja Linen Blend");
@@ -54,7 +52,7 @@ class ListingRepositoryTest {
 
     @Test
     void testFindAllIfMoreThanOneListing() {
-        Listing listing1 = new NewListing();
+        Listing listing1 = new Listing();
         listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Kemeja Linen Blend");
@@ -65,7 +63,7 @@ class ListingRepositoryTest {
         listing1.setRateCondition(0);
         listingRepository.createListing(listing1);
 
-        Listing listing2 = new UsedListing();
+        Listing listing2 = new Listing();
         listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63bz9");
         listing2.setListingId("a0f9de46-90b1-437d-a0bf-d0821dde9096");
         listing2.setName("T-Shirt Kerah Bulat");
@@ -87,7 +85,7 @@ class ListingRepositoryTest {
 
     @Test
     void testEditListing() {
-        Listing listing1 = new NewListing();
+        Listing listing1 = new Listing();
         listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Kemeja Linen Blend");
@@ -98,7 +96,7 @@ class ListingRepositoryTest {
         listing1.setRateCondition(0);
         listingRepository.createListing(listing1);
 
-        Listing listing2 = new UsedListing();
+        Listing listing2 = new Listing();
         listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing2.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing2.setName("T-Shirt Kerah Bulat");
@@ -136,7 +134,7 @@ class ListingRepositoryTest {
 
     @Test
     void testEditListingNotFound() {
-        Listing listing1 = new NewListing();
+        Listing listing1 = new Listing();
         listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Kemeja Linen Blend");
@@ -147,7 +145,7 @@ class ListingRepositoryTest {
         listing1.setRateCondition(0);
         listingRepository.createListing(listing1);
 
-        Listing listing2 = new UsedListing();
+        Listing listing2 = new Listing();
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
