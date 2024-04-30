@@ -13,4 +13,6 @@ public class Listing {
     private int stock;
     private String photoUrl;
     private int rateCondition; //0: baru; 1:masih bagus; 2:rusak ringan; 3:rusak sedang
+
+    public void validate() {}
 }
