@@ -1,68 +1,66 @@
 package com.example.secondtreasurebe.controller;
 
 import com.example.secondtreasurebe.model.Listing;
-import com.example.secondtreasurebe.model.ListingRequest;
-import com.example.secondtreasurebe.model.NewListing;
 import com.example.secondtreasurebe.service.ListingServiceImpl;
 import com.example.secondtreasurebe.service.ListingServiceInterface;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ListingControllerTest {
+    Listing listing1;
+    Listing listing2;
+    private MockMvc mockMvc;
 
     @Mock
     private ListingServiceInterface listingService;
 
-    @Mock
-    private ListingRequest request;
     @InjectMocks
     private ListingController listingRestController;
 
-    private MockMvc mockMvc;
-
-    public ListingControllerTest() {
-        MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(listingRestController).build();
-    }
     @BeforeEach
     public void setup() {
-        listingService = new ListingServiceImpl();
-        listingRestController = new ListingController();
+        mockMvc = MockMvcBuilders.standaloneSetup(listingRestController).build();
 
-        request = new ListingRequest();
-        request.setName("Kemeja Linen Blend");
-        request.setStock(10);
-        request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request.setPrice(299000);
-        request.setRateCondition(0);
+        listing1 = new Listing();
+        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        listing1.setName("Kemeja Linen Blend");
+        listing1.setStock(10);
+        listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
+        listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
+        listing1.setPrice(299000);
+        listing1.setRateCondition(0);
+
+        listing2 = new Listing();
+        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing2.setListingId("eb558e9f-1c39-460e-8860-71af6af63bc8");
+        listing2.setName("T-Shirt Kerah Bulat");
+        listing2.setStock(50);
+        listing2.setDescription("Enak dipakai");
+        listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
+        listing2.setPrice(149000);
+        listing2.setRateCondition(2);
     }
 
     @Test
     public void testCreateListing() throws Exception {
-        ListingRequest request = new ListingRequest();
-        request.setName("Kemeja Linen Blend");
-        request.setStock(10);
-        request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request.setPrice(299000);
-        request.setRateCondition(0);
-
-        Listing createdListing = new NewListing();
+        Listing createdListing = new Listing();
+        createdListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        createdListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         createdListing.setName("Kemeja Linen Blend");
         createdListing.setStock(10);
         createdListing.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -71,16 +69,16 @@ public class ListingControllerTest {
         createdListing.setRateCondition(0);
 
         // Mock behavior dari listingService.createListing() untuk menerima ListingRequest dan mengembalikan Listing
-        when(listingService.createListing(any(ListingRequest.class))).thenReturn(createdListing);
+        when(listingService.createListing(any(Listing.class))).thenReturn(createdListing);
 
-        // Act
-        ResponseEntity<Listing> responseEntity = listingRestController.createListing(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingJson = objectMapper.writeValueAsString(createdListing);
 
-        // Assert
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        assertEquals(createdListing, responseEntity.getBody());
-
-        verify(listingService).createListing(request);
+        mockMvc.perform(post("/api/sell/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.listingId").value("eb558e9f-1c39-460e-8860-71af6af63bd6"));
     }
 
 }
