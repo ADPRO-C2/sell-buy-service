@@ -1,8 +1,6 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Listing;
-import com.example.secondtreasurebe.model.UsedListing;
-import com.example.secondtreasurebe.model.ListingRequest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,23 +16,36 @@ public class ListingServiceTest {
     @InjectMocks
     private ListingServiceInterface service;
 
+    private Listing listing1, listing2;
+
     @BeforeEach
     void setUp() {
+        listing1 = new Listing();
+        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setName("Kemeja Linen Blend");
+        listing1.setStock(10);
+        listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
+        listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
+        listing1.setPrice(299000);
+        listing1.setRateCondition(0);
+
+        listing2 = new Listing();
+        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing2.setListingId(listing1.getListingId());
+        listing2.setName("T-Shirt Kerah Bulat");
+        listing2.setStock(50);
+        listing2.setDescription("Enak dipakai");
+        listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
+        listing2.setPrice(149000);
+        listing2.setRateCondition(2);
+
         service = new ListingServiceImpl();
+
     }
 
     @Test
     public void testCreateListing_Success() {
-        ListingRequest request = new ListingRequest();
-        request.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request.setName("Kemeja Linen Blend");
-        request.setStock(10);
-        request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request.setPrice(299000);
-        request.setRateCondition(0);
-
-        Listing createdListing = service.createListing(request);
+        Listing createdListing = service.createListing(listing1);
 
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", createdListing.getUserId());
         assertNotNull(createdListing);
@@ -56,32 +67,13 @@ public class ListingServiceTest {
 
     @Test
     void testFindAllIfMoreThanOneListing() {
-        ListingRequest request1 = new ListingRequest();
-        request1.setName("Kemeja Linen Blend");
-        request1.setStock(10);
-        request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request1.setPrice(299000);
-        request1.setRateCondition(0);
-        Listing listing1 = service.createListing(request1);
-
-        ListingRequest request2 = new ListingRequest();
-        request2.setName("T-Shirt Kerah Bulat");
-        request2.setStock(50);
-        request2.setDescription("Enak dipakai");
-        request2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        request2.setPrice(149000);
-        request2.setRateCondition(2);
-        Listing listing2 = service.createListing(request2);
+        service.createListing(listing1);
+        service.createListing(listing2);
 
         List<Listing> listingList = service.findAll();
 
         assertNotNull(listingList);
         assertFalse(listingList.isEmpty());
-
-        System.out.println(listingList);
-        System.out.println(request1);
-        System.out.println(request2);
 
         assertTrue(listingList.contains(listing1));
         assertTrue(listingList.contains(listing2));
@@ -89,15 +81,7 @@ public class ListingServiceTest {
 
     @Test
     void testFindProductById() {
-        ListingRequest request = new ListingRequest();
-        request.setName("Kemeja Linen Blend");
-        request.setStock(10);
-        request.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request.setPrice(299000);
-        request.setRateCondition(0);
-
-        Listing createdListing = service.createListing(request);
+        Listing createdListing = service.createListing(listing1);
 
         Listing foundListing = service.findListingById(createdListing.getListingId());
 
@@ -110,27 +94,9 @@ public class ListingServiceTest {
 
     @Test
     void testEditListing() {
-        ListingRequest request1 = new ListingRequest();
-        request1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        request1.setName("Kemeja Linen Blend");
-        request1.setStock(10);
-        request1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
-        request1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        request1.setPrice(299000);
-        request1.setRateCondition(0);
-        Listing listing1 = service.createListing(request1);
-        System.out.println(listing1.getListingId());
+        service.createListing(listing1);
 
-        Listing listing2 = new UsedListing();
-        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing2.setListingId(listing1.getListingId());
-        listing2.setName("T-Shirt Kerah Bulat");
-        listing2.setStock(50);
-        listing2.setDescription("Enak dipakai");
-        listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        listing2.setPrice(149000);
-        listing2.setRateCondition(2);
-        System.out.println(listing2.getListingId());
 
         service.edit(listing2);
 
