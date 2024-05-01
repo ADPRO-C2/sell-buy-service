@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -64,6 +65,15 @@ public class ListingServiceImpl implements ListingServiceInterface{
             return listing;
         }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing with ID " + updateListing.getListingId() + " not found");
+        }
+    }
+
+    @Override
+    public void deleteListing(String id) {
+        if (listingRepository.existsById(id)) {
+            listingRepository.deleteById(id);
+        } else {
+            throw new NoSuchElementException("No listing found with ID: " + id);
         }
     }
 }
