@@ -1,4 +1,4 @@
-package com.example.secondtreasurebe.repository;
+/*package com.example.secondtreasurebe.repository;
 
 import org.springframework.stereotype.Repository;
 import com.example.secondtreasurebe.model.Listing;
@@ -49,4 +49,4 @@ public class CartRepository {
         userCart.setInCart(cartListings);
         userCart.setCheckout(cartCheckout);
     }
-}
+}*/

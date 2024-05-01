@@ -21,12 +21,12 @@ class CartTest {
         List<CartListing> empty = new ArrayList<>();
         cart.setItems(empty);
 
-        assertEquals(cart.getUserId(), "13652556-012a-4c07-b56-54eb1396d79b");
+        assertEquals("13652556-012a-4c07-b56-54eb1396d79b", cart.getUserId());
     }
 
     @Test
     void testGetUserId() {
-        assertEquals(this.testCart.getUserId(), "eb558e9f-1c39-460e-8860-71af6af63bd6");
+        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.testCart.getUserId());
     }
 
     @Test

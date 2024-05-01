@@ -12,5 +12,6 @@ public class Cart {
     private List<CartListing> items;
 
     public Cart(String userId) {
+        this.userId = userId;
     }
 }
