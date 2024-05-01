@@ -79,7 +79,7 @@ public class CartListing {
     }
 
     public void validateAmount() {
-        if (amount <= 0) {
+        if (this.amount <= 0) {
             throw new IllegalArgumentException("Amount of bought listings has to be over 0.");
         }
     }

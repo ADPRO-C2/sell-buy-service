@@ -3,6 +3,7 @@ package com.example.secondtreasurebe.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -27,5 +28,18 @@ public class Order {
             total += item.getAmount() * item.getListing().getPrice();
         }
         return total;
+    }
+
+    public void validateOrder() {
+        if (this.priceTotal <= 0) {
+            throw new IllegalArgumentException("Price total should be more than 0.");
+        } else if (!isValidStatus(this.status)) {
+            throw new IllegalArgumentException("Invalid order status.");
+        }
+    }
+
+    private boolean isValidStatus(String status) {
+        List<String> validStatuses = Arrays.asList("Dikemas", "Di jalan", "Sudah sampai");
+        return validStatuses.contains(status);
     }
 }

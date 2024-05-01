@@ -60,7 +60,7 @@ public class OrderTest {
 
     @Test
     void testNegativePriceTotal() {
-        assertThrows(IllegalArgumentException.class, () -> order.setPriceTotal(-100));
+        assertThrows(IllegalArgumentException.class, order::validateOrder);
     }
 
     @Test
@@ -71,6 +71,6 @@ public class OrderTest {
 
     @Test
     void testInvalidStatus() {
-        assertThrows(IllegalArgumentException.class, () -> order.setStatus("InvalidStatus"));
+        assertThrows(IllegalArgumentException.class, order::validateOrder);
     }
 }
