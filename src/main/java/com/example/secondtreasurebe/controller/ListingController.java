@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -63,4 +65,13 @@ public class ListingController {
         }
     }
 
+    @DeleteMapping("/delete-listing/{id}")
+    public ResponseEntity<String> deleteListing(@PathVariable("id") String id) {
+        try {
+            service.deleteListing(id);
+            return ResponseEntity.ok("Listing berhasil dihapus!");
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing tidak ditemukan");
+        }
+    }
 }
