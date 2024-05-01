@@ -12,11 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -120,5 +123,26 @@ public class ListingControllerTest {
                         .content(reviewJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.price").value(30000));
+    }
+
+    @Test
+    public void testDeleteListingSuccess() throws Exception {
+        doNothing().when(listingService).deleteListing("existingid");
+
+        mockMvc.perform(delete("/delete-listing/existingid"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Listing berhasil dihapus!"));
+    }
+
+    @Test
+    public void testDeleteListingNotFound() throws Exception {
+        String id = "nonexistingid";
+
+        doThrow(new NoSuchElementException()).when(listingService).deleteListing(id);
+
+        mockMvc.perform(delete("/delete-listing/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
+                .andExpect(result -> assertEquals("Listing tidak ditemukan", result.getResolvedException().getMessage()));
     }
 }
