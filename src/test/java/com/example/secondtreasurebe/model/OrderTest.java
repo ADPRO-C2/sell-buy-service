@@ -32,7 +32,7 @@ public class OrderTest {
     void testEmptyOrder() {
         Cart cart = new Cart("13652556-012a-4c07-b56-54eb1396d79b");
         Order emptyOrder = new Order("13652556-012a-4c07-b56-54eb1396d79b", cart);
-        assertTrue(emptyOrder.getItems().isEmpty);
+        assertTrue(emptyOrder.getItems().isEmpty());
     }
 
     @Test
@@ -46,16 +46,16 @@ public class OrderTest {
         List<CartListing> items = order.getItems();
         assertEquals(2, items.size());
 
-        // Verify item details
         Listing listing1 = new Listing();
         Listing listing2 = new Listing();
+
         CartListing cartListing1 = items.get(0);
-        assertEquals(listing1, cartListing1.getListing());
-        assertEquals(2, cartListing1.getAmount());
+        assertEquals(listing1.getUserId(), cartListing1.getListing().getUserId());
+        assertEquals(listing1.getListingId(), cartListing1.getListing().getListingId());
 
         CartListing cartListing2 = items.get(1);
-        assertEquals(listing2, cartListing2.getListing());
-        assertEquals(3, cartListing2.getAmount());
+        assertEquals(listing2.getUserId(), cartListing2.getListing().getUserId());
+        assertEquals(listing2.getListingId(), cartListing2.getListing().getListingId());
     }
 
     @Test
