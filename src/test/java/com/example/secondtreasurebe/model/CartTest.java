@@ -8,27 +8,25 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CartTest {
+    Cart testCart;
 
     @BeforeEach
     void setUp() {
-        Cart testCart = new Cart();
-        testCart.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        this.testCart = new Cart("eb558e9f-1c39-460e-8860-71af6af63ba7");
     }
 
     @Test
     void testEmptyCart() {
-        Cart cart = new Cart();
+        Cart cart = new Cart("13652556-012a-4c07-b56-54eb1396d79b");
         List<CartListing> empty = new ArrayList<>();
-        cart.setUserId("13652556-012a-4c07-b56-54eb1396d79b");
         cart.setItems(empty);
 
         assertEquals(cart.getUserId(), "13652556-012a-4c07-b56-54eb1396d79b");
-        assertEquals(cart.getCartId(), "eb558e9f-1c39-460e-8860-71af6af63ba7");
     }
 
     @Test
     void testGetUserId() {
-        assertEquals(testCart.getUserId(), "eb558e9f-1c39-460e-8860-71af6af63bd6");
+        assertEquals(this.testCart.getUserId(), "eb558e9f-1c39-460e-8860-71af6af63bd6");
     }
 
     @Test
@@ -40,6 +38,6 @@ class CartTest {
         CartListing cartListing2 = new CartListing(listing2, 3);
         items.add(cartListing1);
         items.add(cartListing2);
-        testCart.setItems(items);
+        this.testCart.setItems(items);
     }
 }
