@@ -10,7 +10,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -50,8 +49,6 @@ public class ListingServiceTest {
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing2.setPrice(149000);
         listing2.setRateCondition(2);
-
-
     }
 
     @Test
