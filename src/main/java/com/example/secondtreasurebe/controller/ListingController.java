@@ -49,4 +49,18 @@ public class ListingController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Listing " + id + " not found");
         }
     }
+
+    @PutMapping("/listing")
+    public ResponseEntity<Listing> editListing(@RequestBody Listing listing, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
+        } else {
+            if (listing.getListingId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Listing ID is required for editing");
+            }
+            var res = service.edit(listing);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
+    }
+
 }
