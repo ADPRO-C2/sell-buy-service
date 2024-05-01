@@ -12,14 +12,16 @@ public class CartListingTest {
 
     @BeforeEach
     void setUp() {
-        this.cartListing = new CartListing("eb558e9f-1c39-460e-8860-71af6af63bd6", 3);
-        this.cartListing.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        this.cartListing.setName("Nintando Swotch");
-        this.cartListing.setDescription("The best console.");
-        this.cartListing.setPrice(100000);
-        this.cartListing.setStock(45);
-        this.cartListing.setPhotoUrl("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g");
-        this.cartListing.setRateCondition(0);
+        Listing listing1 = new Listing();
+        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        listing1.setName("Nintando Swotch");
+        listing1.setDescription("The best console.");
+        listing1.setPrice(100000);
+        listing1.setStock(45);
+        listing1.setPhotoUrl("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g");
+        listing1.setRateCondition(0);
+        this.cartListing = new CartListing(listing1, 3);
     }
 
     @Test
@@ -36,6 +38,7 @@ public class CartListingTest {
 
     @Test
     void testNegativeAmount() {
+        this.cartListing.setAmount(-2);
         assertThrows(IllegalArgumentException.class, cartListing::validateAmount);
 
     }

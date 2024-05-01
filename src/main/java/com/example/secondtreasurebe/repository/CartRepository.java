@@ -1,7 +1,6 @@
 package com.example.secondtreasurebe.repository;
 
 import org.springframework.stereotype.Repository;
-import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.Listing;
 
 import java.util.ArrayList;
@@ -51,4 +50,3 @@ public class CartRepository {
         userCart.setCheckout(cartCheckout);
     }
 }
-
