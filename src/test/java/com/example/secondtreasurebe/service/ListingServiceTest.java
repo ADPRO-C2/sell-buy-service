@@ -10,10 +10,12 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -130,5 +132,33 @@ public class ListingServiceTest {
         assertThrows(ResponseStatusException.class, () -> {
             service.edit(listing2);
         });
+    }
+
+    @Test
+    public void testDeleteListingSuccess() {
+        String id = "existing-id";
+
+        when(listingRepository.existsById(id)).thenReturn(true);
+        doNothing().when(listingRepository).deleteById(id);
+
+        assertDoesNotThrow(() -> service.deleteListing(id));
+
+        verify(listingRepository, times(1)).existsById(id);
+        verify(listingRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    public void testDeleteListingNotFound() {
+        String id = "non-existing-id";
+
+        when(listingRepository.existsById(id)).thenReturn(false);
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> service.deleteListing(id));
+
+        assertEquals("No listing found with ID: " + id, exception.getMessage());
+
+        verify(listingRepository, times(1)).existsById(id);
+        verify(listingRepository, never()).deleteById(id);
     }
 }
