@@ -17,4 +17,12 @@ public class Checkout {
         this.userId = userId;
         this.orders = new ArrayList<>();
     }
+
+    public void sameUser() {
+        for (Order order : this.orders) {
+            if (!order.getUserId().equals(this.userId)) {
+                throw new IllegalArgumentException("User ID of Orders and Checkout must match.");
+            }
+        }
+    }
 }

@@ -40,6 +40,6 @@ public class CheckoutTest {
     void testDifferentUserId() {
         Order differentUser = new Order("9c45ce81-34b9-4699-bd7d-4d8d08620de8", this.cart);
         this.testCheckout.getOrders().add(differentUser);
-        assertThrows(IllegalArgumentException.class, () -> this.testCheckout.getOrders().add(differentUser));
+        assertThrows(IllegalArgumentException.class, this.testCheckout::sameUser);
     }
 }
