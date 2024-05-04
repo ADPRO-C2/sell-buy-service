@@ -1,4 +1,4 @@
-/*package com.example.secondtreasurebe.model;
+package com.example.secondtreasurebe.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CheckoutTest {
     Checkout testCheckout;
+    Cart cart;
 
     @BeforeEach
     void setUp() {
@@ -17,11 +18,27 @@ public class CheckoutTest {
 
     @Test
     void testEmptyCheckout() {
-
+        assertTrue(this.testCheckout.getOrders().isEmpty());
     }
 
     @Test
     void testValidCheckout() {
-
+        List<Order> orderList = new ArrayList<>();
+        Order order = new Order("eb558e9f-1c39-460e-8860-71af6af63ba7", cart);
+        orderList.add(order);
+        this.testCheckout.getOrders().add(order);
+        assertEqual(orderList, this.testCheckout.getOrders());
     }
-}*/
+
+    @Test
+    void testGetUserId() {
+        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.testCheckout.getUserId());
+    }
+
+    @Test
+    void testDifferentUserId() {
+        Order differentUser = new Order("9c45ce81-34b9-4699-bd7d-4d8d08620de8", cart);
+        this.testCheckout.getOrders().add(differentUser);
+        assertThrows(IllegalArgumentException.class, () -> this.testCheckout.getOrders().add(differentUser));
+    }
+}

@@ -31,7 +31,7 @@ public class Order {
     }
 
     public void validateOrder() {
-        if (this.priceTotal <= 0) {
+        if (this.priceTotal < 0) {
             throw new IllegalArgumentException("Price total should be more than 0.");
         } else if (!isValidStatus(this.status)) {
             throw new IllegalArgumentException("Invalid order status.");
