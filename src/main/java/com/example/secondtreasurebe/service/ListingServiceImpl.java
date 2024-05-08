@@ -23,6 +23,7 @@ public class ListingServiceImpl implements ListingServiceInterface{
             listing.setListingId(id);
         }
 
+        listing.setUserId("a029189d-d5cc-4933-af55-6ed9c38e6db7");
         listing.validate();
 
         listingRepository.save(listing);

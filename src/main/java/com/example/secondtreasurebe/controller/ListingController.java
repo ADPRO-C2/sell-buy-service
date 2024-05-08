@@ -2,6 +2,7 @@ package com.example.secondtreasurebe.controller;
 
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.service.ListingServiceInterface;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,14 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ListingController {
 
     @Autowired
     private ListingServiceInterface service;
 
-
     @PostMapping("/listing/create")
-    public ResponseEntity<Listing> createListing(@RequestBody Listing listing, BindingResult bindingResult) {
+    public ResponseEntity<Listing> createListing(@Valid @RequestBody Listing listing, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
         } else {
@@ -35,7 +36,6 @@ public class ListingController {
         }
     }
 
-    @CrossOrigin("*")
     @GetMapping("/listings")
     public ResponseEntity<List<Listing>> getAllListings() {
         List<Listing> allListings = service.findAll();
