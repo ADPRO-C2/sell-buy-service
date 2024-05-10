@@ -17,7 +17,7 @@ public class CartListingRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        cartListingRepository = new CartListRepository();
+        cartListingRepository = new CartListingRepository();
         cartListings = new ArrayList<>();
 
         Listing listing1 = new Listing();
@@ -32,6 +32,7 @@ public class CartListingRepositoryTest {
 
         CartListing cartListing1 = new CartListing(listing1, 4);
         cartListing1.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
+        cartListingRepository.save(cartListing1);
         cartListings.add(cartListing1);
     }
 
@@ -43,11 +44,14 @@ public class CartListingRepositoryTest {
     @Test
     void testCreateCartListing() {
         Listing listing = new Listing();
-
         CartListing newCartListing = new CartListing(listing, 3);
+        newCartListing.setCartListingId("406f9c0d-1ac3-441d-bc25-25561a79ff5a");
         cartListingRepository.save(newCartListing);
 
-        assertTrue(cartListings.contains(newCartListing));
+        CartListing check = cartListingRepository.findById("406f9c0d-1ac3-441d-bc25-25561a79ff5a");
+
+        assertEquals("406f9c0d-1ac3-441d-bc25-25561a79ff5a", check.getCartListingId());
+        assertEquals(3, check.getAmount());
     }
 
     @Test
@@ -55,7 +59,8 @@ public class CartListingRepositoryTest {
         CartListing find = cartListingRepository.findById("7766d08b-aa3b-4364-af55-62c282fd2b05");
 
         assertNotNull(find);
-        assertEquals("7766d08b-aa3b-4364-af55-62c282fd2b05", find.getListingId());
+        assertEquals("7766d08b-aa3b-4364-af55-62c282fd2b05", find.getCartListingId());
+        assertEquals(4, find.getAmount());
     }
 
     @Test
@@ -73,12 +78,12 @@ public class CartListingRepositoryTest {
 
         List<CartListing> allCartListings = cartListingRepository.findAll();
 
-        assertEquals(2, allCartListings.size());
+        assertEquals(3, allCartListings.size());
 
-        assertEquals("8fa9ffb9-41ec-4ca2-a1ed-d7ef82374414", allCartListings.get(0).getCartListingId());
-        assertEquals(2, allCartListings.get(0).getAmount());
-        assertEquals("627acdac-cd28-4a6a-872d-4a74e2ecb190", allCartListings.get(0).getCartListingId());
-        assertEquals(3, allCartListings.get(1).getAmount());
+        assertEquals("8fa9ffb9-41ec-4ca2-a1ed-d7ef82374414", allCartListings.get(1).getCartListingId());
+        assertEquals(2, allCartListings.get(1).getAmount());
+        assertEquals("627acdac-cd28-4a6a-872d-4a74e2ecb190", allCartListings.get(2).getCartListingId());
+        assertEquals(3, allCartListings.get(2).getAmount());
     }
 
     @Test
@@ -96,10 +101,10 @@ public class CartListingRepositoryTest {
 
     @Test
     void testDeleteCartListing() {
-        CartListing cartListingToDelete = cartListings.get(0);
-        cartListingRepository.delete(cartListingToDelete.getCartListingId());
+        CartListing deleteCartListing = cartListings.get(0);
+        cartListingRepository.delete(deleteCartListing.getCartListingId());
 
-        assertNull(cartListingRepository.findById(cartListingToDelete.getId()));
+        assertNull(cartListingRepository.findById(deleteCartListing.getCartListingId()));
     }
 
     @Test
@@ -114,8 +119,9 @@ public class CartListingRepositoryTest {
 
     @Test
     void testFindIfNotExist() {
-        CartListing nonExistingCartListing = cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
-        assertNull(nonExistingCartListing);
+        assertThrows(NoSuchElementException.class, () -> {
+            cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
+        });
     }
 
     @Test
