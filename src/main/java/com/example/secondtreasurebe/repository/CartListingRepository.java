@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class CartListingRepository {
@@ -25,7 +26,7 @@ public class CartListingRepository {
                 return cListing;
             }
         }
-        return null;
+        throw new NoSuchElementException("CartListing not found.");
     }
 
     public CartListing findById(String cartListingId) {
@@ -34,12 +35,16 @@ public class CartListingRepository {
                 return cListing;
             }
         }
-        return null;
+        throw new NoSuchElementException("CartListing not found.");
     }
 
     public void delete(String cartListingId) {
         CartListing toDelete = findById(cartListingId);
-        cartListingData.remove(toDelete);
+        if (toDelete != null) {
+            cartListingData.remove(toDelete);
+        } else {
+            throw new NoSuchElementException("Cart Listing not found.");
+        }
     }
 
     public List<CartListing> findAll() {

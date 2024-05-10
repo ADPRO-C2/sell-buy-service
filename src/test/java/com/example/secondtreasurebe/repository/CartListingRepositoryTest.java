@@ -101,10 +101,13 @@ public class CartListingRepositoryTest {
 
     @Test
     void testDeleteCartListing() {
-        CartListing deleteCartListing = cartListings.get(0);
-        cartListingRepository.delete(deleteCartListing.getCartListingId());
+        CartListing toDelete = cartListings.get(0);
 
-        assertNull(cartListingRepository.findById(deleteCartListing.getCartListingId()));
+        cartListingRepository.delete(toDelete.getCartListingId());
+
+        assertThrows(NoSuchElementException.class, () -> {
+            cartListingRepository.findById(toDelete.getCartListingId());
+        });
     }
 
     @Test
