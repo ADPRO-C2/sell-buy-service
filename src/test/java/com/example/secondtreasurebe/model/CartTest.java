@@ -13,6 +13,10 @@ class CartTest {
     @BeforeEach
     void setUp() {
         this.testCart = new Cart("eb558e9f-1c39-460e-8860-71af6af63ba7");
+
+        CartListing cartListing = new CartListing(new Listing(), 2);
+        cartListing.setCartListingId("d2154a86-4f69-48cb-81cc-1453ff2a02fc");
+        this.testCart.addCartListing(cartListing);
     }
 
     @Test
@@ -30,14 +34,30 @@ class CartTest {
     }
 
     @Test
-    void testListingsInCart() {
-        List<CartListing> items = new ArrayList();
-        Listing listing1 = new Listing();
-        Listing listing2 = new Listing();
-        CartListing cartListing1 = new CartListing(listing1, 2);
-        CartListing cartListing2 = new CartListing(listing2, 3);
-        items.add(cartListing1);
-        items.add(cartListing2);
-        this.testCart.setItems(items);
+    void testAddToCart() {
+        assertEquals("d2154a86-4f69-48cb-81cc-1453ff2a02fc", this.testCart.getItems().get(0).getCartListingId());
+        assertEquals(2, this.testCart.getItems().get(0).getAmount());
+    }
+
+    @Test
+    void testRemoveFromCart() {
+        CartListing toDelete = this.testCart.getItems().get(0);
+        this.testCart.removeCartListing(toDelete);
+
+        assertTrue(this.testCart.getItems().isEmpty());
+    }
+
+    @Test
+    void testUpdate() {
+        Cart cart = new Cart("ecbf139e-8d0f-4150-988a-f38a7394c483");
+        CartListing listingToUpdate = new CartListing(new Listing(), 3);
+        cart.addCartListing(listingToUpdate);
+
+        CartListing retrievedListing = cart.getItems().get(0);
+        retrievedListing.setAmount(5);
+
+        cart.editCartListing(retrievedListing, 5);
+
+        assertEquals(5, cart.getItems().get(0).getAmount());
     }
 }

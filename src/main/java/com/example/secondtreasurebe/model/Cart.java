@@ -15,4 +15,21 @@ public class Cart {
         this.userId = userId;
         this.items = new ArrayList<>();
     }
+
+    public void addCartListing(CartListing cartListing) {
+        this.items.add(cartListing);
+    }
+
+    public void removeCartListing(CartListing cartListing) {
+            this.items.remove(cartListing);
+        }
+
+    public void editCartListing(CartListing cartListing, int newAmount) {
+        for (CartListing cl : this.items) {
+            if (cl.getCartListingId().equals(cartListing.getCartListingId())) {
+                cl.setAmount(newAmount);
+                break;
+            }
+        }
+    }
 }
