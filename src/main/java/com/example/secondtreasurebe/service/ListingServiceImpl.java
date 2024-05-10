@@ -18,11 +18,11 @@ public class ListingServiceImpl implements ListingServiceInterface{
 
     @Override
     public Listing createListing(Listing listing) {
-        if (listing.getListingId() == null) {
+        listing.setListingId("");
+        if (listing.getListingId().isEmpty()) {
             String id = generateListingId();
             listing.setListingId(id);
         }
-
         listing.setUserId("a029189d-d5cc-4933-af55-6ed9c38e6db7");
         listing.validate();
 

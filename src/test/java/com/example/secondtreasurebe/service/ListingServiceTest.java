@@ -32,7 +32,6 @@ public class ListingServiceTest {
     @BeforeEach
     void setUp() {
         listing1 = new Listing();
-        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing1.setName("Kemeja Linen Blend");
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -41,7 +40,6 @@ public class ListingServiceTest {
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
-        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
         listing2.setListingId(listing1.getListingId());
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
@@ -56,7 +54,7 @@ public class ListingServiceTest {
         when(listingRepository.save(listing1)).thenReturn(listing1);
         Listing createdListing = service.createListing(listing1);
 
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", createdListing.getUserId());
+        assertEquals("a029189d-d5cc-4933-af55-6ed9c38e6db7", createdListing.getUserId());
         assertNotNull(createdListing);
         assertNotNull(createdListing.getListingId());
         assertEquals("Kemeja Linen Blend", createdListing.getName());

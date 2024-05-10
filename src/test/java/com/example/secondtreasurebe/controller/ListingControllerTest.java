@@ -129,7 +129,7 @@ public class ListingControllerTest {
     public void testDeleteListingSuccess() throws Exception {
         doNothing().when(listingService).deleteListing("existingid");
 
-        mockMvc.perform(delete("/delete-listing/existingid"))
+        mockMvc.perform(delete("/api/delete-listing/existingid"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Listing berhasil dihapus!"));
     }
@@ -140,9 +140,9 @@ public class ListingControllerTest {
 
         doThrow(new NoSuchElementException()).when(listingService).deleteListing(id);
 
-        mockMvc.perform(delete("/delete-listing/{id}", id))
+        mockMvc.perform(delete("/api/delete-listing/{id}", id))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                .andExpect(result -> assertEquals("Listing tidak ditemukan", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("404 NOT_FOUND \"Listing tidak ditemukan\"", result.getResolvedException().getMessage()));
     }
 }
