@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -77,7 +78,17 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testgetAllListings() throws Exception {
+    public void testCreateListingWithInvalidRequestBody() throws Exception {
+        listing1.setPrice(-1);
+
+        mockMvc.perform(post("/api/listing/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(listing1)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testGetAllListings() throws Exception {
         List<Listing> listings = Arrays.asList(listing1,
                 listing2);
         when(listingService.findAll()).thenReturn(listings);
@@ -89,7 +100,7 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testgetListingNotFound() throws Exception {
+    public void testGetListingNotFound() throws Exception {
         when(listingService.findListingById("1")).thenThrow(new NoSuchElementException());
 
         mockMvc.perform(get("/api/listing/1"))
@@ -97,7 +108,7 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testgetListingFound() throws Exception {
+    public void testGetListingFound() throws Exception {
         when(listingService.findListingById("eb558e9f-1c39-460e-8860-71af6af63bd6")).thenReturn(listing1);
         mockMvc.perform(get("/api/listing/eb558e9f-1c39-460e-8860-71af6af63bd6"))
                 .andExpect(status().isOk())
@@ -107,7 +118,7 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testUpdateReview() throws Exception {
+    public void testEditListing() throws Exception {
         Listing updatedListing = new Listing();
         updatedListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd7");
         updatedListing.setUserId("eb558e9f-1c39-460e-8860-12345678");
@@ -123,6 +134,17 @@ public class ListingControllerTest {
                         .content(reviewJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.price").value(30000));
+    }
+
+    @Test
+    public void testEditListingWithInvalidRequestBody() throws Exception {
+
+        listing1.setPrice(-1);
+
+        mockMvc.perform(put("/api/listing")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(listing1)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

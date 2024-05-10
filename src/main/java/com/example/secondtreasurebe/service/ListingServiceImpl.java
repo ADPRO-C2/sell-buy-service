@@ -25,7 +25,6 @@ public class ListingServiceImpl implements ListingServiceInterface{
         }
         listing.setUserId("a029189d-d5cc-4933-af55-6ed9c38e6db7");
         listing.validate();
-
         listingRepository.save(listing);
         return listing;
     }
@@ -62,6 +61,9 @@ public class ListingServiceImpl implements ListingServiceInterface{
             listing.setPhotoUrl(updateListing.getPhotoUrl());
             listing.setPrice(updateListing.getPrice());
             listing.setRateCondition(updateListing.getRateCondition());
+
+            listing.validate();
+
             listingRepository.save(updateListing);
             return listing;
         }else {

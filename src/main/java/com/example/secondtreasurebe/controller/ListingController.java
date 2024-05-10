@@ -2,11 +2,9 @@ package com.example.secondtreasurebe.controller;
 
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.service.ListingServiceInterface;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,12 +25,13 @@ public class ListingController {
     private ListingServiceInterface service;
 
     @PostMapping("/listing/create")
-    public ResponseEntity<Listing> createListing(@Valid @RequestBody Listing listing, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
-        } else {
+    public ResponseEntity<Listing> createListing(@RequestBody Listing listing) {
+        try {
+            listing.validate();
             service.createListing(listing);
             return new ResponseEntity<>(listing, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -53,15 +52,13 @@ public class ListingController {
     }
 
     @PutMapping("/listing")
-    public ResponseEntity<Listing> editListing(@RequestBody Listing listing, BindingResult bindingResult) {
-        if (bindingResult.hasFieldErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body has invalid type or missing field");
-        } else {
-            if (listing.getListingId() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Listing ID is required for editing");
-            }
+    public ResponseEntity<Listing> editListing(@RequestBody Listing listing) {
+        try {
+            listing.validate();
             var res = service.edit(listing);
             return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 
