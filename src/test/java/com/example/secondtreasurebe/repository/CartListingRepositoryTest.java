@@ -1,11 +1,13 @@
-/*package com.example.secondtreasurebe.repository;
+package com.example.secondtreasurebe.repository;
 
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Listing;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +31,13 @@ public class CartListingRepositoryTest {
         listing1.setRateCondition(0);
 
         CartListing cartListing1 = new CartListing(listing1, 4);
+        cartListing1.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
         cartListings.add(cartListing1);
+    }
+
+    @AfterEach
+    void tearDown() {
+        cartListings.clear();
     }
 
     @Test
@@ -44,59 +52,76 @@ public class CartListingRepositoryTest {
 
     @Test
     void testFindCartListingById() {
-        CartListing find = cartListingRepository.findById("1");
+        CartListing find = cartListingRepository.findById("7766d08b-aa3b-4364-af55-62c282fd2b05");
 
         assertNotNull(find);
-        assertEquals("1", find.getListingId());
+        assertEquals("7766d08b-aa3b-4364-af55-62c282fd2b05", find.getListingId());
     }
 
     @Test
     void testFindAllCartListings() {
+        Listing listing2 = new Listing();
+        Listing listing3 = new Listing();
 
+        CartListing cartListing2 = new CartListing(listing2, 2);
+        CartListing cartListing3 = new CartListing(listing3, 3);
+        cartListing2.setCartListingId("8fa9ffb9-41ec-4ca2-a1ed-d7ef82374414");
+        cartListing3.setCartListingId("627acdac-cd28-4a6a-872d-4a74e2ecb190");
+
+        cartListingRepository.save(cartListing2);
+        cartListingRepository.save(cartListing3);
+
+        List<CartListing> allCartListings = cartListingRepository.findAll();
+
+        assertEquals(2, allCartListings.size());
+
+        assertEquals("8fa9ffb9-41ec-4ca2-a1ed-d7ef82374414", allCartListings.get(0).getCartListingId());
+        assertEquals(2, allCartListings.get(0).getAmount());
+        assertEquals("627acdac-cd28-4a6a-872d-4a74e2ecb190", allCartListings.get(0).getCartListingId());
+        assertEquals(3, allCartListings.get(1).getAmount());
     }
 
     @Test
     void testUpdateCartListing() {
-        // Retrieve an existing cart listing
-        CartListing cartListingToUpdate = cartListings.get(0);
+        CartListing cartListingUpdate = cartListings.get(0);
 
-        // Update its properties
-        cartListingToUpdate.setAmount(5);
+        cartListingUpdate.setAmount(5);
 
-        // Save the updated cart listing to the repository
-        cartListingRepository.save(cartListingToUpdate);
+        cartListingRepository.update(cartListingUpdate);
 
-        // Retrieve the updated cart listing from the repository
-        CartListing updatedCartListing = cartListingRepository.findById(cartListingToUpdate.getId());
+        CartListing updatedCartListing = cartListingRepository.findById(cartListingUpdate.getCartListingId());
 
-        // Verify that the updated cart listing has the new amount
         assertEquals(5, updatedCartListing.getAmount());
     }
 
     @Test
     void testDeleteCartListing() {
-        // Retrieve an existing cart listing
         CartListing cartListingToDelete = cartListings.get(0);
+        cartListingRepository.delete(cartListingToDelete.getCartListingId());
 
-        // Delete the cart listing from the repository
-        cartListingRepository.delete(cartListingToDelete.getId());
-
-        // Verify that the cart listing is no longer in the repository
         assertNull(cartListingRepository.findById(cartListingToDelete.getId()));
     }
 
     @Test
     void testUpdateIfNotExist() {
+        CartListing nonexistentCartListing = new CartListing(new Listing(), 0);
+        nonexistentCartListing.setCartListingId("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
+        assertThrows(NoSuchElementException.class, () -> {
+            cartListingRepository.update(nonexistentCartListing);
+        });
+    }
 
+
+    @Test
+    void testFindIfNotExist() {
+        CartListing nonExistingCartListing = cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
+        assertNull(nonExistingCartListing);
     }
 
     @Test
-    void findIfNotExist() {
-
+    void testDeleteIfNotExist() {
+        assertThrows(NoSuchElementException.class, () -> {
+            cartListingRepository.delete("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
+        });
     }
-
-    @Test
-    void deleteIfNotExist() {
-
-    }
-}*/
+}
