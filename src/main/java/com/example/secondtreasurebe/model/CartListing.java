@@ -3,15 +3,20 @@ package com.example.secondtreasurebe.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 public class CartListing {
     private Listing listing;
     private int amount;
+    private String cartListingId;
 
     public CartListing(Listing listing, int amount) {
         this.listing = listing;
         this.amount = amount;
+        UUID uuid = UUID.randomUUID();
+        this.cartListingId = uuid.toString();
     }
 
     public String getUserId() {
