@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,8 +65,7 @@ public class CheckoutRepositoryTest {
         assertNotNull(savedCheckout);
 
         checkoutRepository.delete(checkout.getUserId());
-        savedCheckout = checkoutRepository.findById(checkout.getUserId());
-        assertNull(savedCheckout);
+        assertThrows(NoSuchElementException.class, () -> checkoutRepository.findById("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class CheckoutRepositoryTest {
         Checkout checkout1 = new Checkout("bced4bac-046c-415f-9bab-2189cc1ae62c");
         checkoutRepository.save(checkout1);
 
-        assertThrows(NullPointerException.class, () -> checkoutRepository.findById("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
+        assertThrows(NoSuchElementException.class, () -> checkoutRepository.findById("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
     }
 
     @Test
@@ -92,7 +92,6 @@ public class CheckoutRepositoryTest {
         Checkout checkout = new Checkout("bced4bac-046c-415f-9bab-2189cc1ae62c");
         checkoutRepository.save(checkout);
 
-        assertThrows(NullPointerException.class, () -> checkoutRepository.delete("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
+        assertThrows(NoSuchElementException.class, () -> checkoutRepository.delete("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
     }
-
 }

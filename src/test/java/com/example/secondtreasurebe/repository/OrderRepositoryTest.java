@@ -1,6 +1,7 @@
 package com.example.secondtreasurebe.repository;
 
 import com.example.secondtreasurebe.model.Cart;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Order;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +32,7 @@ public class OrderRepositoryTest {
         items.add(new CartListing(new Listing(), 2));
         cart.setItems(items);
         Order order = new Order("c56c2def-f1d7-4462-91c2-6f2dfaf08380", cart);
+        order.setOrderId("4a90b156-04a2-48b2-abb5-70976cb01d79");
         orderList.add(order);
     }
 
@@ -80,10 +82,12 @@ public class OrderRepositoryTest {
     @Test
     void testFindById() {
         Order order2 = new Order("d19c7d53-a48e-485e-a824-e5a1c99d6e27", new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27"));
+        order2.setOrderId("b1c7c39f-1426-449e-a6fc-17db9ba7076e");
         orderRepository.save(order2);
 
-        Order findOrder = orderRepository.findById(orderList.get(0).getOrderId());
         Order check = orderList.get(0);
+        orderRepository.save(check);
+        Order findOrder = orderRepository.findById(check.getOrderId());
 
         assertEquals(check.getUserId(), findOrder.getUserId());
         assertEquals(check.getItems(), findOrder.getItems());
@@ -112,7 +116,7 @@ public class OrderRepositoryTest {
         orderRepository.save(order2);
 
         for (int i = 0; i < 3; i++) {
-            Order userOrder = new Order("61598f17-bfb8-4e15-a2d9-af6030be590a", new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a");
+            Order userOrder = new Order("61598f17-bfb8-4e15-a2d9-af6030be590a", new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a"));
             orderRepository.save(userOrder);
         }
 

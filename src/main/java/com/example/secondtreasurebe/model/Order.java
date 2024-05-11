@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,6 +17,8 @@ public class Order {
     private String status;
 
     public Order(String userId, Cart cart) {
+        UUID uuid = UUID.randomUUID();
+        this.orderId = uuid.toString();
         this.userId = userId;
         this.items = cart.getItems();
         this.priceTotal = calculatePriceTotal();
