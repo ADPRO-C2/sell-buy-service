@@ -48,7 +48,7 @@ public class CartRepositoryTest {
     @Test
     void testSaveCart() {
         Cart cart = cartList.get(0);
-        Cart savedCart = cartRepository.save(cart);
+        cartRepository.save(cart);
 
         Cart findSavedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
         assertEquals(cart.getUserId(), findSavedCart.getUserId());
@@ -58,7 +58,7 @@ public class CartRepositoryTest {
     @Test
     void testUpdateCart() {
         Cart cart = cartList.get(0);
-        Cart savedCart = cartRepository.save(cart);
+        cartRepository.save(cart);
 
         Cart updatedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
         List<CartListing> updatedItems = new ArrayList<>();
@@ -74,7 +74,7 @@ public class CartRepositoryTest {
     @Test
     void testDeleteCart() {
         Cart cart = cartList.get(0);
-        Cart savedCart = cartRepository.save(cart);
+        cartRepository.save(cart);
         Cart findSavedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
 
         assertNotNull(findSavedCart);
@@ -86,6 +86,8 @@ public class CartRepositoryTest {
 
     @Test
     void testFindById() {
+        Cart cart = cartList.get(0);
+        cartRepository.save(cart);
         Cart cart2 = new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27");
         cartRepository.save(cart2);
 
@@ -114,7 +116,7 @@ public class CartRepositoryTest {
     @Test
     void testDeleteIfNotExist() {
         Cart cart = cartList.get(0);
-        Cart savedCart = cartRepository.save(cart);
+        cartRepository.save(cart);
 
         Cart findSavedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
 
