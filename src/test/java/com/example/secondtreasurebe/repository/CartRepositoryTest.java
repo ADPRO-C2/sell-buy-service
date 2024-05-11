@@ -30,8 +30,16 @@ public class CartRepositoryTest {
 
         List<CartListing> cartListings = new ArrayList<>();
 
-        CartListing cartListing1 = new CartListing(new Listing(), 1);
-        CartListing cartListing2 = new CartListing(new Listing(), 2);
+        CartListing cartListing1 = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(1)
+                .build();
+
+        CartListing cartListing2 = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(2)
+                .build();
+
         cartListing1.setCartListingId("e7fca96f-2fb4-493a-856c-3d770f373934");
         cartListing2.setCartListingId("e07c8f3d-9499-405d-915e-92a48474d994");
         cartListings.add(cartListing1);
@@ -62,7 +70,11 @@ public class CartRepositoryTest {
 
         Cart updatedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
         List<CartListing> updatedItems = new ArrayList<>();
-        CartListing newCartListing = new CartListing(new Listing(), 3);
+        CartListing newCartListing = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(3)
+                .build();
+
         updatedItems.add(newCartListing);
         updatedCart.setItems(updatedItems);
 

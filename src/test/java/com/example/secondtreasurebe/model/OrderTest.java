@@ -2,6 +2,7 @@ package com.example.secondtreasurebe.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +15,18 @@ public class OrderTest {
     void setUp() {
         Cart tempCart = new Cart("dbb3d5d2-e3ab-43ee-93fe-0102f60cca35");
 
-        List<CartListing> items = new ArrayList();
+        List<CartListing> items = new ArrayList<>();
         Listing listing1 = new Listing();
         Listing listing2 = new Listing();
-        CartListing cartListing1 = new CartListing(listing1, 2);
-        CartListing cartListing2 = new CartListing(listing2, 3);
+
+        CartListing cartListing1 = new CartListing.Builder()
+                .listing(listing1)
+                .amount(2)
+                .build();
+        CartListing cartListing2 = new CartListing.Builder()
+                .listing(listing2)
+                .amount(3)
+                .build();
         items.add(cartListing1);
         items.add(cartListing2);
         tempCart.setItems(items);

@@ -28,8 +28,14 @@ public class OrderRepositoryTest {
     void setUp() {
         Cart cart = new Cart("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
         List<CartListing> items = new ArrayList<>();
-        items.add(new CartListing(new Listing(), 1));
-        items.add(new CartListing(new Listing(), 2));
+        items.add(new CartListing.Builder()
+                .listing(new Listing())
+                .amount(1)
+                .build());
+        items.add(new CartListing.Builder()
+                .listing(new Listing())
+                .amount(2)
+                .build());
         cart.setItems(items);
         Order order = new Order("c56c2def-f1d7-4462-91c2-6f2dfaf08380", cart);
         order.setOrderId("4a90b156-04a2-48b2-abb5-70976cb01d79");
@@ -58,7 +64,10 @@ public class OrderRepositoryTest {
 
         Order updatedOrder = orderRepository.findById(order.getOrderId());
         List<CartListing> updatedItems = new ArrayList<>();
-        updatedItems.add(new CartListing(new Listing(), 3));
+        updatedItems.add(new CartListing.Builder()
+                .listing(new Listing())
+                .amount(3)
+                .build());
         updatedOrder.setItems(updatedItems);
 
         orderRepository.update(updatedOrder);
@@ -128,5 +137,4 @@ public class OrderRepositoryTest {
             assertEquals("61598f17-bfb8-4e15-a2d9-af6030be590a", order.getUserId());
         }
     }
-
 }

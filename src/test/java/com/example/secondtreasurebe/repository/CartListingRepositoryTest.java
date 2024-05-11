@@ -30,8 +30,13 @@ public class CartListingRepositoryTest {
         listing1.setPhotoUrl("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g");
         listing1.setRateCondition(0);
 
-        CartListing cartListing1 = new CartListing(listing1, 4);
+        CartListing cartListing1 = new CartListing.Builder()
+                .listing(listing1)
+                .amount(4)
+                .build();
+
         cartListing1.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
+
         cartListingRepository.save(cartListing1);
         cartListings.add(cartListing1);
     }
@@ -44,7 +49,10 @@ public class CartListingRepositoryTest {
     @Test
     void testCreateCartListing() {
         Listing listing = new Listing();
-        CartListing newCartListing = new CartListing(listing, 3);
+        CartListing newCartListing = new CartListing.Builder()
+                .listing(listing)
+                .amount(3)
+                .build();
         newCartListing.setCartListingId("406f9c0d-1ac3-441d-bc25-25561a79ff5a");
         cartListingRepository.save(newCartListing);
 
@@ -68,8 +76,16 @@ public class CartListingRepositoryTest {
         Listing listing2 = new Listing();
         Listing listing3 = new Listing();
 
-        CartListing cartListing2 = new CartListing(listing2, 2);
-        CartListing cartListing3 = new CartListing(listing3, 3);
+        CartListing cartListing2 = new CartListing.Builder()
+                .listing(listing2)
+                .amount(2)
+                .build();
+
+        CartListing cartListing3 = new CartListing.Builder()
+                .listing(listing3)
+                .amount(3)
+                .build();
+
         cartListing2.setCartListingId("8fa9ffb9-41ec-4ca2-a1ed-d7ef82374414");
         cartListing3.setCartListingId("627acdac-cd28-4a6a-872d-4a74e2ecb190");
 
@@ -105,32 +121,27 @@ public class CartListingRepositoryTest {
 
         cartListingRepository.delete(toDelete.getCartListingId());
 
-        assertThrows(NoSuchElementException.class, () -> {
-            cartListingRepository.findById(toDelete.getCartListingId());
-        });
+        assertThrows(NoSuchElementException.class, () -> cartListingRepository.findById(toDelete.getCartListingId()));
     }
 
     @Test
     void testUpdateIfNotExist() {
-        CartListing nonexistentCartListing = new CartListing(new Listing(), 0);
+        CartListing nonexistentCartListing = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(1)
+                .build();
         nonexistentCartListing.setCartListingId("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
-        assertThrows(NoSuchElementException.class, () -> {
-            cartListingRepository.update(nonexistentCartListing);
-        });
+        assertThrows(NoSuchElementException.class, () -> cartListingRepository.update(nonexistentCartListing));
     }
 
 
     @Test
     void testFindIfNotExist() {
-        assertThrows(NoSuchElementException.class, () -> {
-            cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
-        });
+        assertThrows(NoSuchElementException.class, () -> cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1"));
     }
 
     @Test
     void testDeleteIfNotExist() {
-        assertThrows(NoSuchElementException.class, () -> {
-            cartListingRepository.delete("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
-        });
+        assertThrows(NoSuchElementException.class, () -> cartListingRepository.delete("63b56b97-16b6-4fc1-b74d-489f432f6fa1"));
     }
 }

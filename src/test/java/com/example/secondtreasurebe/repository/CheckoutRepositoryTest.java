@@ -1,8 +1,5 @@
 package com.example.secondtreasurebe.repository;
 
-import com.example.secondtreasurebe.model.Cart;
-import com.example.secondtreasurebe.model.CartListing;
-import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.model.Checkout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

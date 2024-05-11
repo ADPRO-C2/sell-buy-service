@@ -2,6 +2,7 @@ package com.example.secondtreasurebe.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,20 @@ class CartTest {
     void setUp() {
         this.testCart = new Cart("eb558e9f-1c39-460e-8860-71af6af63ba7");
 
-        CartListing cartListing = new CartListing(new Listing(), 2);
+        Listing listing = new Listing();
+        listing.setUserId("user-id-123");
+        listing.setListingId("listing-id-456");
+        listing.setName("Sample Listing");
+        listing.setDescription("This is a sample listing.");
+        listing.setPrice(1000);
+        listing.setStock(10);
+        listing.setPhotoUrl("https://example.com/sample.jpg");
+        listing.setRateCondition(4);
+
+        CartListing cartListing = new CartListing.Builder()
+                .listing(listing)
+                .amount(2)
+                .build();
         cartListing.setCartListingId("d2154a86-4f69-48cb-81cc-1453ff2a02fc");
         this.testCart.addCartListing(cartListing);
     }
@@ -50,7 +64,20 @@ class CartTest {
     @Test
     void testUpdate() {
         Cart cart = new Cart("ecbf139e-8d0f-4150-988a-f38a7394c483");
-        CartListing listingToUpdate = new CartListing(new Listing(), 3);
+        Listing listing = new Listing();
+        listing.setUserId("user-id-789");
+        listing.setListingId("listing-id-012");
+        listing.setName("Updated Listing");
+        listing.setDescription("This is an updated listing.");
+        listing.setPrice(2000);
+        listing.setStock(20);
+        listing.setPhotoUrl("https://example.com/updated.jpg");
+        listing.setRateCondition(5);
+
+        CartListing listingToUpdate = new CartListing.Builder()
+                .listing(listing)
+                .amount(3)
+                .build();
         cart.addCartListing(listingToUpdate);
 
         CartListing retrievedListing = cart.getItems().get(0);

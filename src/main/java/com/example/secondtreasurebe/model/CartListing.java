@@ -12,11 +12,10 @@ public class CartListing {
     private int amount;
     private String cartListingId;
 
-    public CartListing(Listing listing, int amount) {
-        this.listing = listing;
-        this.amount = amount;
-        UUID uuid = UUID.randomUUID();
-        this.cartListingId = uuid.toString();
+    public CartListing(Builder builder) {
+        this.listing = builder.listing;
+        this.amount = builder.amount;
+        this.cartListingId = builder.cartListingId;
     }
 
     public String getUserId() {
@@ -83,9 +82,33 @@ public class CartListing {
         this.listing.setRateCondition(rateCondition);
     }
 
-    public void validateAmount() {
-        if (this.amount <= 0) {
-            throw new IllegalArgumentException("Amount of bought listings has to be over 0.");
+    public static class Builder {
+        private Listing listing;
+        private int amount;
+        private String cartListingId;
+
+        public Builder() {
+            this.cartListingId = UUID.randomUUID().toString();
+        }
+
+        public Builder listing(Listing listing) {
+            this.listing = listing;
+            return this;
+        }
+
+        public Builder amount(int amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public CartListing build() {
+            if (listing == null) {
+                throw new IllegalArgumentException("Listing cannot be null.");
+            }
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Amount must be greater than 0.");
+            }
+            return new CartListing(this);
         }
     }
 }

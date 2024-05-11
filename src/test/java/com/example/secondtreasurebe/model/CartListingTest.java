@@ -2,9 +2,6 @@ package com.example.secondtreasurebe.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CartListingTest {
@@ -21,7 +18,12 @@ public class CartListingTest {
         listing1.setStock(45);
         listing1.setPhotoUrl("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g");
         listing1.setRateCondition(0);
-        this.cartListing = new CartListing(listing1, 3);
+
+        this.cartListing = new CartListing.Builder()
+                .listing(listing1)
+                .amount(3)
+                .build();
+
         this.cartListing.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
     }
 
@@ -40,14 +42,21 @@ public class CartListingTest {
 
     @Test
     void testNegativeAmount() {
-        this.cartListing.setAmount(-2);
-        assertThrows(IllegalArgumentException.class, cartListing::validateAmount);
-
+        assertThrows(IllegalArgumentException.class, () ->
+                new CartListing.Builder()
+                        .listing(new Listing())
+                        .amount(-2)
+                        .build()
+        );
     }
 
     @Test
     void testZeroAmount() {
-        this.cartListing.setAmount(0);
-        assertThrows(IllegalArgumentException.class, cartListing::validateAmount);
+        assertThrows(IllegalArgumentException.class, () ->
+                new CartListing.Builder()
+                        .listing(new Listing())
+                        .amount(0)
+                        .build()
+        );
     }
 }

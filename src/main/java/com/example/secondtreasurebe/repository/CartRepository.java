@@ -1,6 +1,5 @@
 package com.example.secondtreasurebe.repository;
 
-import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Cart;
 import org.springframework.stereotype.Repository;
 
