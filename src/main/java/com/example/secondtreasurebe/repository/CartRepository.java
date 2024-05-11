@@ -42,7 +42,11 @@ public class CartRepository {
 
     public void delete(String userId) {
         Cart toDelete = findById(userId);
-        cartData.remove(toDelete);
+        if (toDelete != null) {
+            cartData.remove(toDelete);
+        } else {
+            throw new NoSuchElementException("Cart not found.");
+        }
     }
 
     public List<Cart> findAll() {
