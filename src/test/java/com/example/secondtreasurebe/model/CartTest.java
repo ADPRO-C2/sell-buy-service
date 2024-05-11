@@ -64,18 +64,9 @@ class CartTest {
     @Test
     void testUpdate() {
         Cart cart = new Cart("ecbf139e-8d0f-4150-988a-f38a7394c483");
-        Listing listing = new Listing();
-        listing.setUserId("user-id-789");
-        listing.setListingId("listing-id-012");
-        listing.setName("Updated Listing");
-        listing.setDescription("This is an updated listing.");
-        listing.setPrice(2000);
-        listing.setStock(20);
-        listing.setPhotoUrl("https://example.com/updated.jpg");
-        listing.setRateCondition(5);
 
         CartListing listingToUpdate = new CartListing.Builder()
-                .listing(listing)
+                .listing(new Listing())
                 .amount(3)
                 .build();
         cart.addCartListing(listingToUpdate);
