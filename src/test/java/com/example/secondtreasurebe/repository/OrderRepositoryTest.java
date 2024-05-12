@@ -37,7 +37,7 @@ public class OrderRepositoryTest {
                 .amount(2)
                 .build());
         cart.setItems(items);
-        Order order = new Order("c56c2def-f1d7-4462-91c2-6f2dfaf08380", cart);
+        Order order = new Order(cart);
         order.setOrderId("4a90b156-04a2-48b2-abb5-70976cb01d79");
         orderList.add(order);
     }
@@ -90,7 +90,7 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindById() {
-        Order order2 = new Order("d19c7d53-a48e-485e-a824-e5a1c99d6e27", new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27"));
+        Order order2 = new Order(new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27"));
         order2.setOrderId("b1c7c39f-1426-449e-a6fc-17db9ba7076e");
         orderRepository.save(order2);
 
@@ -104,8 +104,8 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindAllOrders() {
-        Order order2 = new Order("d19c7d53-a48e-485e-a824-e5a1c99d6e27", new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27"));
-        Order order3 = new Order("50618969-f5a0-445a-b339-faea5c071b88", new Cart("50618969-f5a0-445a-b339-faea5c071b88"));
+        Order order2 = new Order(new Cart("d19c7d53-a48e-485e-a824-e5a1c99d6e27"));
+        Order order3 = new Order(new Cart("50618969-f5a0-445a-b339-faea5c071b88"));
         orderList.add(order2);
         orderList.add(order3);
 
@@ -119,13 +119,13 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindAllOrderFromUser() {
-        Order order1 = new Order("61598f17-bfb8-4e15-a2d9-af6030be590a", new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a"));
-        Order order2 = new Order("c8c3bc59-82ab-4ecc-8396-7a1e1d9c95a2", new Cart("c8c3bc59-82ab-4ecc-8396-7a1e1d9c95a2"));
+        Order order1 = new Order(new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a"));
+        Order order2 = new Order(new Cart("c8c3bc59-82ab-4ecc-8396-7a1e1d9c95a2"));
         orderRepository.save(order1);
         orderRepository.save(order2);
 
         for (int i = 0; i < 3; i++) {
-            Order userOrder = new Order("61598f17-bfb8-4e15-a2d9-af6030be590a", new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a"));
+            Order userOrder = new Order(new Cart("61598f17-bfb8-4e15-a2d9-af6030be590a"));
             orderRepository.save(userOrder);
         }
 

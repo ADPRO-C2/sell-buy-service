@@ -16,10 +16,10 @@ public class Order {
     private double priceTotal;
     private String status;
 
-    public Order(String userId, Cart cart) {
+    public Order(Cart cart) {
         UUID uuid = UUID.randomUUID();
         this.orderId = uuid.toString();
-        this.userId = userId;
+        this.userId = cart.getUserId();
         this.items = cart.getItems();
         this.priceTotal = calculatePriceTotal();
         this.status = "Dikemas";

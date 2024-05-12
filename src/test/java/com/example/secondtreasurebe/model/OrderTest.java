@@ -31,15 +31,15 @@ public class OrderTest {
         items.add(cartListing2);
         tempCart.setItems(items);
 
-        this.order = new Order("eb558e9f-1c39-460e-8860-71af6af63ba7", tempCart);
-        this.order.setOrderId("059680d7-9977-4828-9d86-ff6d245bc052");
-        this.order.setStatus("Dikemas");
+        order = new Order(tempCart);
+        order.setOrderId("059680d7-9977-4828-9d86-ff6d245bc052");
+        order.setStatus("Dikemas");
     }
 
     @Test
     void testEmptyOrder() {
         Cart cart = new Cart("13652556-012a-4c07-b56-54eb1396d79b");
-        Order emptyOrder = new Order("13652556-012a-4c07-b56-54eb1396d79b", cart);
+        Order emptyOrder = new Order(cart);
         assertTrue(emptyOrder.getItems().isEmpty());
     }
 
@@ -47,7 +47,7 @@ public class OrderTest {
     void testCreateValidOrder() {
         assertNotNull(order);
 
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", order.getUserId());
+        assertEquals("dbb3d5d2-e3ab-43ee-93fe-0102f60cca35", order.getUserId());
         assertEquals("059680d7-9977-4828-9d86-ff6d245bc052", order.getOrderId());
         assertEquals("Dikemas", order.getStatus());
 

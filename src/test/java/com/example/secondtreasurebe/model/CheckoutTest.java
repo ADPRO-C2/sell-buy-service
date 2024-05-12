@@ -25,7 +25,7 @@ public class CheckoutTest {
     @Test
     void testValidCheckout() {
         List<Order> orderList = new ArrayList<>();
-        Order order = new Order("eb558e9f-1c39-460e-8860-71af6af63ba7", this.cart);
+        Order order = new Order(this.cart);
         orderList.add(order);
         this.testCheckout.getOrders().add(order);
         assertEquals(orderList, this.testCheckout.getOrders());
@@ -38,7 +38,7 @@ public class CheckoutTest {
 
     @Test
     void testDifferentUserId() {
-        Order differentUser = new Order("9c45ce81-34b9-4699-bd7d-4d8d08620de8", this.cart);
+        Order differentUser = new Order(this.cart);
         this.testCheckout.getOrders().add(differentUser);
         assertThrows(IllegalArgumentException.class, this.testCheckout::sameUser);
     }
