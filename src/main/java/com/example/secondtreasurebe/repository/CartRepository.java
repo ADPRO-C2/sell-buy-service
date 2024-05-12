@@ -27,7 +27,7 @@ public class CartRepository {
                 return tempCart;
             }
         }
-        throw new NoSuchElementException("Cart not found.");
+        return null;
     }
 
     public Cart findById(String userId) {
@@ -43,8 +43,6 @@ public class CartRepository {
         Cart toDelete = findById(userId);
         if (toDelete != null) {
             cartData.remove(toDelete);
-        } else {
-            throw new NoSuchElementException("Cart not found.");
         }
     }
 

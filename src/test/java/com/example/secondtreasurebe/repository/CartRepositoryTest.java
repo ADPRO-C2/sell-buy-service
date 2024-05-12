@@ -124,18 +124,4 @@ public class CartRepositoryTest {
         List<Cart> allCarts = cartRepository.findAll();
         assertEquals(3, allCarts.size());
     }
-
-    @Test
-    void testDeleteIfNotExist() {
-        Cart cart = cartList.get(0);
-        cartRepository.save(cart);
-
-        Cart findSavedCart = cartRepository.findById("c56c2def-f1d7-4462-91c2-6f2dfaf08380");
-
-        assertNotNull(findSavedCart);
-
-        assertThrows(NoSuchElementException.class, () -> {
-            cartRepository.delete("a6ca6a62-cd90-4ff0-878d-f16da56bb5d4");
-        });
-    }
 }

@@ -26,7 +26,7 @@ public class CartListingRepository {
                 return cListing;
             }
         }
-        throw new NoSuchElementException("CartListing not found.");
+        return null;
     }
 
     public CartListing findById(String cartListingId) {
@@ -35,15 +35,13 @@ public class CartListingRepository {
                 return cListing;
             }
         }
-        throw new NoSuchElementException("CartListing not found.");
+        return null;
     }
 
     public void delete(String cartListingId) {
         CartListing toDelete = findById(cartListingId);
         if (toDelete != null) {
             cartListingData.remove(toDelete);
-        } else {
-            throw new NoSuchElementException("Cart Listing not found.");
         }
     }
 

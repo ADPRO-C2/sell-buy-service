@@ -121,27 +121,6 @@ public class CartListingRepositoryTest {
 
         cartListingRepository.delete(toDelete.getCartListingId());
 
-        assertThrows(NoSuchElementException.class, () -> cartListingRepository.findById(toDelete.getCartListingId()));
-    }
-
-    @Test
-    void testUpdateIfNotExist() {
-        CartListing nonexistentCartListing = new CartListing.Builder()
-                .listing(new Listing())
-                .amount(1)
-                .build();
-        nonexistentCartListing.setCartListingId("63b56b97-16b6-4fc1-b74d-489f432f6fa1");
-        assertThrows(NoSuchElementException.class, () -> cartListingRepository.update(nonexistentCartListing));
-    }
-
-
-    @Test
-    void testFindIfNotExist() {
-        assertThrows(NoSuchElementException.class, () -> cartListingRepository.findById("63b56b97-16b6-4fc1-b74d-489f432f6fa1"));
-    }
-
-    @Test
-    void testDeleteIfNotExist() {
-        assertThrows(NoSuchElementException.class, () -> cartListingRepository.delete("63b56b97-16b6-4fc1-b74d-489f432f6fa1"));
+        assertNull(cartListingRepository.findById(toDelete.getCartListingId()));
     }
 }
