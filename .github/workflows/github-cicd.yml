@@ -101,13 +101,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
       - name: Install SSH client
         run: sudo apt-get install openssh-client
-
       - name: create ssh key
-        run: echo "${{ secrets.SSH_KEY }}" > ssh-key.pem && cat ssh-key.pem
-
+        run: echo "${{ secrets.SSH_KEY }}" > ssh-key.pem
       - name: update permission
         run: chmod 400 ssh-key.pem
       - name: Deploy to GCP
