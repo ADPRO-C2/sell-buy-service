@@ -121,7 +121,7 @@ public class OrderServiceTest {
         String orderId = "835b30f5-9c6e-41ff-9a74-40bf9dff51bb";
         when(orderRepository.findById(orderId)).thenReturn(null);
 
-        assertThrows(NoSuchElementException.class, () -> service.findById(orderId));
+        assertThrows(NoSuchElementException.class, () -> service.findOrderById(orderId));
     }
 
     @Test

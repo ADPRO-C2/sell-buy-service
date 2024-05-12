@@ -1,11 +1,13 @@
 package com.example.secondtreasurebe.service;
 
+import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -20,12 +22,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order updateOrder(Order order) {
-        return orderRepository.update(order);
+        Order order1 = orderRepository.update(order);
+        if (order1 == null) {
+            throw new NoSuchElementException("CartListing not found.");
+        }
+        return order1;
     }
 
     @Override
     public Order findOrderById(String orderId) {
-        return orderRepository.findById(orderId);
+        Order order = orderRepository.findById(orderId);
+        if (order == null) {
+            throw new NoSuchElementException("CartListing not found.");
+        }
+        return order;
     }
 
     @Override

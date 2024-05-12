@@ -20,11 +20,11 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public CartListing updateCartListing(CartListing cartListing) {
-        try {
-            return cartListingRepository.update(cartListing);
-        } catch (NoSuchElementException e) {
+        CartListing cartListing1 = cartListingRepository.update(cartListing);
+        if (cartListing1 == null) {
             throw new NoSuchElementException("CartListing not found.");
         }
+        return cartListing1;
     }
 
     @Override
