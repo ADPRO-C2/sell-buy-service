@@ -3,14 +3,10 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.repository.CartListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
-
 @Service
 public class CartListingServiceImpl implements CartListingService {
 

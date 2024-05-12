@@ -27,7 +27,7 @@ public class CartRepository {
                 return tempCart;
             }
         }
-        return null;
+        throw new NoSuchElementException("Cart not found.");
     }
 
     public Cart findById(String userId) {
