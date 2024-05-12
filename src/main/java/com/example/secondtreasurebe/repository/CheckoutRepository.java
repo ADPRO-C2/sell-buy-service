@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Repository
 public class CheckoutRepository {
@@ -35,15 +34,13 @@ public class CheckoutRepository {
                 return checkout;
             }
         }
-        throw new NoSuchElementException("Checkout not found");
+        return null;
     }
 
     public void delete(String userId) {
         Checkout toDelete = findById(userId);
         if (toDelete != null) {
             checkoutData.remove(toDelete);
-        } else {
-            throw new NoSuchElementException("Checkout not found");
         }
     }
 }

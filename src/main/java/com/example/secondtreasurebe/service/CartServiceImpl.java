@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -19,11 +20,23 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart updateCart(Cart cart) { return cartRepository.update(cart); }
+    public Cart updateCart(Cart cart) {
+        Cart check = cartRepository.update(cart);
+        if (check != null) {
+            return check;
+        } else {
+            throw new NoSuchElementException("Cart not found.");
+        }
+    }
 
     @Override
     public Cart findById(String userId) {
-        return cartRepository.findById(userId);
+        Cart check = cartRepository.findById(userId);
+        if (check != null) {
+            return check;
+        } else {
+            throw new NoSuchElementException("Cart not found.");
+        }
     }
 
     @Override

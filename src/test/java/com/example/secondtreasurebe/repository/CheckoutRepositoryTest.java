@@ -62,7 +62,7 @@ public class CheckoutRepositoryTest {
         assertNotNull(savedCheckout);
 
         checkoutRepository.delete(checkout.getUserId());
-        assertThrows(NoSuchElementException.class, () -> checkoutRepository.findById("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
+        assertNull(checkoutRepository.findById(checkout.getUserId()));
     }
 
     @Test
@@ -74,21 +74,5 @@ public class CheckoutRepositoryTest {
 
         Checkout findCheckout = checkoutRepository.findById("bced4bac-046c-415f-9bab-2189cc1ae62c");
         assertEquals("bced4bac-046c-415f-9bab-2189cc1ae62c", findCheckout.getUserId());
-    }
-
-    @Test
-    void testFindCheckoutNotExist() {
-        Checkout checkout1 = new Checkout("bced4bac-046c-415f-9bab-2189cc1ae62c");
-        checkoutRepository.save(checkout1);
-
-        assertThrows(NoSuchElementException.class, () -> checkoutRepository.findById("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
-    }
-
-    @Test
-    void testDeleteCheckoutNotExist() {
-        Checkout checkout = new Checkout("bced4bac-046c-415f-9bab-2189cc1ae62c");
-        checkoutRepository.save(checkout);
-
-        assertThrows(NoSuchElementException.class, () -> checkoutRepository.delete("770bf8de-f966-4c9d-8f80-16b1ae77bbe5"));
     }
 }
