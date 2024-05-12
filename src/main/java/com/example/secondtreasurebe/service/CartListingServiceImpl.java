@@ -29,10 +29,10 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public void deleteCartListing(String cartListingId) {
-        try {
-            cartListingRepository.delete(cartListingId);
-        } catch (NoSuchElementException e) {
+        if (cartListingRepository.findById(cartListingId) == null) {
             throw new NoSuchElementException("CartListing not found.");
+        } else {
+            cartListingRepository.delete(cartListingId);
         }
     }
 

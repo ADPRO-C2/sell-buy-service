@@ -42,8 +42,6 @@ public class OrderRepository {
         Order toDelete = findById(orderId);
         if (toDelete != null) {
             orderData.remove(toDelete);
-        } else {
-            throw new NoSuchElementException("Order not found.");
         }
     }
 

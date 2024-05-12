@@ -138,7 +138,7 @@ public class CartListingServiceTest {
     @Test
     void testDeleteCartListing() {
         CartListing cartListing = cartListings.get(0);
-        doNothing().when(cartListingRepository).delete(cartListing.getCartListingId());
+        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(cartListing);
 
         service.deleteCartListing(cartListing.getCartListingId());
 

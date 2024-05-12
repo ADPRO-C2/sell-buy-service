@@ -1,6 +1,5 @@
 package com.example.secondtreasurebe.service;
 
-import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
     public Order updateOrder(Order order) {
         Order order1 = orderRepository.update(order);
         if (order1 == null) {
-            throw new NoSuchElementException("CartListing not found.");
+            throw new NoSuchElementException("Order not found.");
         }
         return order1;
     }
@@ -33,14 +32,18 @@ public class OrderServiceImpl implements OrderService {
     public Order findOrderById(String orderId) {
         Order order = orderRepository.findById(orderId);
         if (order == null) {
-            throw new NoSuchElementException("CartListing not found.");
+            throw new NoSuchElementException("Order not found.");
         }
         return order;
     }
 
     @Override
     public void deleteOrder(String orderId) {
-        orderRepository.delete(orderId);
+        if (orderRepository.findById(orderId) != null) {
+            orderRepository.delete(orderId);
+        } else {
+            throw new NoSuchElementException("Order not found.");
+        }
     }
 
     @Override

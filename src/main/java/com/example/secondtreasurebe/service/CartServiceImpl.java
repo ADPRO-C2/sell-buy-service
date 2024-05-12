@@ -41,7 +41,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void deleteCart(String userId) {
-        cartRepository.delete(userId);
+        if (cartRepository.findById(userId) != null) {
+            cartRepository.delete(userId);
+        } else {
+            throw new NoSuchElementException("Cart not found.");
+        }
     }
 
     @Override

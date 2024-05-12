@@ -1,6 +1,7 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Cart;
+import com.example.secondtreasurebe.model.Checkout;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -109,7 +110,9 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
-        doNothing().when(orderRepository).delete(orderId);
+        Order order = new Order(new Cart("b41a8c0c-637f-4e81-8c5d-3146266d799c"));
+        order.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
+        when(orderRepository.findById("a006d26e-b675-4919-bfc9-4a8936af9bba")).thenReturn(order);
 
         service.deleteOrder(orderId);
 
@@ -135,8 +138,12 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrderNotExist() {
         String nonExistentOrderId = "835b30f5-9c6e-41ff-9a74-40bf9dff51bb";
-        doThrow(new NoSuchElementException("Order not found.")).when(orderRepository).delete(nonExistentOrderId);
+
+        when(orderRepository.findById(nonExistentOrderId)).thenReturn(null);
 
         assertThrows(NoSuchElementException.class, () -> service.deleteOrder(nonExistentOrderId));
+
+        verify(orderRepository, times(1)).findById(nonExistentOrderId);
+        verify(orderRepository, never()).delete(anyString());
     }
 }

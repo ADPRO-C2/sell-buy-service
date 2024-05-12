@@ -61,7 +61,8 @@ public class CheckoutServiceTest {
     @Test
     void testDeleteCheckout() {
         String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
-        doNothing().when(checkoutRepository).delete(userId);
+        Checkout checkout = new Checkout(userId);
+        when(checkoutRepository.findById(userId)).thenReturn(checkout);
 
         assertDoesNotThrow(() -> service.deleteCheckout(userId));
 
@@ -90,11 +91,13 @@ public class CheckoutServiceTest {
 
     @Test
     void testDeleteNotFound() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
-        doThrow(NoSuchElementException.class).when(checkoutRepository).delete(userId);
+        String nonExistentUserId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
 
-        assertThrows(NoSuchElementException.class, () -> service.deleteCheckout(userId));
+        when(checkoutRepository.findById(nonExistentUserId)).thenReturn(null);
 
-        verify(checkoutRepository, times(1)).delete(userId);
+        assertThrows(NoSuchElementException.class, () -> service.deleteCheckout(nonExistentUserId));
+
+        verify(checkoutRepository, times(1)).findById(nonExistentUserId);
+        verify(checkoutRepository, never()).delete(anyString());
     }
 }
