@@ -13,4 +13,5 @@ public interface OrderService {
     public void deleteOrder(String orderId);
     public List<Order> findAllOrders();
     public List<Order> findAllOrdersFromUser(String userId);
+    public void placeOrder(String userId, Order order);
 }

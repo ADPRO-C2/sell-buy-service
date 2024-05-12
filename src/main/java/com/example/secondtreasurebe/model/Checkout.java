@@ -24,4 +24,12 @@ public class Checkout {
             }
         }
     }
+
+    public void addToOrders(Order order) {
+        if (!order.getUserId().equals(this.userId)) {
+            throw new IllegalArgumentException("User ID of Order does not match Checkout.");
+        }
+
+        this.orders.add(order);
+    }
 }
