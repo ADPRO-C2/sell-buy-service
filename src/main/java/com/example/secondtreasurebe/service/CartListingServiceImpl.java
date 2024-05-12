@@ -1,0 +1,57 @@
+package com.example.secondtreasurebe.service;
+
+import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.repository.CartListingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+@Service
+public class CartListingServiceImpl implements CartListingService {
+
+    @Autowired
+    private CartListingRepository cartListingRepository;
+
+    @Override
+    public CartListing createCartListing(CartListing cartListing) {
+        return cartListingRepository.save(cartListing);
+    }
+
+    @Override
+    public CartListing updateCartListing(CartListing cartListing) {
+        try {
+            return cartListingRepository.update(cartListing);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("CartListing not found.");
+        }
+    }
+
+    @Override
+    public void deleteCartListing(String cartListingId) {
+        try {
+            cartListingRepository.delete(cartListingId);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("CartListing not found.");
+        }
+    }
+
+    @Override
+    public CartListing findById(String cartListingId) {
+        CartListing cartListing = cartListingRepository.findById(cartListingId);
+        if (cartListing == null) {
+            throw new NoSuchElementException("CartListing not found.");
+        }
+        return cartListing;
+    }
+
+
+    @Override
+    public List<CartListing> findAllCartListings() {
+        return cartListingRepository.findAll();
+    }
+}

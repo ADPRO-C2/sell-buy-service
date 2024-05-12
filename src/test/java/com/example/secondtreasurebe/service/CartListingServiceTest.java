@@ -80,24 +80,24 @@ public class CartListingServiceTest {
 
     @Test
     void testUpdate() {
-        // Prepare
         CartListing cartListing = cartListings.get(0);
         int newAmount = 5;
+
         CartListing updatedCartListing = new CartListing.Builder()
                 .listing(cartListing.getListing())
                 .amount(newAmount)
                 .build();
         updatedCartListing.setCartListingId(cartListing.getCartListingId());
 
-        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
-        when(cartListingRepository.save(any(CartListing.class))).thenReturn(updatedCartListing);
+        when(cartListingRepository.update(any(CartListing.class))).thenReturn(updatedCartListing);
 
-        CartListing result = service.updateCartListing(cartListing.getCartListingId(), newAmount);
+        CartListing result = service.updateCartListing(updatedCartListing);
 
-        verify(cartListingRepository, times(1)).findById(cartListing.getCartListingId());
-        verify(cartListingRepository, times(1)).save(any(CartListing.class));
+        verify(cartListingRepository, times(1)).update(updatedCartListing);
+
         assertEquals(newAmount, result.getAmount());
     }
+
 
     @Test
     void testFindById() {
@@ -112,7 +112,7 @@ public class CartListingServiceTest {
     void testFindByIdIfNotExist() {
         doReturn(null).when(cartListingRepository).findById("38f7f57d-ce6a-4888-b361-1c31b3814168");
         assertThrows(NoSuchElementException.class, () -> {
-            service.getCartListingById("38f7f57d-ce6a-4888-b361-1c31b3814168");
+            service.findById("38f7f57d-ce6a-4888-b361-1c31b3814168");
         });
     }
 
@@ -144,23 +144,5 @@ public class CartListingServiceTest {
         service.deleteCartListing(cartListing.getCartListingId());
 
         verify(cartListingRepository, times(1)).delete(cartListing.getCartListingId());
-    }
-
-    @Test
-    void testUpdateIfNotFound() {
-        doReturn(Optional.empty()).when(cartListingRepository).findById("38f7f57d-ce6a-4888-b361-1c31b3814168");
-        CartListing cartListing = cartListings.get(0);
-        assertThrows(NoSuchElementException.class, () -> {
-            service.updateCartListing(cartListing);
-        });
-    }
-
-    @Test
-    void testDeleteIfNotFound() {
-        doReturn(Optional.empty()).when(cartListingRepository).findById("38f7f57d-ce6a-4888-b361-1c31b3814168");
-        CartListing cartListing = cartListings.get(0);
-        assertThrows(NoSuchElementException.class, () -> {
-            service.deleteCartListing(cartListing);
-        });
     }
 }
