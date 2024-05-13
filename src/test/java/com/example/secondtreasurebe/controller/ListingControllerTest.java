@@ -167,4 +167,14 @@ public class ListingControllerTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
                 .andExpect(result -> assertEquals("404 NOT_FOUND \"Listing tidak ditemukan\"", result.getResolvedException().getMessage()));
     }
+
+    @Test
+    void testGetListingsByUserId() throws Exception {
+        when(listingService.getListingByUserId(1)).thenReturn(Arrays.asList(listing1, listing2));
+
+        mockMvc.perform(get("/api/seller-listings/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(1))
+                .andExpect(jsonPath("$[1].userId").value(1));
+    }
 }
