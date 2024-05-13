@@ -79,4 +79,8 @@ public class ListingServiceImpl implements ListingServiceInterface{
         }
     }
 
+    @Override
+    public List<Listing> getListingByUserId(int id){
+        return listingRepository.findByUserId(id);
+    }
 }
