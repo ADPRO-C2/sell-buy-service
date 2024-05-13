@@ -33,7 +33,7 @@ public class OrderTest {
 
         order = new Order(tempCart);
         order.setOrderId("059680d7-9977-4828-9d86-ff6d245bc052");
-        order.setStatus("Dikemas");
+        order.setStatus(OrderStatus.DIKEMAS);
     }
 
     @Test
@@ -74,13 +74,14 @@ public class OrderTest {
 
     @Test
     void testValidStatus() {
-        this.order.setStatus("Dikemas");
-        assertEquals("Dikemas", this.order.getStatus());
+        this.order.setStatus(OrderStatus.DIKEMAS);
+        assertEquals(OrderStatus.DIKEMAS, this.order.getStatus());
     }
 
     @Test
     void testInvalidStatus() {
-        this.order.setStatus("asfdksjlf");
+        OrderStatus invalid = null;
+        this.order.setStatus(invalid);
         assertThrows(IllegalArgumentException.class, this.order::validateOrder);
     }
 }

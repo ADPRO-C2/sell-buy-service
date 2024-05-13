@@ -1,14 +1,26 @@
 package com.example.secondtreasurebe.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 import java.util.ArrayList;
 
-@Getter
-@Setter
+import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
+
+@Getter @Setter
+@NoArgsConstructor
+@Table(name="cart")
+@Entity
 public class Cart {
+
+    @Id
+    @Size(max=100)
+    @Column(name = "userId", updatable = false, nullable = false)
     private String userId;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartListing> items;
 
     public Cart(String userId) {

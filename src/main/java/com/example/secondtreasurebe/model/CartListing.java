@@ -1,15 +1,35 @@
 package com.example.secondtreasurebe.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.UUID;
 
-@Getter
-@Setter
+import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
+
+@Getter @Setter
+@NoArgsConstructor
+@Table(name="cartListing")
+@Entity
 public class CartListing {
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id", referencedColumnName = "userId")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "listing_id", referencedColumnName = "listingid")
     private Listing listing;
+
+    @NotNull
+    @Min(value = 0, message = "Amount has to be zero or above.")
+    @Column(name = "amount", nullable = false)
     private int amount;
+
+    @Id
+    @Size(max=100)
+    @Column(name = "cartListingId", updatable = false, nullable = false)
     private String cartListingId;
 
     public CartListing(Builder builder) {

@@ -1,16 +1,26 @@
 package com.example.secondtreasurebe.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
+
+@Getter @Setter
+@NoArgsConstructor
+@Table(name="checkout")
+@Entity
 public class Checkout {
-    private List<Order> orders;
+    @Id
+    @Size(max=100)
+    @Column(name = "userId", updatable = false, nullable = false)
     private String userId;
+
+    @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)
+    private List<Order> orders;
 
     public Checkout(String userId) {
         this.userId = userId;
