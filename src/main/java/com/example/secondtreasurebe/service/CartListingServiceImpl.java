@@ -1,5 +1,6 @@
 package com.example.secondtreasurebe.service;
 
+import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.repository.CartListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,29 +21,22 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public CartListing updateCartListing(CartListing cartListing) {
-        CartListing cartListing1 = cartListingRepository.update(cartListing);
-        if (cartListing1 == null) {
-            throw new NoSuchElementException("CartListing not found.");
-        }
-        return cartListing1;
+
     }
 
     @Override
     public void deleteCartListing(String cartListingId) {
-        if (cartListingRepository.findById(cartListingId) == null) {
+        if (!cartListingRepository.existsById(cartListingId)) {
             throw new NoSuchElementException("CartListing not found.");
         } else {
-            cartListingRepository.delete(cartListingId);
+            cartListingRepository.deleteById(cartListingId);
         }
     }
 
     @Override
     public CartListing findById(String cartListingId) {
-        CartListing cartListing = cartListingRepository.findById(cartListingId);
-        if (cartListing == null) {
-            throw new NoSuchElementException("CartListing not found.");
-        }
-        return cartListing;
+        return cartListingRepository.findById(cartListingId)
+                .orElseThrow(() -> new NoSuchElementException("CartListing not found."));
     }
 
 

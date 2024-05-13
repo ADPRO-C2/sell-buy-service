@@ -20,31 +20,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart updateCart(Cart cart) {
-        Cart check = cartRepository.update(cart);
-        if (check != null) {
-            return check;
-        } else {
-            throw new NoSuchElementException("Cart not found.");
-        }
-    }
-
-    @Override
     public Cart findById(String userId) {
-        Cart check = cartRepository.findById(userId);
-        if (check != null) {
-            return check;
-        } else {
-            throw new NoSuchElementException("Cart not found.");
-        }
+        return cartRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Cart not found."));
     }
 
     @Override
     public void deleteCart(String userId) {
-        if (cartRepository.findById(userId) != null) {
-            cartRepository.delete(userId);
-        } else {
+        if (!cartRepository.existsById(userId)) {
             throw new NoSuchElementException("Cart not found.");
+        } else {
+            cartRepository.deleteById(userId);
         }
     }
 

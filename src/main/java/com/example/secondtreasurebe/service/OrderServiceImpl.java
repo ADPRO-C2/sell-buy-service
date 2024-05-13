@@ -28,34 +28,42 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(Order order) {
-        return orderRepository.save(order);
-    }
+    public Order createOrder(String userId, Order order) {
+        Cart cart = cartService.findById(userId);
+        if (cart != null && !cart.getItems().isEmpty()) {
+            order.setUserId(userId);
+            order.setItems(cart.getItems());
+            order = orderRepository.save(order);
 
-    @Override
-    public Order updateOrder(Order order) {
-        Order order1 = orderRepository.update(order);
-        if (order1 == null) {
-            throw new NoSuchElementException("Order not found.");
+            Checkout checkout = checkoutService.findCheckoutById(userId);
+            if (checkout == null) {
+                checkout = new Checkout(userId);
+                checkout.setUserId(userId);
+            }
+            checkout.setUserId(userId);
+            checkout.addToOrders(order);
+            checkoutService.createCheckout(checkout);
+
+            cart.setItems(new ArrayList<>());
+            cartService.createCart(cart);
+            return order;
+        } else {
+            throw new IllegalStateException("Cannot place order: Cart is empty");
         }
-        return order1;
     }
 
     @Override
     public Order findOrderById(String orderId) {
-        Order order = orderRepository.findById(orderId);
-        if (order == null) {
-            throw new NoSuchElementException("Order not found.");
-        }
-        return order;
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Order not found."));
     }
 
     @Override
     public void deleteOrder(String orderId) {
-        if (orderRepository.findById(orderId) != null) {
-            orderRepository.delete(orderId);
-        } else {
+        if (!orderRepository.existsById(orderId)) {
             throw new NoSuchElementException("Order not found.");
+        } else {
+            orderRepository.deleteById(orderId);
         }
     }
 
@@ -66,32 +74,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAllOrdersFromUser(String userId) {
-        return orderRepository.findAllUserOrders(userId);
-    }
-
-    @Override
-    public void placeOrder(String userId, Order order) {
-        Cart cart = cartService.findById(userId);
-        if (cart != null && !cart.getItems().isEmpty()) {
-            order.setUserId(userId);
-
-            order.setItems(cart.getItems());
-
-            Checkout checkout = checkoutService.findCheckoutById(userId);
-            if (checkout == null) {
-                checkout = new Checkout(userId);
-                checkout.setUserId(userId);
-            }
-
-            checkout.setUserId(userId);
-            checkout.addToOrders(order);
-
-            checkoutService.createCheckout(checkout);
-
-            cart.setItems(new ArrayList<>());
-            cartService.updateCart(cart);
-        } else {
-            throw new IllegalStateException("Cannot place order: Cart is empty");
-        }
+        return orderRepository.findAllByUserId(userId);
     }
 }

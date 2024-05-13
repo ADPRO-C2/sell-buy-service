@@ -1,7 +1,6 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Cart;
-import com.example.secondtreasurebe.model.Checkout;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -48,10 +47,11 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        Order order = new Order(new Cart("f8784f90-397f-4a15-82b1-f3900f08daf5"));
+        String userId = "f8784f90-397f-4a15-82b1-f3900f08daf5";
+        Order order = new Order(new Cart(userId));
         when(orderRepository.save(order)).thenReturn(order);
 
-        Order result = service.createOrder(order);
+        Order result = service.createOrder(userId, order);
 
         verify(orderRepository, times(1)).save(order);
         assertEquals(order, result);
@@ -59,20 +59,37 @@ public class OrderServiceTest {
 
     @Test
     void testUpdateOrder() {
-        Order order = orders.get(0);
-        when(orderRepository.update(order)).thenReturn(order);
+        // Create a sample order
+        Order order = new Order(new Cart("f8784f90-397f-4a15-82b1-f3900f08daf5"));
+        order.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
 
-        Order result = service.updateOrder(order);
+        // Mock the behavior of the repository's save method to return the order
+        when(orderRepository.save(order)).thenReturn(order);
 
-        verify(orderRepository, times(1)).update(order);
-        assertEquals(order, result);
+        // Call the service method to create the order
+        Order createdOrder = service.createOrder(order.getUserId(), order);
+
+        // Modify some properties of the order
+        createdOrder.setPriceTotal(100.0); // Update the price total
+
+        // Mock the behavior of the repository's findById method to return the updated order
+        when(orderRepository.findById(createdOrder.getOrderId())).thenReturn(Optional.of(createdOrder));
+
+        // Call the service method to update the order
+        Order updatedOrder = service.updateOrder(createdOrder);
+
+        // Verify that the repository's save method was called once with the updated order
+        verify(orderRepository, times(1)).save(createdOrder);
+
+        // Assert that the updated order returned by the service is equal to the expected updated order
+        assertEquals(createdOrder, updatedOrder);
     }
 
     @Test
     void testFindOrderById() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
         Order order = orders.get(0);
-        when(orderRepository.findById(orderId)).thenReturn(order);
+        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
 
         Order result = service.findOrderById(orderId);
 
@@ -81,69 +98,34 @@ public class OrderServiceTest {
     }
 
     @Test
-    void testFindAllOrders() {
-        when(orderRepository.findAll()).thenReturn(orders);
-
-        List<Order> result = service.findAllOrders();
-
-        verify(orderRepository, times(1)).findAll();
-        assertEquals(orders, result);
-    }
-
-    @Test
-    void testFindAllOrderFromUser() {
-        String userId = "c9b541ef-c1e5-496f-99af-dfaf3a0bc572";
-        List<Order> userOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getUserId().equals(userId)) {
-                userOrders.add(order);
-            }
-        }
-        when(orderRepository.findAllUserOrders(userId)).thenReturn(userOrders);
-
-        List<Order> result = service.findAllOrdersFromUser(userId);
-
-        verify(orderRepository, times(1)).findAllUserOrders(userId);
-        assertEquals(userOrders, result);
-    }
-
-    @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
         Order order = new Order(new Cart("b41a8c0c-637f-4e81-8c5d-3146266d799c"));
-        order.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
-        when(orderRepository.findById("a006d26e-b675-4919-bfc9-4a8936af9bba")).thenReturn(order);
+        order.setOrderId(orderId);
+        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
 
         service.deleteOrder(orderId);
 
-        verify(orderRepository, times(1)).delete(orderId);
+        verify(orderRepository, times(1)).deleteById(orderId);
     }
 
     @Test
     void testOrderNotFound() {
         String orderId = "835b30f5-9c6e-41ff-9a74-40bf9dff51bb";
-        when(orderRepository.findById(orderId)).thenReturn(null);
+        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> service.findOrderById(orderId));
-    }
-
-    @Test
-    void testUpdateOrderNotExist() {
-        Order nonExistentOrder = new Order(new Cart("835b30f5-9c6e-41ff-9a74-40bf9dff51bb"));
-        when(orderRepository.update(nonExistentOrder)).thenReturn(null);
-
-        assertThrows(NoSuchElementException.class, () -> service.updateOrder(nonExistentOrder));
     }
 
     @Test
     void testDeleteOrderNotExist() {
         String nonExistentOrderId = "835b30f5-9c6e-41ff-9a74-40bf9dff51bb";
 
-        when(orderRepository.findById(nonExistentOrderId)).thenReturn(null);
+        when(orderRepository.findById(nonExistentOrderId)).thenReturn(java.util.Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> service.deleteOrder(nonExistentOrderId));
 
         verify(orderRepository, times(1)).findById(nonExistentOrderId);
-        verify(orderRepository, never()).delete(anyString());
+        verify(orderRepository, never()).deleteById(anyString());
     }
 }

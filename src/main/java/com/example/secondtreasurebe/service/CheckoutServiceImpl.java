@@ -19,31 +19,17 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     @Override
-    public Checkout updateCheckout(Checkout checkout) {
-        Checkout check = checkoutRepository.update(checkout);
-        if (check != null) {
-            return check;
-        } else {
-            throw new NoSuchElementException("Checkout not found.");
-        }
-    }
-
-    @Override
     public Checkout findCheckoutById(String userId) {
-        Checkout check = checkoutRepository.findById(userId);
-        if (check != null) {
-            return check;
-        } else {
-            throw new NoSuchElementException("Checkout not found.");
-        }
+        return checkoutRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException(("Checkout not found.")));
     }
 
     @Override
     public void deleteCheckout(String userId) {
-        if (checkoutRepository.findById(userId) != null) {
-            checkoutRepository.delete(userId);
-        } else {
+        if (!checkoutRepository.existsById(userId)) {
             throw new NoSuchElementException("Checkout not found.");
+        } else {
+            checkoutRepository.deleteById(userId);
         }
     }
 }
