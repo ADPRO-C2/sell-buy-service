@@ -42,10 +42,6 @@ class CartTest {
         assertEquals("13652556-012a-4c07-b56-54eb1396d79b", cart.getUserId());
     }
 
-    @Test
-    void testGetUserId() {
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.testCart.getUserId());
-    }
 
     @Test
     void testAddToCart() {

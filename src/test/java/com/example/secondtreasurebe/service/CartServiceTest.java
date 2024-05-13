@@ -1,6 +1,8 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Cart;
+import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.CartRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.NoSuchElementException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,21 +58,10 @@ public class CartServiceTest {
     }
 
     @Test
-    void testUpdateCart() {
-        Cart cart = new Cart("1a605de5-5021-42d2-a1ef-ddae7481c942");
-        when(cartRepository.update(cart)).thenReturn(cart);
-
-        Cart result = service.updateCart(cart);
-
-        verify(cartRepository, times(1)).update(cart);
-        assertEquals(cart, result);
-    }
-
-    @Test
     void testFindCartByUserId() {
         String userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
         Cart cart = new Cart(userId);
-        when(cartRepository.findById(userId)).thenReturn(cart);
+        when(cartRepository.findById(userId)).thenReturn(Optional.of(cart));
 
         Cart result = service.findById(userId);
 
@@ -78,24 +70,14 @@ public class CartServiceTest {
     }
 
     @Test
-    void testFindAllCart() {
-        when(cartRepository.findAll()).thenReturn(cartList);
-
-        List<Cart> result = service.findAllCarts();
-
-        verify(cartRepository, times(1)).findAll();
-        assertEquals(cartList, result);
-    }
-
-    @Test
     void testDeleteCart() {
         String userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
         Cart cart = new Cart(userId);
-        when(cartRepository.findById(cart.getUserId())).thenReturn(cart);
+        when(cartRepository.findById(cart.getUserId())).thenReturn(Optional.of(cart));
 
         service.deleteCart(userId);
 
-        verify(cartRepository, times(1)).delete(userId);
+        verify(cartRepository, times(1)).delete(cart);
     }
 
     @Test
@@ -117,18 +99,34 @@ public class CartServiceTest {
         assertThrows(NoSuchElementException.class, () -> service.deleteCart(nonExistentUserId));
 
         verify(cartRepository, times(1)).findById(nonExistentUserId);
-        verify(cartRepository, never()).delete(anyString());
+        verify(cartRepository, never()).delete(any());
     }
 
     @Test
-    void testUpdateCartIfNotExist() {
-        String nonExistentUserId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
-        Cart nonExistentCart = new Cart(nonExistentUserId);
-        doThrow(NoSuchElementException.class).when(cartRepository).update(nonExistentCart);
+    void testFindAllInCart() {
+        String userId = "8bd81dd7-8d6e-4bf0-84e5-45d6f7fb8234";
+        Cart cart = new Cart(userId);
 
-        assertThrows(NoSuchElementException.class, () -> service.updateCart(nonExistentCart));
+        CartListing cartListing1 = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(2)
+                .build();
 
-        verify(cartRepository, times(1)).update(nonExistentCart);
+        CartListing cartListing2 = new CartListing.Builder()
+                .listing(new Listing())
+                .amount(1)
+                .build();
+
+        cart.addCartListing(cartListing1);
+        cart.addCartListing(cartListing2);
+
+        when(cartRepository.findById(userId)).thenReturn(Optional.of(cart));
+
+        List<CartListing> result = service.findAllInCart(userId);
+
+        verify(cartRepository, times(1)).findById(userId);
+
+        assertEquals(cart.getItems(), result);
     }
 
 }

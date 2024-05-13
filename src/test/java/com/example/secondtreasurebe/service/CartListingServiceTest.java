@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -78,7 +79,7 @@ public class CartListingServiceTest {
     }
 
     @Test
-    void testUpdate() {
+    void testUpdateAmount() {
         CartListing cartListing = cartListings.get(0);
         int newAmount = 5;
 
@@ -88,11 +89,11 @@ public class CartListingServiceTest {
                 .build();
         updatedCartListing.setCartListingId(cartListing.getCartListingId());
 
-        when(cartListingRepository.update(any(CartListing.class))).thenReturn(updatedCartListing);
+        when(cartListingRepository.save(any(CartListing.class))).thenReturn(updatedCartListing);
 
-        CartListing result = service.updateCartListing(updatedCartListing);
+        CartListing result = service.updateAmount(updatedCartListing, newAmount);
 
-        verify(cartListingRepository, times(1)).update(updatedCartListing);
+        verify(cartListingRepository, times(1)).save(updatedCartListing);
 
         assertEquals(newAmount, result.getAmount());
     }
@@ -101,11 +102,12 @@ public class CartListingServiceTest {
     @Test
     void testFindById() {
         CartListing cartListing = cartListings.get(1);
-        doReturn(cartListing).when(cartListingRepository).findById(cartListing.getCartListingId());
+        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
 
         CartListing result = service.findById(cartListing.getCartListingId());
         assertEquals(cartListing.getCartListingId(), result.getCartListingId());
     }
+
 
     @Test
     void testFindByIdIfNotExist() {
@@ -116,32 +118,12 @@ public class CartListingServiceTest {
     }
 
     @Test
-    void testFindAllIfEmpty() {
-        doReturn(new ArrayList<>()).when(cartListingRepository).findAll();
-
-        List<CartListing> result = service.findAllCartListings();
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFindAllIfMoreThanOneCartListing() {
-        doReturn(cartListings).when(cartListingRepository).findAll();
-
-        List<CartListing> result = service.findAllCartListings();
-
-        assertEquals(cartListings.size(), result.size());
-        assertEquals(cartListings.get(0).getCartListingId(), result.get(0).getCartListingId());
-        assertEquals(cartListings.get(1).getCartListingId(), result.get(1).getCartListingId());
-    }
-
-    @Test
     void testDeleteCartListing() {
         CartListing cartListing = cartListings.get(0);
-        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(cartListing);
+        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
 
         service.deleteCartListing(cartListing.getCartListingId());
 
-        verify(cartListingRepository, times(1)).delete(cartListing.getCartListingId());
+        verify(cartListingRepository, times(1)).delete(cartListing);
     }
 }

@@ -3,14 +3,16 @@ package com.example.secondtreasurebe.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.UUID;
 
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
-@Table(name="cartListing")
+@Table(name = "cartListing")
 @Entity
 public class CartListing {
 
@@ -28,7 +30,7 @@ public class CartListing {
     private int amount;
 
     @Id
-    @Size(max=100)
+    @Size(max = 100)
     @Column(name = "cartListingId", updatable = false, nullable = false)
     private String cartListingId;
 

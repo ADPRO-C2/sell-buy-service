@@ -1,6 +1,7 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Cart;
+import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> findAllCarts() {
-        return cartRepository.findAll();
+    public List<CartListing> findAllInCart(String userId) {
+        Cart cart = findById(userId);
+
+        if (cart != null) {
+            return cart.getItems();
+        } else {
+            throw new NoSuchElementException("Cart not found for user with ID: " + userId);
+        }
     }
 }

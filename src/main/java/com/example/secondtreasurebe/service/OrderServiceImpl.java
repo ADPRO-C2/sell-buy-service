@@ -3,6 +3,7 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.Checkout;
 import com.example.secondtreasurebe.model.Order;
+import com.example.secondtreasurebe.model.OrderStatus;
 import com.example.secondtreasurebe.repository.CartRepository;
 import com.example.secondtreasurebe.repository.CheckoutRepository;
 import com.example.secondtreasurebe.repository.OrderRepository;
@@ -53,6 +54,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order updateOrderStatus(Order order, OrderStatus status) {
+        Order existingOrder = orderRepository.findById(order.getOrderId())
+                .orElseThrow(() -> new NoSuchElementException("Order not found for ID: " + order.getOrderId()));
+
+        existingOrder.setStatus(order.getStatus());
+
+        return orderRepository.save(existingOrder);
+    }
+
+    @Override
     public Order findOrderById(String orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoSuchElementException("Order not found."));
@@ -65,11 +76,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             orderRepository.deleteById(orderId);
         }
-    }
-
-    @Override
-    public List<Order> findAllOrders() {
-        return orderRepository.findAll();
     }
 
     @Override

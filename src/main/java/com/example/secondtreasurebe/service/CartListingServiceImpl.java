@@ -20,9 +20,14 @@ public class CartListingServiceImpl implements CartListingService {
     }
 
     @Override
-    public CartListing updateCartListing(CartListing cartListing) {
-
+    public CartListing updateAmount(CartListing cartListing, int newAmount) {
+        if (newAmount <= 0) {
+            throw new IllegalArgumentException("New amount must be greater than 0.");
+        }
+        cartListing.setAmount(newAmount);
+        return cartListingRepository.save(cartListing);
     }
+
 
     @Override
     public void deleteCartListing(String cartListingId) {
@@ -37,11 +42,5 @@ public class CartListingServiceImpl implements CartListingService {
     public CartListing findById(String cartListingId) {
         return cartListingRepository.findById(cartListingId)
                 .orElseThrow(() -> new NoSuchElementException("CartListing not found."));
-    }
-
-
-    @Override
-    public List<CartListing> findAllCartListings() {
-        return cartListingRepository.findAll();
     }
 }

@@ -2,6 +2,7 @@ package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.Order;
+import com.example.secondtreasurebe.model.OrderStatus;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,31 +59,19 @@ public class OrderServiceTest {
     }
 
     @Test
-    void testUpdateOrder() {
-        // Create a sample order
-        Order order = new Order(new Cart("f8784f90-397f-4a15-82b1-f3900f08daf5"));
-        order.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
+    void testUpdateOrderStatus() {
+        String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
+        Order order = orders.get(0);
+        OrderStatus newStatus = OrderStatus.DI_JALAN;
 
-        // Mock the behavior of the repository's save method to return the order
+        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
         when(orderRepository.save(order)).thenReturn(order);
 
-        // Call the service method to create the order
-        Order createdOrder = service.createOrder(order.getUserId(), order);
+        Order result = service.updateOrderStatus(order, newStatus);
 
-        // Modify some properties of the order
-        createdOrder.setPriceTotal(100.0); // Update the price total
-
-        // Mock the behavior of the repository's findById method to return the updated order
-        when(orderRepository.findById(createdOrder.getOrderId())).thenReturn(Optional.of(createdOrder));
-
-        // Call the service method to update the order
-        Order updatedOrder = service.updateOrder(createdOrder);
-
-        // Verify that the repository's save method was called once with the updated order
-        verify(orderRepository, times(1)).save(createdOrder);
-
-        // Assert that the updated order returned by the service is equal to the expected updated order
-        assertEquals(createdOrder, updatedOrder);
+        verify(orderRepository, times(1)).findById(orderId);
+        verify(orderRepository, times(1)).save(order);
+        assertEquals(newStatus, result.getStatus());
     }
 
     @Test
@@ -95,6 +84,22 @@ public class OrderServiceTest {
 
         verify(orderRepository, times(1)).findById(orderId);
         assertEquals(order, result);
+    }
+
+    @Test
+    void testFindAllOrdersFromUser() {
+        String userId = "c9b541ef-c1e5-496f-99af-dfaf3a0bc572";
+        List<Order> userOrders = new ArrayList<>();
+        Order userOrder1 = orders.get(0);
+        userOrders.add(userOrder1);
+
+        when(orderRepository.findAllByUserId(userId)).thenReturn(userOrders);
+
+        List<Order> result = service.findAllOrdersFromUser(userId);
+
+        verify(orderRepository, times(1)).findAllByUserId(userId);
+        assertEquals(userOrders.size(), result.size());
+        assertTrue(result.contains(userOrder1));
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.example.secondtreasurebe.service;
 
+import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.Checkout;
+import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.repository.CheckoutRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -36,21 +39,10 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void testUpdateCheckout() {
-        Checkout checkout = new Checkout("0c9020f3-76f3-48ce-bfd0-1ab823a19059");
-        when(checkoutRepository.update(checkout)).thenReturn(checkout);
-
-        Checkout result = service.updateCheckout(checkout);
-
-        verify(checkoutRepository, times(1)).update(checkout);
-        assertEquals(checkout, result);
-    }
-
-    @Test
     void testFindCheckoutById() {
         String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
-        when(checkoutRepository.findById(userId)).thenReturn(checkout);
+        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
 
         Checkout result = service.findCheckoutById(userId);
 
@@ -59,14 +51,36 @@ public class CheckoutServiceTest {
     }
 
     @Test
+    void testFindAllInCheckout() {
+        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        Checkout checkout = new Checkout(userId);
+
+        List<Order> orders = new ArrayList<>();
+        Order order1 = new Order(new Cart(userId));
+        Order order2 = new Order(new Cart(userId));
+        orders.add(order1);
+        orders.add(order2);
+        checkout.setOrders(orders);
+
+        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
+
+        List<Order> result = service.findAllInCheckout(userId);
+
+        verify(checkoutRepository, times(1)).findById(userId);
+        assertEquals(orders.size(), result.size());
+        assertTrue(result.contains(order1));
+        assertTrue(result.contains(order2));
+    }
+
+    @Test
     void testDeleteCheckout() {
         String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
-        when(checkoutRepository.findById(userId)).thenReturn(checkout);
+        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
 
         assertDoesNotThrow(() -> service.deleteCheckout(userId));
 
-        verify(checkoutRepository, times(1)).delete(userId);
+        verify(checkoutRepository, times(1)).delete(any());
     }
 
     @Test
@@ -80,16 +94,6 @@ public class CheckoutServiceTest {
     }
 
     @Test
-    void testUpdateNotFound() {
-        Checkout checkout = new Checkout("0c9020f3-76f3-48ce-bfd0-1ab823a19059");
-        when(checkoutRepository.update(checkout)).thenReturn(null);
-
-        assertThrows(NoSuchElementException.class, () -> service.updateCheckout(checkout));
-
-        verify(checkoutRepository, times(1)).update(checkout);
-    }
-
-    @Test
     void testDeleteNotFound() {
         String nonExistentUserId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
 
@@ -98,6 +102,6 @@ public class CheckoutServiceTest {
         assertThrows(NoSuchElementException.class, () -> service.deleteCheckout(nonExistentUserId));
 
         verify(checkoutRepository, times(1)).findById(nonExistentUserId);
-        verify(checkoutRepository, never()).delete(anyString());
+        verify(checkoutRepository, never()).delete(any());
     }
 }
