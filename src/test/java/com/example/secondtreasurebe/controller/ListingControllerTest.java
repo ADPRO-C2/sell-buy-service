@@ -43,7 +43,7 @@ public class ListingControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(listingRestController).build();
 
         listing1 = new Listing();
-        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setUserId(1);
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Kemeja Linen Blend");
         listing1.setStock(10);
@@ -53,7 +53,7 @@ public class ListingControllerTest {
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
-        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing2.setUserId(1);
         listing2.setListingId("eb558e9f-1c39-460e-8860-71af6af63bc8");
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
@@ -121,7 +121,7 @@ public class ListingControllerTest {
     public void testEditListing() throws Exception {
         Listing updatedListing = new Listing();
         updatedListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd7");
-        updatedListing.setUserId("eb558e9f-1c39-460e-8860-12345678");
+        updatedListing.setUserId(1);
         updatedListing.setName("Compang");
         updatedListing.setPrice(30000);
         when(listingService.edit(any(Listing.class))).thenReturn(updatedListing);

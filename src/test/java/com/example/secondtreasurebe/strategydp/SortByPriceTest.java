@@ -13,7 +13,7 @@ public class SortByPriceTest {
     @BeforeEach
     void setUp() {
         listing1 = new Listing();
-        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setUserId(1);
         listing1.setName("Kemeja Linen Blend");
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -22,7 +22,7 @@ public class SortByPriceTest {
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
-        listing2.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing2.setUserId(1);
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
@@ -31,7 +31,7 @@ public class SortByPriceTest {
         listing2.setRateCondition(2);
 
         listing3 = new Listing();
-        listing3.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing3.setUserId(1);
         listing3.setName("Atasan Cantik");
         listing3.setStock(50);
         listing3.setDescription("Enak dipakai");

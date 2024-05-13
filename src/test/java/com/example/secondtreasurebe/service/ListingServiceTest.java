@@ -54,7 +54,7 @@ public class ListingServiceTest {
         when(listingRepository.save(listing1)).thenReturn(listing1);
         Listing createdListing = service.createListing(listing1);
 
-        assertEquals("a029189d-d5cc-4933-af55-6ed9c38e6db7", createdListing.getUserId());
+        assertEquals(1, createdListing.getUserId());
         assertNotNull(createdListing);
         assertNotNull(createdListing.getListingId());
         assertEquals("Kemeja Linen Blend", createdListing.getName());
