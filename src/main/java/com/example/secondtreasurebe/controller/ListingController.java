@@ -71,4 +71,13 @@ public class ListingController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing tidak ditemukan");
         }
     }
+
+    @GetMapping("/seller-listings/{id}")
+    private List<Listing> getListingByUserId(@PathVariable("id") int id) {
+        try {
+            return service.getListingByUserId(id);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
+        }
+    }
 }

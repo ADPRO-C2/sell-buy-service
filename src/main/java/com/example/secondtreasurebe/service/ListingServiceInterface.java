@@ -10,4 +10,5 @@ public interface ListingServiceInterface {
     public Listing findListingById(String id);
     public Listing edit(Listing newListing);
     public void deleteListing(String id);
+    public List<Listing> getListingByUserId(int id);
 }

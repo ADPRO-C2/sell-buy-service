@@ -20,9 +20,8 @@ public class Listing {
     private String listingId;
 
     @NotNull
-    @Size(max=100)
     @Column(name="userid", nullable=false)
-    private String userId;
+    private int userId;
 
     @NotNull
     @Column(name="name", nullable=false)
