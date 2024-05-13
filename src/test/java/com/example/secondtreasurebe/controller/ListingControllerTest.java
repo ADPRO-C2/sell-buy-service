@@ -177,4 +177,12 @@ public class ListingControllerTest {
                 .andExpect(jsonPath("$[0].userId").value(1))
                 .andExpect(jsonPath("$[1].userId").value(1));
     }
+
+    @Test
+    public void testGetListingsByUserIdNotFound()  throws Exception {
+        when(listingService.getListingByUserId(9)).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/api/seller-listings/9"))
+                .andExpect(status().isNotFound());
+    }
 }
