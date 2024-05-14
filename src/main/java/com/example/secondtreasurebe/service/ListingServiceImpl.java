@@ -23,7 +23,6 @@ public class ListingServiceImpl implements ListingServiceInterface{
             String id = generateListingId();
             listing.setListingId(id);
         }
-        listing.setUserId("a029189d-d5cc-4933-af55-6ed9c38e6db7");
         listing.validate();
         listingRepository.save(listing);
         return listing;
@@ -78,5 +77,10 @@ public class ListingServiceImpl implements ListingServiceInterface{
         } else {
             throw new NoSuchElementException("No listing found with ID: " + id);
         }
+    }
+
+    @Override
+    public List<Listing> getListingByUserId(int id){
+        return listingRepository.findByUserId(id);
     }
 }

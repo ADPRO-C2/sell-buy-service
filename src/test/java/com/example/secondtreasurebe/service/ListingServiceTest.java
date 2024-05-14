@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -32,6 +33,7 @@ public class ListingServiceTest {
     @BeforeEach
     void setUp() {
         listing1 = new Listing();
+        listing1.setUserId(1);
         listing1.setName("Kemeja Linen Blend");
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
@@ -40,6 +42,7 @@ public class ListingServiceTest {
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
+        listing2.setUserId(2);
         listing2.setListingId(listing1.getListingId());
         listing2.setName("T-Shirt Kerah Bulat");
         listing2.setStock(50);
@@ -54,7 +57,7 @@ public class ListingServiceTest {
         when(listingRepository.save(listing1)).thenReturn(listing1);
         Listing createdListing = service.createListing(listing1);
 
-        assertEquals("a029189d-d5cc-4933-af55-6ed9c38e6db7", createdListing.getUserId());
+        assertEquals(1, createdListing.getUserId());
         assertNotNull(createdListing);
         assertNotNull(createdListing.getListingId());
         assertEquals("Kemeja Linen Blend", createdListing.getName());
@@ -155,5 +158,18 @@ public class ListingServiceTest {
 
         verify(listingRepository, times(1)).existsById(id);
         verify(listingRepository, never()).deleteById(id);
+    }
+
+    @Test
+    public void testGetListingByUserId() {
+        List<Listing> mockedListings = new ArrayList<>();
+        mockedListings.add(listing1);
+        mockedListings.add(listing2);
+
+        when(listingRepository.findByUserId(1)).thenReturn(mockedListings);
+
+        List<Listing> actualListings = service.getListingByUserId(1);
+
+        assertEquals(mockedListings, actualListings);
     }
 }
