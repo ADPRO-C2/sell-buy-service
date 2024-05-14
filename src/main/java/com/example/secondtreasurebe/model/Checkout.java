@@ -17,12 +17,12 @@ public class Checkout {
     @Id
     @Size(max=100)
     @Column(name = "user_id", updatable = false, nullable = false)
-    private String userId;
+    private int userId;
 
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    public Checkout(String userId) {
+    public Checkout(int userId) {
         this.userId = userId;
         this.orders = new ArrayList<>();
     }

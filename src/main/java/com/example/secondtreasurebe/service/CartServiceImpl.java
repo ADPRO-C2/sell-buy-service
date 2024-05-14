@@ -21,13 +21,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart findById(String userId) {
+    public Cart findById(int userId) {
         return cartRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Cart not found."));
     }
 
     @Override
-    public void deleteCart(String userId) {
+    public void deleteCart(int userId) {
         if (!cartRepository.existsById(userId)) {
             throw new NoSuchElementException("Cart not found.");
         } else {
@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartListing> findAllInCart(String userId) {
+    public List<CartListing> findAllInCart(int userId) {
         Cart cart = findById(userId);
 
         if (cart != null) {

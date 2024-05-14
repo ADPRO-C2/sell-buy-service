@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CheckoutService {
     public Checkout createCheckout(Checkout checkout);
-    public Checkout findCheckoutById(String userId);
-    public void deleteCheckout(String userId);
-    public List<Order> findAllInCheckout(String userId);
+    public Checkout findCheckoutById(int userId);
+    public void deleteCheckout(int userId);
+    public List<Order> findAllInCheckout(int userId);
 }

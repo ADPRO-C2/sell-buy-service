@@ -59,7 +59,7 @@ public class CartServiceTest {
 
     @Test
     void testFindCartByUserId() {
-        String userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
+        int userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
         Cart cart = new Cart(userId);
         when(cartRepository.findById(userId)).thenReturn(Optional.of(cart));
 
@@ -71,7 +71,7 @@ public class CartServiceTest {
 
     @Test
     void testDeleteCart() {
-        String userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
+        int userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
         Cart cart = new Cart(userId);
 
         when(cartRepository.save(cart)).thenReturn(cart);
@@ -105,7 +105,7 @@ public class CartServiceTest {
 
     @Test
     void testFindAllInCart() {
-        String userId = "8bd81dd7-8d6e-4bf0-84e5-45d6f7fb8234";
+        int userId = "8bd81dd7-8d6e-4bf0-84e5-45d6f7fb8234";
         Cart cart = new Cart(userId);
 
         CartListing cartListing1 = new CartListing.Builder()

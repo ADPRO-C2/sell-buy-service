@@ -29,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(String userId, Order order) {
+    public Order createOrder(int userId, Order order) {
         Cart cart = cartService.findById(userId);
         if (cart != null && !cart.getItems().isEmpty()) {
             order.setUserId(userId);
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllOrdersFromUser(String userId) {
+    public List<Order> findAllOrdersFromUser(int userId) {
         return orderRepository.findAllByUserId(userId);
     }
 }

@@ -22,7 +22,7 @@ public class Listing {
     @NotNull
     @Size(max=100)
     @Column(name="userid", nullable=false)
-    private String userId;
+    private int userId;
 
     @NotNull
     @Column(name="name", nullable=false)

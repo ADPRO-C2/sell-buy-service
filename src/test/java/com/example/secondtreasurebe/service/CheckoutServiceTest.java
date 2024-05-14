@@ -40,7 +40,7 @@ public class CheckoutServiceTest {
 
     @Test
     void testFindCheckoutById() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
         when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
 
@@ -52,7 +52,7 @@ public class CheckoutServiceTest {
 
     @Test
     void testFindAllInCheckout() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
 
         List<Order> orders = new ArrayList<>();
@@ -74,7 +74,7 @@ public class CheckoutServiceTest {
 
     @Test
     void testDeleteCheckout() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
 
         when(checkoutRepository.save(any(Checkout.class))).thenReturn(checkout);
@@ -89,7 +89,7 @@ public class CheckoutServiceTest {
 
     @Test
     void testFindByIdNotFound() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         when(checkoutRepository.findById(userId)).thenThrow(new NoSuchElementException("Checkout not found."));
 
         assertThrows(NoSuchElementException.class, () -> service.findCheckoutById(userId));

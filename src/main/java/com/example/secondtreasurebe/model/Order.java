@@ -26,7 +26,7 @@ public class Order {
     @NotNull
     @Size(max=100)
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private int userId;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CartListing> items;

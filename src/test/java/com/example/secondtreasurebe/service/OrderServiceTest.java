@@ -52,7 +52,7 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Order order = new Order();
         Cart cart = new Cart(userId);
         cart.setItems(List.of(new CartListing()));
@@ -103,7 +103,7 @@ public class OrderServiceTest {
 
     @Test
     void testFindAllOrdersFromUser() {
-        String userId = "c9b541ef-c1e5-496f-99af-dfaf3a0bc572";
+        int userId = "c9b541ef-c1e5-496f-99af-dfaf3a0bc572";
         List<Order> userOrders = new ArrayList<>();
         Order userOrder1 = orders.get(0);
         userOrders.add(userOrder1);

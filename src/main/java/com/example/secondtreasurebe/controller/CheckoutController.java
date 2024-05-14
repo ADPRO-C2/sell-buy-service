@@ -33,7 +33,7 @@ public class CheckoutController {
     }
 
     @GetMapping
-    public ResponseEntity<Checkout> getCheckoutById(@RequestBody String userId) {
+    public ResponseEntity<Checkout> getCheckoutById(@RequestBody int userId) {
         try {
             var checkout = service.findCheckoutById(userId);
             return new ResponseEntity<>(checkout, HttpStatus.OK);
@@ -43,7 +43,7 @@ public class CheckoutController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteCheckout(@RequestBody String userId) {
+    public ResponseEntity<String> deleteCheckout(@RequestBody int userId) {
         try {
             service.deleteCheckout(userId);
             return ResponseEntity.ok("Checkout deleted successfully");
@@ -53,7 +53,7 @@ public class CheckoutController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getAllInCheckout(@RequestBody String userId) {
+    public ResponseEntity<List<Order>> getAllInCheckout(@RequestBody int userId) {
         var checkout = service.findCheckoutById(userId);
         List<Order> items = service.findAllInCheckout(userId);
         return new ResponseEntity<>(items, HttpStatus.OK);
