@@ -1,7 +1,9 @@
 package com.example.secondtreasurebe.controller;
 
+import com.example.secondtreasurebe.dto.UpdateCartListingRequest;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.service.CartListingServiceImpl;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +31,17 @@ public class CartListingController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<CartListing> updateAmount(@RequestBody CartListing cartListing, int amount) {
+    public ResponseEntity<CartListing> updateAmount(@RequestBody UpdateCartListingRequest request) {
         try {
-            var res = service.updateAmount(cartListing, amount);
+            var res = service.updateAmount(request.getCartListing(), request.getAmount());
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 
-    @GetMapping("/car")
-    public ResponseEntity<CartListing> getCartListingById(@RequestBody String cartListingId) {
+    @GetMapping("/{cartListingId}")
+    public ResponseEntity<CartListing> getCartListingById(@PathVariable String cartListingId) {
         try {
             var cartListing = service.findById(cartListingId);
             return new ResponseEntity<>(cartListing, HttpStatus.OK);
@@ -48,8 +50,8 @@ public class CartListingController {
         }
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<String> deleteCartListing(@RequestBody String cartListingId) {
+    @DeleteMapping("/delete/{cartListingId}")
+    public ResponseEntity<String> deleteCartListing(@PathVariable String cartListingId) {
         try {
             service.deleteCartListing(cartListingId);
             return ResponseEntity.ok("CartListing deleted successfully");
