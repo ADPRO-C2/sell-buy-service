@@ -49,7 +49,7 @@ public class OrderTest {
 
         assertEquals("dbb3d5d2-e3ab-43ee-93fe-0102f60cca35", order.getUserId());
         assertEquals("059680d7-9977-4828-9d86-ff6d245bc052", order.getOrderId());
-        assertEquals("Dikemas", order.getStatus());
+        assertEquals(OrderStatus.DIKEMAS, order.getStatus());
 
         List<CartListing> items = order.getItems();
         assertEquals(2, items.size());

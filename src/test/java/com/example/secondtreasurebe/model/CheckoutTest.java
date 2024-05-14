@@ -38,7 +38,7 @@ public class CheckoutTest {
 
     @Test
     void testDifferentUserId() {
-        Order differentUser = new Order(this.cart);
+        Order differentUser = new Order(new Cart("5c0803ec-54aa-405c-8f46-460176365cf3"));
         this.testCheckout.getOrders().add(differentUser);
         assertThrows(IllegalArgumentException.class, this.testCheckout::sameUser);
     }
