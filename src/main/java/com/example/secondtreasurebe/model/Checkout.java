@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name="checkout")
 @Entity
 public class Checkout {
+
     @Id
-    @Size(max=100)
     @Column(name = "user_id", updatable = false, nullable = false)
     private int userId;
 
@@ -29,14 +29,14 @@ public class Checkout {
 
     public void sameUser() {
         for (Order order : this.orders) {
-            if (!order.getUserId().equals(this.userId)) {
+            if (order.getUserId() != (this.userId)) {
                 throw new IllegalArgumentException("User ID of Orders and Checkout must match.");
             }
         }
     }
 
     public void addToOrders(Order order) {
-        if (!order.getUserId().equals(this.userId)) {
+        if (order.getUserId() != (this.userId)) {
             throw new IllegalArgumentException("User ID of Order does not match Checkout.");
         }
 

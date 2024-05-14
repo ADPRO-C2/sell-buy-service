@@ -32,7 +32,7 @@ public class CartListingServiceTest {
     @BeforeEach
     void setUp() {
         Listing listing1 = new Listing();
-        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setUserId(11);
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Nintando Swotch");
         listing1.setDescription("The best console.");
@@ -48,7 +48,7 @@ public class CartListingServiceTest {
         cartListing1.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
 
         Listing listing2 = new Listing();
-        listing2.setUserId("b1c7c39f-1426-449e-a6fc-17db9ba7076e");
+        listing2.setUserId(12);
         listing2.setListingId("c74896d2-d27e-451d-8674-f756f457c6fe");
         listing2.setName("Updated Listing");
         listing2.setDescription("This is an updated listing.");
@@ -133,7 +133,7 @@ public class CartListingServiceTest {
 
     @Test
     void testDeleteIfCartListingNotFound() {
-        String cartListingId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
+        String cartListingId = "cartlistingid";
 
         assertThrows(NoSuchElementException.class, () -> service.deleteCartListing(cartListingId));
 

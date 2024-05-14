@@ -37,10 +37,10 @@ public class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orders = new ArrayList<>();
-        Order order1 = new Order(new Cart("c9b541ef-c1e5-496f-99af-dfaf3a0bc572"));
+        Order order1 = new Order(new Cart(11));
         order1.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
         orders.add(order1);
-        Order order2 = new Order(new Cart("ae61d826-3544-48c0-ab49-5ae0368d4b79"));
+        Order order2 = new Order(new Cart(13));
         order2.setOrderId("bbd79f8c-3d06-423e-9693-02039d31401b");
         orders.add(order2);
     }
@@ -52,7 +52,7 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        int userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = 14;
         Order order = new Order();
         Cart cart = new Cart(userId);
         cart.setItems(List.of(new CartListing()));
@@ -103,7 +103,7 @@ public class OrderServiceTest {
 
     @Test
     void testFindAllOrdersFromUser() {
-        int userId = "c9b541ef-c1e5-496f-99af-dfaf3a0bc572";
+        int userId = 11;
         List<Order> userOrders = new ArrayList<>();
         Order userOrder1 = orders.get(0);
         userOrders.add(userOrder1);
@@ -120,7 +120,7 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
-        Order order = new Order(new Cart("b41a8c0c-637f-4e81-8c5d-3146266d799c"));
+        Order order = new Order(new Cart(15));
         order.setOrderId(orderId);
 
         when(orderRepository.save(order)).thenReturn(order);

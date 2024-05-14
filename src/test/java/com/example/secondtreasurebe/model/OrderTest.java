@@ -13,7 +13,7 @@ public class OrderTest {
 
     @BeforeEach
     void setUp() {
-        Cart tempCart = new Cart("dbb3d5d2-e3ab-43ee-93fe-0102f60cca35");
+        Cart tempCart = new Cart(11);
 
         List<CartListing> items = new ArrayList<>();
         Listing listing1 = new Listing();
@@ -38,7 +38,7 @@ public class OrderTest {
 
     @Test
     void testEmptyOrder() {
-        Cart cart = new Cart("13652556-012a-4c07-b56-54eb1396d79b");
+        Cart cart = new Cart(12);
         Order emptyOrder = new Order(cart);
         assertTrue(emptyOrder.getItems().isEmpty());
     }
@@ -47,7 +47,7 @@ public class OrderTest {
     void testCreateValidOrder() {
         assertNotNull(order);
 
-        assertEquals("dbb3d5d2-e3ab-43ee-93fe-0102f60cca35", order.getUserId());
+        assertEquals(11, order.getUserId());
         assertEquals("059680d7-9977-4828-9d86-ff6d245bc052", order.getOrderId());
         assertEquals(OrderStatus.DIKEMAS, order.getStatus());
 

@@ -10,7 +10,7 @@ public class CartListingTest {
     @BeforeEach
     void setUp() {
         Listing listing1 = new Listing();
-        listing1.setUserId("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        listing1.setUserId(11);
         listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
         listing1.setName("Nintando Swotch");
         listing1.setDescription("The best console.");
@@ -30,7 +30,7 @@ public class CartListingTest {
     @Test
     void testCreateValidCartListing() {
         assertEquals("7766d08b-aa3b-4364-af55-62c282fd2b05", this.cartListing.getCartListingId());
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.cartListing.getUserId());
+        assertEquals(11, this.cartListing.getUserId());
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.cartListing.getListingId());
         assertEquals("Nintando Swotch", this.cartListing.getName());
         assertEquals("The best console.", this.cartListing.getDescription());

@@ -22,16 +22,16 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public Checkout findCheckoutById(int userId) {
-        return checkoutRepository.findById(userId)
+        return checkoutRepository.findById(String.valueOf(userId))
                 .orElseThrow(() -> new NoSuchElementException(("Checkout not found.")));
     }
 
     @Override
     public void deleteCheckout(int userId) {
-        if (!checkoutRepository.existsById(userId)) {
+        if (!checkoutRepository.existsById(String.valueOf(userId))) {
             throw new NoSuchElementException("Checkout not found.");
         } else {
-            checkoutRepository.deleteById(userId);
+            checkoutRepository.deleteById(String.valueOf(userId));
         }
     }
 
