@@ -73,18 +73,22 @@ public class CartServiceTest {
     void testDeleteCart() {
         String userId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
         Cart cart = new Cart(userId);
-        when(cartRepository.findById(cart.getUserId())).thenReturn(Optional.of(cart));
+
+        when(cartRepository.save(cart)).thenReturn(cart);
+        when(cartRepository.existsById(cart.getUserId())).thenReturn(true);
+
+        cartRepository.save(cart);
 
         service.deleteCart(userId);
 
-        verify(cartRepository, times(1)).delete(cart);
+        verify(cartRepository, times(1)).deleteById(userId);
     }
 
     @Test
     void testFindByIdIfNotExist() {
         String nonExistentUserId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
 
-        doReturn(null).when(cartRepository).findById(nonExistentUserId);
+        when(cartRepository.findById(nonExistentUserId)).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class, () -> {
             service.findById(nonExistentUserId);
         });
@@ -94,11 +98,8 @@ public class CartServiceTest {
     void testDeleteCartIfNotExist() {
         String nonExistentUserId = "1a605de5-5021-42d2-a1ef-ddae7481c942";
 
-        when(cartRepository.findById(nonExistentUserId)).thenReturn(null);
-
         assertThrows(NoSuchElementException.class, () -> service.deleteCart(nonExistentUserId));
 
-        verify(cartRepository, times(1)).findById(nonExistentUserId);
         verify(cartRepository, never()).delete(any());
     }
 

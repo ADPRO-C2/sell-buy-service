@@ -1,8 +1,6 @@
 package com.example.secondtreasurebe.service;
 
-import com.example.secondtreasurebe.model.Cart;
-import com.example.secondtreasurebe.model.Order;
-import com.example.secondtreasurebe.model.OrderStatus;
+import com.example.secondtreasurebe.model.*;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +26,12 @@ public class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
+    @Mock
+    private CartService cartService;
+
+    @Mock
+    private CheckoutService checkoutService;
+
     List<Order> orders;
 
     @BeforeEach
@@ -48,14 +52,25 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        String userId = "f8784f90-397f-4a15-82b1-f3900f08daf5";
-        Order order = new Order(new Cart(userId));
-        when(orderRepository.save(order)).thenReturn(order);
+        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        Order order = new Order();
+        Cart cart = new Cart(userId);
+        cart.setItems(List.of(new CartListing()));
+        Checkout checkout = new Checkout(userId);
 
-        Order result = service.createOrder(userId, order);
+        when(cartService.findById(userId)).thenReturn(cart);
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(checkoutService.findCheckoutById(userId)).thenReturn(checkout);
 
-        verify(orderRepository, times(1)).save(order);
-        assertEquals(order, result);
+        Order createdOrder = service.createOrder(userId, order);
+
+        assertEquals(userId, createdOrder.getUserId());
+        assertFalse(createdOrder.getItems().isEmpty());
+
+        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(checkoutService, times(1)).findCheckoutById(userId);
+        verify(checkoutService, times(1)).createCheckout(any(Checkout.class));
+        verify(cartService, times(1)).createCart(any(Cart.class));
     }
 
     @Test
@@ -107,7 +122,11 @@ public class OrderServiceTest {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
         Order order = new Order(new Cart("b41a8c0c-637f-4e81-8c5d-3146266d799c"));
         order.setOrderId(orderId);
-        when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
+
+        when(orderRepository.save(order)).thenReturn(order);
+        orderRepository.save(order);
+
+        when(orderRepository.existsById(orderId)).thenReturn(true);
 
         service.deleteOrder(orderId);
 
@@ -126,11 +145,11 @@ public class OrderServiceTest {
     void testDeleteOrderNotExist() {
         String nonExistentOrderId = "835b30f5-9c6e-41ff-9a74-40bf9dff51bb";
 
-        when(orderRepository.findById(nonExistentOrderId)).thenReturn(java.util.Optional.empty());
+        when(orderRepository.existsById(nonExistentOrderId)).thenReturn(false);
 
         assertThrows(NoSuchElementException.class, () -> service.deleteOrder(nonExistentOrderId));
 
-        verify(orderRepository, times(1)).findById(nonExistentOrderId);
+        verify(orderRepository, times(1)).existsById(nonExistentOrderId);
         verify(orderRepository, never()).deleteById(anyString());
     }
 }

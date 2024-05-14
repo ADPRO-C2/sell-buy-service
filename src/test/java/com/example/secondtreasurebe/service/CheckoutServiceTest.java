@@ -76,17 +76,21 @@ public class CheckoutServiceTest {
     void testDeleteCheckout() {
         String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
         Checkout checkout = new Checkout(userId);
-        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
+
+        when(checkoutRepository.save(any(Checkout.class))).thenReturn(checkout);
+        when(checkoutRepository.existsById(userId)).thenReturn(true);
+
+        checkoutRepository.save(checkout);
 
         assertDoesNotThrow(() -> service.deleteCheckout(userId));
 
-        verify(checkoutRepository, times(1)).delete(any());
+        verify(checkoutRepository, times(1)).deleteById(userId);
     }
 
     @Test
     void testFindByIdNotFound() {
         String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
-        when(checkoutRepository.findById(userId)).thenReturn(null);
+        when(checkoutRepository.findById(userId)).thenThrow(new NoSuchElementException("Checkout not found."));
 
         assertThrows(NoSuchElementException.class, () -> service.findCheckoutById(userId));
 
@@ -97,11 +101,11 @@ public class CheckoutServiceTest {
     void testDeleteNotFound() {
         String nonExistentUserId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
 
-        when(checkoutRepository.findById(nonExistentUserId)).thenReturn(null);
+        when(checkoutRepository.existsById(nonExistentUserId)).thenThrow(new NoSuchElementException("Checkout not found."));
 
         assertThrows(NoSuchElementException.class, () -> service.deleteCheckout(nonExistentUserId));
 
-        verify(checkoutRepository, times(1)).findById(nonExistentUserId);
-        verify(checkoutRepository, never()).delete(any());
+        verify(checkoutRepository, times(1)).existsById(nonExistentUserId);
+        verify(checkoutRepository, never()).deleteById(any());
     }
 }

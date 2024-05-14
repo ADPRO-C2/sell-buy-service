@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         Order existingOrder = orderRepository.findById(order.getOrderId())
                 .orElseThrow(() -> new NoSuchElementException("Order not found for ID: " + order.getOrderId()));
 
-        existingOrder.setStatus(order.getStatus());
+        existingOrder.setStatus(status);
 
         return orderRepository.save(existingOrder);
     }
