@@ -27,7 +27,7 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindAllByUserId() {
-        String userId = "98726832-2f2e-45d4-bd67-6def918fdaa6";
+        int userId = 11;
         List<Order> orders = new ArrayList<>();
         orders.add(createOrder("77fcb080-a499-4e50-a610-c5fe49841f1b", userId));
         orders.add(createOrder("5c0803ec-54aa-405c-8f46-460176365cf3", userId));
@@ -42,7 +42,7 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindAllByUserIdNotFound() {
-        String userId = "0bfe6cb8-b193-4a83-bbee-83ef3e3e65fe";
+        int userId = 12;
         when(orderRepository.findAllByUserId(userId)).thenReturn(new ArrayList<>());
 
         List<Order> foundOrders = orderRepository.findAllByUserId(userId);
@@ -50,7 +50,7 @@ public class OrderRepositoryTest {
         assertEquals(0, foundOrders.size());
     }
 
-    private Order createOrder(String orderId, String userId) {
+    private Order createOrder(String orderId, int userId) {
         Order order = new Order();
         order.setOrderId(orderId);
         order.setUserId(userId);

@@ -34,7 +34,6 @@ public class CartListing {
     private int amount;
 
     @Id
-    @Size(max = 100)
     @Column(name = "cartlisting_id", updatable = false, nullable = false)
     private String cartListingId;
 
@@ -44,7 +43,7 @@ public class CartListing {
         this.cartListingId = builder.cartListingId;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return this.listing.getUserId();
     }
 
@@ -76,7 +75,7 @@ public class CartListing {
         return this.listing.getRateCondition();
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.listing.setUserId(userId);
     }
 

@@ -29,7 +29,7 @@ public class CheckoutServiceTest {
 
     @Test
     void testCreateCheckout() {
-        Checkout checkout = new Checkout("0c9020f3-76f3-48ce-bfd0-1ab823a19059");
+        Checkout checkout = new Checkout(11);
         when(checkoutRepository.save(checkout)).thenReturn(checkout);
 
         Checkout result = service.createCheckout(checkout);
@@ -40,19 +40,19 @@ public class CheckoutServiceTest {
 
     @Test
     void testFindCheckoutById() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = 11;
         Checkout checkout = new Checkout(userId);
-        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
+        when(checkoutRepository.findById(String.valueOf(userId))).thenReturn(Optional.of(checkout));
 
         Checkout result = service.findCheckoutById(userId);
 
-        verify(checkoutRepository, times(1)).findById(userId);
+        verify(checkoutRepository, times(1)).findById(String.valueOf(userId));
         assertEquals(checkout, result);
     }
 
     @Test
     void testFindAllInCheckout() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = 11;
         Checkout checkout = new Checkout(userId);
 
         List<Order> orders = new ArrayList<>();
@@ -62,11 +62,11 @@ public class CheckoutServiceTest {
         orders.add(order2);
         checkout.setOrders(orders);
 
-        when(checkoutRepository.findById(userId)).thenReturn(Optional.of(checkout));
+        when(checkoutRepository.findById(String.valueOf(userId))).thenReturn(Optional.of(checkout));
 
         List<Order> result = service.findAllInCheckout(userId);
 
-        verify(checkoutRepository, times(1)).findById(userId);
+        verify(checkoutRepository, times(1)).findById(String.valueOf(userId));
         assertEquals(orders.size(), result.size());
         assertTrue(result.contains(order1));
         assertTrue(result.contains(order2));
@@ -74,38 +74,38 @@ public class CheckoutServiceTest {
 
     @Test
     void testDeleteCheckout() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int userId = 11;
         Checkout checkout = new Checkout(userId);
 
         when(checkoutRepository.save(any(Checkout.class))).thenReturn(checkout);
-        when(checkoutRepository.existsById(userId)).thenReturn(true);
+        when(checkoutRepository.existsById(String.valueOf(userId))).thenReturn(true);
 
         checkoutRepository.save(checkout);
 
         assertDoesNotThrow(() -> service.deleteCheckout(userId));
 
-        verify(checkoutRepository, times(1)).deleteById(userId);
+        verify(checkoutRepository, times(1)).deleteById(String.valueOf(userId));
     }
 
     @Test
     void testFindByIdNotFound() {
-        String userId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
-        when(checkoutRepository.findById(userId)).thenThrow(new NoSuchElementException("Checkout not found."));
+        int userId = 11;
+        when(checkoutRepository.findById(String.valueOf(userId))).thenThrow(new NoSuchElementException("Checkout not found."));
 
         assertThrows(NoSuchElementException.class, () -> service.findCheckoutById(userId));
 
-        verify(checkoutRepository, times(1)).findById(userId);
+        verify(checkoutRepository, times(1)).findById(String.valueOf(userId));
     }
 
     @Test
     void testDeleteNotFound() {
-        String nonExistentUserId = "0c9020f3-76f3-48ce-bfd0-1ab823a19059";
+        int nonExistentUserId = 11;
 
-        when(checkoutRepository.existsById(nonExistentUserId)).thenThrow(new NoSuchElementException("Checkout not found."));
+        when(checkoutRepository.existsById(String.valueOf(nonExistentUserId))).thenThrow(new NoSuchElementException("Checkout not found."));
 
         assertThrows(NoSuchElementException.class, () -> service.deleteCheckout(nonExistentUserId));
 
-        verify(checkoutRepository, times(1)).existsById(nonExistentUserId);
+        verify(checkoutRepository, times(1)).existsById(String.valueOf(nonExistentUserId));
         verify(checkoutRepository, never()).deleteById(any());
     }
 }

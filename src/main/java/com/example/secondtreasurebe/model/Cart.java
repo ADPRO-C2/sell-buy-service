@@ -19,12 +19,12 @@ public class Cart {
     @Id
     @Size(max=100)
     @Column(name = "user_id", updatable = false, nullable = false)
-    private String userId;
+    private int userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartListing> items;
 
-    public Cart(String userId) {
+    public Cart(int userId) {
         this.userId = userId;
         this.items = new ArrayList<>();
     }

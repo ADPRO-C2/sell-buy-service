@@ -31,7 +31,7 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<Cart> findCartById(@RequestBody String userId) {
+    public ResponseEntity<Cart> findCartById(@RequestBody int userId) {
         try {
             var cart = service.findById(userId);
             return new ResponseEntity<>(cart, HttpStatus.OK);
@@ -41,14 +41,14 @@ public class CartController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<List<CartListing>> findAllInCart(@RequestBody String userId) {
+    public ResponseEntity<List<CartListing>> findAllInCart(@RequestBody int userId) {
         var cart = service.findById(userId);
         List<CartListing> items = service.findAllInCart(userId);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteCart(@RequestBody String userId) {
+    public ResponseEntity<String> deleteCart(@RequestBody int userId) {
         try {
             service.deleteCart(userId);
             return ResponseEntity.ok("Cart deleted successfully");

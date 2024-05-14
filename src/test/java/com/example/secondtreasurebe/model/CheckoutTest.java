@@ -13,8 +13,8 @@ public class CheckoutTest {
 
     @BeforeEach
     void setUp() {
-        this.testCheckout = new Checkout("eb558e9f-1c39-460e-8860-71af6af63ba7");
-        this.cart = new Cart("eb558e9f-1c39-460e-8860-71af6af63ba7");
+        this.testCheckout = new Checkout(11);
+        this.cart = new Cart(11);
     }
 
     @Test
@@ -33,12 +33,12 @@ public class CheckoutTest {
 
     @Test
     void testGetUserId() {
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63ba7", this.testCheckout.getUserId());
+        assertEquals(11, this.testCheckout.getUserId());
     }
 
     @Test
     void testDifferentUserId() {
-        Order differentUser = new Order(new Cart("5c0803ec-54aa-405c-8f46-460176365cf3"));
+        Order differentUser = new Order(new Cart(12));
         this.testCheckout.getOrders().add(differentUser);
         assertThrows(IllegalArgumentException.class, this.testCheckout::sameUser);
     }

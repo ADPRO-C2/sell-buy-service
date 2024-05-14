@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface CartService {
     public Cart createCart(Cart cart);
-    public Cart findById(String userId);
-    public void deleteCart(String userId);
-    public List<CartListing> findAllInCart(String userId);
+    public Cart findById(int userId);
+    public void deleteCart(int userId);
+    public List<CartListing> findAllInCart(int userId);
 }
