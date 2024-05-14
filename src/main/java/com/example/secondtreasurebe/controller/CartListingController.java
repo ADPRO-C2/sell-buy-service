@@ -2,7 +2,9 @@ package com.example.secondtreasurebe.controller;
 
 import com.example.secondtreasurebe.dto.UpdateCartListingRequest;
 import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.service.CartListingServiceImpl;
+import com.example.secondtreasurebe.service.ListingServiceImpl;
 import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,18 @@ public class CartListingController {
     @Autowired
     private CartListingServiceImpl service;
 
-    @PostMapping
-    public ResponseEntity<CartListing> createCartListing(@RequestBody CartListing cartListing) {
+    @Autowired
+    private ListingServiceImpl listingService;
+
+    @PostMapping("/cart-listings/{listingId}")
+    public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestBody CartListing cartListing) {
         try {
+            Listing listing = listingService.findListingById(listingId);
+            cartListing.setListing(listing);
             service.createCartListing(cartListing);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create cart listing", e);
         }
     }
 

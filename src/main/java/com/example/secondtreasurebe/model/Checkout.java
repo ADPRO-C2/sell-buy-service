@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Checkout {
     @Id
     @Size(max=100)
-    @Column(name = "userId", updatable = false, nullable = false)
+    @Column(name = "user_id", updatable = false, nullable = false)
     private String userId;
 
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)

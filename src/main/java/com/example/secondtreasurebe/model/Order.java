@@ -20,6 +20,7 @@ import static com.example.secondtreasurebe.model.OrderStatus.*;
 public class Order {
     @Id
     @Size(max=100)
+    @Column(name = "order_id", updatable = false, nullable = false)
     private String orderId;
 
     @NotNull
@@ -29,6 +30,10 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CartListing> items;
+
+    @ManyToOne
+    @JoinColumn(name = "checkout_id", referencedColumnName = "user_id")
+    private Checkout checkout;
 
     @NotNull
     @Min(value = 0, message = "Price total has to be zero or above.")

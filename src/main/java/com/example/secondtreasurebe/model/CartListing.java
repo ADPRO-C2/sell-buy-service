@@ -17,8 +17,12 @@ import lombok.NoArgsConstructor;
 public class CartListing {
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", referencedColumnName = "userId")
+    @JoinColumn(name = "cart_id", referencedColumnName = "user_id")
     private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "listing_id", referencedColumnName = "listingid")
@@ -31,7 +35,7 @@ public class CartListing {
 
     @Id
     @Size(max = 100)
-    @Column(name = "cartListingId", updatable = false, nullable = false)
+    @Column(name = "cartlisting_id", updatable = false, nullable = false)
     private String cartListingId;
 
     public CartListing(Builder builder) {

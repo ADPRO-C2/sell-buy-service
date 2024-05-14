@@ -40,7 +40,7 @@ public class CartController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/items")
     public ResponseEntity<List<CartListing>> findAllInCart(@RequestBody String userId) {
         var cart = service.findById(userId);
         List<CartListing> items = service.findAllInCart(userId);

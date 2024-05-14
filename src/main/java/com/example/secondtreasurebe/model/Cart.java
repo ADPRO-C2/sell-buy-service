@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JoinFormula;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class Cart {
 
     @Id
     @Size(max=100)
-    @Column(name = "userId", updatable = false, nullable = false)
+    @Column(name = "user_id", updatable = false, nullable = false)
     private String userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)

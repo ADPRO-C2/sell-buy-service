@@ -52,7 +52,7 @@ public class CheckoutController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/orders")
     public ResponseEntity<List<Order>> getAllInCheckout(@RequestBody String userId) {
         var checkout = service.findCheckoutById(userId);
         List<Order> items = service.findAllInCheckout(userId);
