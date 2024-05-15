@@ -1,123 +1,64 @@
 package com.example.secondtreasurebe.model;
 
+import com.example.secondtreasurebe.repository.ListingRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.UUID;
-
-import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "cartListing")
 @Entity
+@Table(name = "cart_listing")
 public class CartListing {
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id", referencedColumnName = "user_id")
-    private Cart cart;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Order order;
-
-    @ManyToOne
-    @JoinColumn(name = "listing_id", referencedColumnName = "listingid")
-    private Listing listing;
+    @NotNull
+    @Column(name = "listing_id", nullable = false)
+    private String listingId;
 
     @NotNull
-    @Min(value = 0, message = "Amount has to be zero or above.")
+    @Min(value = 1, message = "Amount has to be above zero.")
     @Column(name = "amount", nullable = false)
     private int amount;
 
     @Id
-    @Column(name = "cartlisting_id", updatable = false, nullable = false)
+    @Column(name = "cart_listing_id", updatable = false, nullable = false)
     private String cartListingId;
 
+    @NotNull
+    @Column(name = "user_id", nullable = false)
+    private int userId;
+
+    @NotNull
+    @Min(value = 1, message = "Total price has to be above zero.")
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
+
     public CartListing(Builder builder) {
-        this.listing = builder.listing;
+        this.listingId = builder.listingId;
         this.amount = builder.amount;
         this.cartListingId = builder.cartListingId;
-    }
-
-    public int getUserId() {
-        return this.listing.getUserId();
-    }
-
-    public String getListingId() {
-        return this.listing.getListingId();
-    }
-
-    public String getName() {
-        return this.listing.getName();
-    }
-
-    public String getDescription() {
-        return this.listing.getDescription();
-    }
-
-    public int getPrice() {
-        return this.listing.getPrice();
-    }
-
-    public int getStock() {
-        return this.listing.getStock();
-    }
-
-    public String getPhotoUrl() {
-        return this.listing.getPhotoUrl();
-    }
-
-    public int getRateCondition() {
-        return this.listing.getRateCondition();
-    }
-
-    public void setUserId(int userId) {
-        this.listing.setUserId(userId);
-    }
-
-    public void setListingId(String listingId) {
-        this.listing.setListingId(listingId);
-    }
-
-    public void setName(String name) {
-        this.listing.setName(name);
-    }
-
-    public void setDescription(String description) {
-        this.listing.setDescription(description);
-    }
-
-    public void setPrice(int price) {
-        this.listing.setPrice(price);
-    }
-
-    public void setStock(int stock) {
-        this.listing.setStock(stock);
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.listing.setPhotoUrl(photoUrl);
-    }
-
-    public void setRateCondition(int rateCondition) {
-        this.listing.setRateCondition(rateCondition);
+        this.userId = builder.userId;
+        this.totalPrice = builder.totalPrice;
     }
 
     public static class Builder {
-        private Listing listing;
+        private String listingId;
         private int amount;
         private String cartListingId;
+        private int userId;
+        private BigDecimal totalPrice = BigDecimal.valueOf(10.00);
 
         public Builder() {
             this.cartListingId = UUID.randomUUID().toString();
         }
 
-        public Builder listing(Listing listing) {
-            this.listing = listing;
+        public Builder listingId(String listingId) {
+            this.listingId = listingId;
             return this;
         }
 
@@ -126,12 +67,22 @@ public class CartListing {
             return this;
         }
 
+        public Builder userId(int userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder totalPrice(BigDecimal totalPrice) {
+            this.totalPrice = totalPrice;
+            return this;
+        }
+
         public CartListing build() {
-            if (listing == null) {
-                throw new IllegalArgumentException("Listing cannot be null.");
+            if (listingId == null || listingId.isEmpty()) {
+                throw new IllegalArgumentException("Listing ID cannot be null or empty.");
             }
-            if (amount <= 0) {
-                throw new IllegalArgumentException("Amount must be greater than 0.");
+            if (amount < 0) {
+                throw new IllegalArgumentException("Amount must be zero or greater.");
             }
             return new CartListing(this);
         }

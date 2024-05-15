@@ -54,7 +54,6 @@ public class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderId(orderId);
         order.setUserId(userId);
-        order.setPriceTotal(100);
         order.setStatus(OrderStatus.DIKEMAS);
         return order;
     }

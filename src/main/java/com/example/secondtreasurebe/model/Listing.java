@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Getter @Setter
 @NoArgsConstructor
 @Table(name="listing")
@@ -34,7 +36,7 @@ public class Listing {
     @NotNull
     @Min(value = 0, message = "Price must be greater than or equal to zero")
     @Column(name="price", nullable=false)
-    private int price;
+    private BigDecimal price;
 
     @NotNull
     @Min(value = 0, message = "Stock must be greater than or equal to zero")

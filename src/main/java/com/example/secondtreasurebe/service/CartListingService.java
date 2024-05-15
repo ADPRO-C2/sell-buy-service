@@ -9,5 +9,6 @@ public interface CartListingService {
     public CartListing createCartListing(CartListing cartListing);
     public CartListing updateAmount(CartListing cartListing, int newAmount);
     public void deleteCartListing(String cartListingId);
-    public CartListing findById(String cartListingId);
+    public CartListing findCartListingById(String cartListingId);
+    public List<CartListing> findAllCartListingsByUserId(int userId);
 }

@@ -9,19 +9,10 @@ public class CartListingTest {
 
     @BeforeEach
     void setUp() {
-        Listing listing1 = new Listing();
-        listing1.setUserId(11);
-        listing1.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd6");
-        listing1.setName("Nintando Swotch");
-        listing1.setDescription("The best console.");
-        listing1.setPrice(100000);
-        listing1.setStock(45);
-        listing1.setPhotoUrl("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g");
-        listing1.setRateCondition(0);
-
         this.cartListing = new CartListing.Builder()
-                .listing(listing1)
+                .listing(new Listing())
                 .amount(3)
+                .userId(77)
                 .build();
 
         this.cartListing.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
