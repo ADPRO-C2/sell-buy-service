@@ -3,7 +3,7 @@ package com.example.secondtreasurebe.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,75 +13,28 @@ public class OrderTest {
 
     @BeforeEach
     void setUp() {
-        Cart tempCart = new Cart(11);
-
-        List<CartListing> items = new ArrayList<>();
-        Listing listing1 = new Listing();
-        Listing listing2 = new Listing();
-
-        CartListing cartListing1 = new CartListing.Builder()
-                .listing(listing1)
-                .amount(2)
-                .build();
-        CartListing cartListing2 = new CartListing.Builder()
-                .listing(listing2)
-                .amount(3)
-                .build();
-        items.add(cartListing1);
-        items.add(cartListing2);
-        tempCart.setItems(items);
-
-        order = new Order(tempCart);
-        order.setOrderId("059680d7-9977-4828-9d86-ff6d245bc052");
-        order.setStatus(OrderStatus.DIKEMAS);
-    }
-
-    @Test
-    void testEmptyOrder() {
-        Cart cart = new Cart(12);
-        Order emptyOrder = new Order(cart);
-        assertTrue(emptyOrder.getItems().isEmpty());
+        order = new Order("5c0803ec-54aa-405c-8f46-460176365cf3");
     }
 
     @Test
     void testCreateValidOrder() {
         assertNotNull(order);
-
-        assertEquals(11, order.getUserId());
-        assertEquals("059680d7-9977-4828-9d86-ff6d245bc052", order.getOrderId());
+        assertNotNull(order.getOrderId());
+        assertEquals("5c0803ec-54aa-405c-8f46-460176365cf3", order.getCartListingid());
         assertEquals(OrderStatus.DIKEMAS, order.getStatus());
-
-        List<CartListing> items = order.getItems();
-        assertEquals(2, items.size());
-
-        Listing listing1 = new Listing();
-        Listing listing2 = new Listing();
-
-        CartListing cartListing1 = items.get(0);
-        assertEquals(listing1.getUserId(), cartListing1.getListing().getUserId());
-        assertEquals(listing1.getListingId(), cartListing1.getListing().getListingId());
-
-        CartListing cartListing2 = items.get(1);
-        assertEquals(listing2.getUserId(), cartListing2.getListing().getUserId());
-        assertEquals(listing2.getListingId(), cartListing2.getListing().getListingId());
-    }
-
-    @Test
-    void testNegativePriceTotal() {
-        this.order.setPriceTotal(-100);
-        assertThrows(IllegalArgumentException.class, this.order::validateOrder);
     }
 
     @Test
     void testValidStatus() {
-        this.order.setStatus(OrderStatus.DIKEMAS);
-        assertEquals(OrderStatus.DIKEMAS, this.order.getStatus());
+        List<OrderStatus> validStatuses = Arrays.asList(OrderStatus.DIKEMAS, OrderStatus.DI_JALAN, OrderStatus.SUDAH_SAMPAI);
+        for (OrderStatus status : validStatuses) {
+            assertTrue(order.isValidStatus(status));
+        }
     }
 
     @Test
     void testInvalidStatus() {
-        OrderStatus invalid = null;
-        this.order.setStatus(invalid);
-        assertThrows(IllegalArgumentException.class, this.order::validateOrder);
+        OrderStatus invalidStatus = null;
+        assertFalse(order.isValidStatus(invalidStatus));
     }
 }

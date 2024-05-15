@@ -1,21 +1,33 @@
 package com.example.secondtreasurebe.service;
 
-import com.example.secondtreasurebe.model.Cart;
 import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.CartListingRepository;
+import com.example.secondtreasurebe.repository.ListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class CartListingServiceImpl implements CartListingService {
 
     @Autowired
     private CartListingRepository cartListingRepository;
 
+    @Autowired
+    private ListingRepository listingRepository;
+
     @Override
     public CartListing createCartListing(CartListing cartListing) {
+        if (cartListing.getCartListingId().isEmpty()) {
+            String id = UUID.randomUUID().toString();
+            cartListing.setCartListingId(id);
+        }
         return cartListingRepository.save(cartListing);
     }
 
@@ -28,7 +40,6 @@ public class CartListingServiceImpl implements CartListingService {
         return cartListingRepository.save(cartListing);
     }
 
-
     @Override
     public void deleteCartListing(String cartListingId) {
         if (!cartListingRepository.existsById(cartListingId)) {
@@ -39,8 +50,13 @@ public class CartListingServiceImpl implements CartListingService {
     }
 
     @Override
-    public CartListing findById(String cartListingId) {
+    public CartListing findCartListingById(String cartListingId) {
         return cartListingRepository.findById(cartListingId)
                 .orElseThrow(() -> new NoSuchElementException("CartListing not found."));
+    }
+
+    @Override
+    public List<CartListing> findAllCartListingsByUserId(int userId) {
+        return cartListingRepository.findAllByUserId(userId);
     }
 }

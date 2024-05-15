@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -22,14 +23,10 @@ public class CartListingController {
     @Autowired
     private CartListingServiceImpl service;
 
-    @Autowired
-    private ListingServiceImpl listingService;
-
     @PostMapping("/cart-listings/{listingId}")
     public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestBody CartListing cartListing) {
         try {
-            Listing listing = listingService.findListingById(listingId);
-            cartListing.setListing(listing);
+            cartListing.setListingId(listingId);
             service.createCartListing(cartListing);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -50,10 +47,20 @@ public class CartListingController {
     @GetMapping("/{cartListingId}")
     public ResponseEntity<CartListing> getCartListingById(@PathVariable String cartListingId) {
         try {
-            var cartListing = service.findById(cartListingId);
+            var cartListing = service.findCartListingById(cartListingId);
             return new ResponseEntity<>(cartListing, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CartListing ID " + cartListingId + " not found");
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CartListing>> getAllCartListingsByUserId(@RequestBody int userId) {
+        try {
+            var cartListings = service.findAllCartListingsByUserId(userId);
+            return new ResponseEntity<>(cartListings, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
     }
 

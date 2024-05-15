@@ -12,5 +12,5 @@ public interface OrderService {
     public Order updateOrderStatus(Order order, OrderStatus status);
     public Order findOrderById(String orderId);
     public void deleteOrder(String orderId);
-    public List<Order> findAllOrdersFromUser(int userId);
+    public List<Order> findAllOrdersByUserId(int userId);
 }

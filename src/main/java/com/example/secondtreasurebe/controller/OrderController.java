@@ -64,8 +64,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrdersInCheckout(@RequestBody int userId) {
-        List<Order> orders = service.findAllOrdersFromUser(userId);
+    public ResponseEntity<List<Order>> getAllOrdersByUserId(@RequestBody int userId) {
+        List<Order> orders = service.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }
