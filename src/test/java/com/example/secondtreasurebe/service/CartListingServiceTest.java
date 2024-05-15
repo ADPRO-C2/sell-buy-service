@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -90,6 +91,19 @@ public class CartListingServiceTest {
         assertEquals(newAmount, result.getAmount());
     }
 
+    @Test
+    void testUpdateInvalidAmount() {
+        CartListing cartListing = new CartListing.Builder()
+                .listingId("notimportant")
+                .amount(3)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(30))
+                .build();
+
+        int newAmount = -1;
+
+        assertThrows(IllegalArgumentException.class, () -> service.updateAmount(cartListing, newAmount));
+    }
 
     @Test
     void testFindById() {
