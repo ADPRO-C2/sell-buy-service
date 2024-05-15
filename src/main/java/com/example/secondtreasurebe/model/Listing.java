@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,7 +35,7 @@ public class Listing {
     @NotNull
     @Min(value = 0, message = "Price must be greater than or equal to zero")
     @Column(name="price", nullable=false)
-    private int price;
+    private BigDecimal price;
 
     @NotNull
     @Min(value = 0, message = "Stock must be greater than or equal to zero")
@@ -52,7 +53,7 @@ public class Listing {
     private int rateCondition; //0: baru; 1:masih bagus; 2:rusak ringan; 3:rusak sedang
 
     public void validate() {
-        if (price < 0 || stock < 0) {
+        if (price.compareTo(BigDecimal.ZERO) < 0 || stock < 0) {
             throw new IllegalArgumentException("Price or stock must be non-negative");
         }else if (rateCondition>3 || rateCondition<0){
             throw new IllegalArgumentException("Rate condition harus berada di antara 0,1,2,3");

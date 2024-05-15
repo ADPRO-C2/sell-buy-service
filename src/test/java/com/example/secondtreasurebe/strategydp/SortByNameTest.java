@@ -3,6 +3,8 @@ package com.example.secondtreasurebe.strategydp;
 import com.example.secondtreasurebe.model.Listing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +20,7 @@ public class SortByNameTest {
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
         listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        listing1.setPrice(299000);
+        listing1.setPrice(BigDecimal.valueOf(299000));
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
@@ -27,7 +29,7 @@ public class SortByNameTest {
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        listing2.setPrice(149000);
+        listing2.setPrice(BigDecimal.valueOf(149000));
         listing2.setRateCondition(2);
 
         listing3 = new Listing();
@@ -36,7 +38,7 @@ public class SortByNameTest {
         listing3.setStock(50);
         listing3.setDescription("Enak dipakai");
         listing3.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        listing3.setPrice(149000);
+        listing3.setPrice(BigDecimal.valueOf(149000));
         listing3.setRateCondition(2);
     }
 
