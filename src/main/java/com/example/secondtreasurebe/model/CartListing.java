@@ -30,7 +30,7 @@ public class CartListing {
     private String cartListingId;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", updatable = false, nullable = false)
     private int userId;
 
     @NotNull

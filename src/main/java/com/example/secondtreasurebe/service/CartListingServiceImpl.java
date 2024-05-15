@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CartListingServiceImpl implements CartListingService {
@@ -23,6 +24,10 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public CartListing createCartListing(CartListing cartListing) {
+        if (cartListing.getCartListingId().isEmpty()) {
+            String id = UUID.randomUUID().toString();
+            cartListing.setCartListingId(id);
+        }
         return cartListingRepository.save(cartListing);
     }
 

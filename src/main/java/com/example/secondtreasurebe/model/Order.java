@@ -24,7 +24,7 @@ public class Order {
     private String orderId;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private int userId;
 
     @NotNull
@@ -32,6 +32,8 @@ public class Order {
     @Column(name = "status", nullable = false)
     private OrderStatus status;
 
+    @NotNull
+    @Column(name = "cart_listing_id", nullable = false, updatable = false)
     private String cartListingid;
 
     public Order(String cartListingid) {
