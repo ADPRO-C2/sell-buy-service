@@ -23,14 +23,6 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public CartListing createCartListing(CartListing cartListing) {
-        String listingId = cartListing.getListingId();
-        Listing listing = listingRepository.findById(cartListing.getListingId())
-                .orElseThrow(() -> new IllegalArgumentException("Listing not found with ID: " + listingId));
-
-        BigDecimal totalPrice = listing.getPrice().multiply(BigDecimal.valueOf(cartListing.getAmount()));
-
-        cartListing.setTotalPrice(totalPrice);
-
         return cartListingRepository.save(cartListing);
     }
 
@@ -60,10 +52,6 @@ public class CartListingServiceImpl implements CartListingService {
 
     @Override
     public List<CartListing> findAllCartListingsByUserId(int userId) {
-        if (!cartListingRepository.existsById(String.valueOf(userId))) {
-            throw new NoSuchElementException("User not found.");
-        } else {
-            return cartListingRepository.findAllByUserId(userId);
-        }
+        return cartListingRepository.findAllByUserId(userId);
     }
 }

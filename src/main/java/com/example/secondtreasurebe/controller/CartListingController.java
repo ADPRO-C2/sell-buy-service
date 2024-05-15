@@ -23,14 +23,10 @@ public class CartListingController {
     @Autowired
     private CartListingServiceImpl service;
 
-    @Autowired
-    private ListingServiceImpl listingService;
-
     @PostMapping("/cart-listings/{listingId}")
     public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestBody CartListing cartListing) {
         try {
-            Listing listing = listingService.findListingById(listingId);
-            cartListing.setListing(listing);
+            cartListing.setListingId(listingId);
             service.createCartListing(cartListing);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
         } catch (Exception e) {

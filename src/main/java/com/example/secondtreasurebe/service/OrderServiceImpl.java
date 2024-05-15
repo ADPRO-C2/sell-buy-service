@@ -47,10 +47,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAllOrdersByUserId(int userId) {
-        if (!orderRepository.existsById(String.valueOf(userId))) {
-            throw new NoSuchElementException("User not found.");
-        } else {
-            return orderRepository.findAllByUserId(userId);
-        }
+        return orderRepository.findAllByUserId(userId);
     }
 }

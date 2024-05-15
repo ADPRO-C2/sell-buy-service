@@ -1,53 +1,40 @@
-package com.example.secondtreasurebe.model;
-
+import com.example.secondtreasurebe.model.CartListing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CartListingTest {
-    CartListing cartListing;
+    CartListing.Builder builder;
 
     @BeforeEach
     void setUp() {
-        this.cartListing = new CartListing.Builder()
-                .listing(new Listing())
-                .amount(3)
-                .userId(77)
-                .build();
-
-        this.cartListing.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
+        builder = new CartListing.Builder()
+                .listingId("12345")
+                .amount(2)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(20.00));
     }
 
     @Test
     void testCreateValidCartListing() {
-        assertEquals("7766d08b-aa3b-4364-af55-62c282fd2b05", this.cartListing.getCartListingId());
-        assertEquals(11, this.cartListing.getUserId());
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.cartListing.getListingId());
-        assertEquals("Nintando Swotch", this.cartListing.getName());
-        assertEquals("The best console.", this.cartListing.getDescription());
-        assertEquals(100000, this.cartListing.getPrice());
-        assertEquals(45, this.cartListing.getStock());
-        assertEquals("https://images.tokopedia.net/img/cache/700/VqbcmM/2023/10/7/f588f985-f66a-4749-979c-07b971cf38e9.png.webp?ect=4g", this.cartListing.getPhotoUrl());
-        assertEquals(0, this.cartListing.getRateCondition());
+        CartListing cartListing = builder.build();
+
+        assertEquals(2, cartListing.getAmount());
+        assertEquals(1, cartListing.getUserId());
+        assertEquals("12345", cartListing.getListingId());
+        assertEquals(BigDecimal.valueOf(20.00), cartListing.getTotalPrice());
+
+        assertNotNull(cartListing);
     }
 
     @Test
     void testNegativeAmount() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new CartListing.Builder()
-                        .listing(new Listing())
-                        .amount(-2)
-                        .build()
-        );
+        assertThrows(IllegalArgumentException.class, () -> builder.amount(-1).build());
     }
 
     @Test
     void testZeroAmount() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new CartListing.Builder()
-                        .listing(new Listing())
-                        .amount(0)
-                        .build()
-        );
+        assertThrows(IllegalArgumentException.class, () -> builder.amount(0).build());
     }
 }

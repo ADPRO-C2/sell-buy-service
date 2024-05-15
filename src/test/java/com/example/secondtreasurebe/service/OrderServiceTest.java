@@ -26,24 +26,21 @@ public class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
-    @Mock
-    private CartService cartService;
-
-    @Mock
-    private CheckoutService checkoutService;
-
     List<Order> orders;
 
     @BeforeEach
     void setUp() {
         orders = new ArrayList<>();
-        Order order1 = new Order(new Cart(11));
+        Order order1 = new Order("cartlistingId-1");
         order1.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
+        order1.setUserId(11);
         orders.add(order1);
-        Order order2 = new Order(new Cart(13));
+        Order order2 = new Order("cartlistingId-2");
         order2.setOrderId("bbd79f8c-3d06-423e-9693-02039d31401b");
+        order2.setUserId(12);
         orders.add(order2);
     }
+
 
     @AfterEach
     void tearDown() {
@@ -52,25 +49,17 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        int userId = 14;
-        Order order = new Order();
-        Cart cart = new Cart(userId);
-        cart.setItems(List.of(new CartListing()));
-        Checkout checkout = new Checkout(userId);
+        int userId = 13;
+        Order order = new Order("cartlistingId-1");
+        order.setUserId(userId);
+        when(orderRepository.save(order)).thenReturn(order);
 
-        when(cartService.findById(userId)).thenReturn(cart);
-        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(checkoutService.findCheckoutById(userId)).thenReturn(checkout);
+        Order result = service.createOrder(userId, order);
 
-        Order createdOrder = service.createOrder(userId, order);
-
-        assertEquals(userId, createdOrder.getUserId());
-        assertFalse(createdOrder.getItems().isEmpty());
-
-        verify(orderRepository, times(1)).save(any(Order.class));
-        verify(checkoutService, times(1)).findCheckoutById(userId);
-        verify(checkoutService, times(1)).createCheckout(any(Checkout.class));
-        verify(cartService, times(1)).createCart(any(Cart.class));
+        assertEquals(userId, result.getUserId());
+        assertNotNull(result.getOrderId());
+        assertEquals(order.getCartListingid(), result.getCartListingid());
+        assertEquals(OrderStatus.DIKEMAS, result.getStatus());
     }
 
     @Test
@@ -110,7 +99,7 @@ public class OrderServiceTest {
 
         when(orderRepository.findAllByUserId(userId)).thenReturn(userOrders);
 
-        List<Order> result = service.findAllOrdersFromUser(userId);
+        List<Order> result = service.findAllOrdersByUserId(userId);
 
         verify(orderRepository, times(1)).findAllByUserId(userId);
         assertEquals(userOrders.size(), result.size());
@@ -120,7 +109,7 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
-        Order order = new Order(new Cart(15));
+        Order order = new Order("77d9a3ef-6be7-4046-b940-8b1a24a24a6a");
         order.setOrderId(orderId);
 
         when(orderRepository.save(order)).thenReturn(order);

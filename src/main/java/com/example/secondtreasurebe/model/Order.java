@@ -40,7 +40,7 @@ public class Order {
         this.status = DIKEMAS;
     }
 
-    private boolean isValidStatus(OrderStatus status) {
+    public boolean isValidStatus(OrderStatus status) {
         List<OrderStatus> validStatuses = Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI);
         return validStatuses.contains(status);
     }

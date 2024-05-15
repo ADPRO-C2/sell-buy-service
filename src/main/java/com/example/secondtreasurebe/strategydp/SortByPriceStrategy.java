@@ -9,7 +9,7 @@ import java.util.List;
 public class SortByPriceStrategy implements SortStrategy {
     @Override
     public List<Listing> sort(List<Listing> listings) {
-        Collections.sort(listings, Comparator.comparingInt(Listing::getPrice));
+        //Collections.sort(listings, Comparator.comparingInt(Listing::getPrice));
         return listings;
     }
 }

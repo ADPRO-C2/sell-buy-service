@@ -81,8 +81,8 @@ public class CartListing {
             if (listingId == null || listingId.isEmpty()) {
                 throw new IllegalArgumentException("Listing ID cannot be null or empty.");
             }
-            if (amount < 0) {
-                throw new IllegalArgumentException("Amount must be zero or greater.");
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Amount must be greater than zero.");
             }
             return new CartListing(this);
         }

@@ -54,10 +54,10 @@ public class Listing {
     private int rateCondition; //0: baru; 1:masih bagus; 2:rusak ringan; 3:rusak sedang
 
     public void validate() {
-        if (price < 0 || stock < 0) {
+        if (price.compareTo(BigDecimal.ZERO) < 0 || stock < 0) {
             throw new IllegalArgumentException("Price or stock must be non-negative");
-        }else if (rateCondition>3 || rateCondition<0){
-            throw new IllegalArgumentException("Rate condition harus berada di antara 0,1,2,3");
+        } else if (rateCondition > 3 || rateCondition < 0) {
+            throw new IllegalArgumentException("Rate condition must be between 0 and 3");
         }
     }
 }
