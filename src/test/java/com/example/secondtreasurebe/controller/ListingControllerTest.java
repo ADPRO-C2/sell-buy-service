@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -49,7 +50,7 @@ public class ListingControllerTest {
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
         listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        listing1.setPrice(299000);
+        listing1.setPrice(BigDecimal.valueOf(299000));
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
@@ -59,7 +60,7 @@ public class ListingControllerTest {
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        listing2.setPrice(149000);
+        listing2.setPrice(BigDecimal.valueOf(149000));
         listing2.setRateCondition(2);
     }
 
@@ -79,7 +80,7 @@ public class ListingControllerTest {
 
     @Test
     public void testCreateListingWithInvalidRequestBody() throws Exception {
-        listing1.setPrice(-1);
+        listing1.setPrice(BigDecimal.valueOf(-1));
 
         mockMvc.perform(post("/api/listing/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +124,7 @@ public class ListingControllerTest {
         updatedListing.setListingId("eb558e9f-1c39-460e-8860-71af6af63bd7");
         updatedListing.setUserId(1);
         updatedListing.setName("Compang");
-        updatedListing.setPrice(30000);
+        updatedListing.setPrice(BigDecimal.valueOf(30000));
         when(listingService.edit(any(Listing.class))).thenReturn(updatedListing);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -139,7 +140,7 @@ public class ListingControllerTest {
     @Test
     public void testEditListingWithInvalidRequestBody() throws Exception {
 
-        listing1.setPrice(-1);
+        listing1.setPrice(BigDecimal.valueOf(-1));
 
         mockMvc.perform(put("/api/listing")
                         .contentType(MediaType.APPLICATION_JSON)

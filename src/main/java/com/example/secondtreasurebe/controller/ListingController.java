@@ -77,7 +77,7 @@ public class ListingController {
         try {
             return service.getListingByUserId(id);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Review " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Listing " + id + " not found");
         }
     }
 }

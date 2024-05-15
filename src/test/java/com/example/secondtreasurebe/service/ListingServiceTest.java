@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public class ListingServiceTest {
         listing1.setStock(10);
         listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
         listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        listing1.setPrice(299000);
+        listing1.setPrice(BigDecimal.valueOf(299000));
         listing1.setRateCondition(0);
 
         listing2 = new Listing();
@@ -48,7 +49,7 @@ public class ListingServiceTest {
         listing2.setStock(50);
         listing2.setDescription("Enak dipakai");
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
-        listing2.setPrice(149000);
+        listing2.setPrice(BigDecimal.valueOf(149000));
         listing2.setRateCondition(2);
     }
 
@@ -64,7 +65,7 @@ public class ListingServiceTest {
         assertEquals(10, createdListing.getStock());
         assertEquals("Kerah terbuka, bahan nyaman dipakai.", createdListing.getDescription());
         assertEquals("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750", createdListing.getPhotoUrl());
-        assertEquals(299000, createdListing.getPrice());
+        assertEquals(BigDecimal.valueOf(299000), createdListing.getPrice());
         assertEquals(0, createdListing.getRateCondition());
     }
 
@@ -110,14 +111,14 @@ public class ListingServiceTest {
         when(listingRepository.save(ArgumentMatchers.any(Listing.class))).thenReturn(listing1);
         service.createListing(listing1);
 
-        listing1.setPrice(12000);
+        listing1.setPrice(BigDecimal.valueOf(12000));
         listing1.setName("Baju Compang Camping");
 
         Listing edited = service.edit(listing1);
 
         // Verifikasi bahwa produk telah diubah dengan benar
         assertEquals("Baju Compang Camping", edited.getName());
-        assertEquals(12000, edited.getPrice());
+        assertEquals(BigDecimal.valueOf(12000), edited.getPrice());
 
         // Verifikasi bahwa data produk yang disimpan telah diperbarui
         assertEquals(edited.getName(), listing1.getName());

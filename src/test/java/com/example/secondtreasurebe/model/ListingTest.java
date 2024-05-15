@@ -3,6 +3,8 @@ package com.example.secondtreasurebe.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -17,7 +19,7 @@ class ListingTest {
         this.listing.setStock(10);
         this.listing.setDescription("Kerah terbuka, bahan nyaman dipakai.");
         this.listing.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
-        this.listing.setPrice(299000);
+        this.listing.setPrice(BigDecimal.valueOf(299000));
         this.listing.setRateCondition(0);
     }
 
@@ -53,7 +55,7 @@ class ListingTest {
 
     @Test
     void getPrice() {
-        assertEquals(299000, this.listing.getPrice());
+        assertEquals(BigDecimal.valueOf(299000), this.listing.getPrice());
     }
 
     @Test
@@ -64,7 +66,7 @@ class ListingTest {
         @Test
     public void testValidateValidValues() {
         listing = new Listing();
-        listing.setPrice(100);
+        listing.setPrice(BigDecimal.valueOf(100));
         listing.setStock(10);
         listing.setRateCondition(1);
         listing.validate();
@@ -72,21 +74,18 @@ class ListingTest {
 
         @Test
     public void testNegativePrice() {
-        listing = new Listing();
-        listing.setPrice(-100);
+        listing.setPrice(BigDecimal.valueOf(-100));
         assertThrows(IllegalArgumentException.class, listing::validate);
     }
 
     @Test
     public void testNegativeStock() {
-        listing = new Listing();
         listing.setStock(-100);
         assertThrows(IllegalArgumentException.class, listing::validate);
     }
 
     @Test
     public void testInvalidRateCondition() {
-        listing = new Listing();
         listing.setRateCondition(10);
         assertThrows(IllegalArgumentException.class, listing::validate);
     }
