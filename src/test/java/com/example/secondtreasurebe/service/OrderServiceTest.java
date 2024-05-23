@@ -45,10 +45,12 @@ public class OrderServiceTest {
         Order order1 = new Order();
         order1.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
         order1.setUserId(11);
+        order1.setSellerId(11);
         orders.add(order1);
         Order order2 = new Order();
         order2.setOrderId("bbd79f8c-3d06-423e-9693-02039d31401b");
         order2.setUserId(12);
+        order2.setSellerId(11);
         orders.add(order2);
     }
 
@@ -182,5 +184,22 @@ public class OrderServiceTest {
 
         verify(orderRepository, times(1)).existsById(nonExistentOrderId);
         verify(orderRepository, never()).deleteById(anyString());
+    }
+
+    @Test
+    void testFindAllOrdersFromSeller() {
+        int sellerId = 11;
+        List<Order> sellerOrders = new ArrayList<>();
+        Order Order1 = orders.get(0);
+        Order Order2 = orders.get(1);
+        sellerOrders.add(Order1);
+        sellerOrders.add(Order2);
+
+        when(orderRepository.findAllBySellerId(sellerId)).thenReturn(sellerOrders);
+
+        List<Order> result = service.findAllOrdersBySellerId(sellerId);
+
+        verify(orderRepository, times(1)).findAllBySellerId(sellerId);
+        assertEquals(sellerOrders, result);
     }
 }

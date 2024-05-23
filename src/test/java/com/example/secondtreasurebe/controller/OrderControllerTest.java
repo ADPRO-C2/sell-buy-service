@@ -235,4 +235,17 @@ public class OrderControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedOrders, response.getBody());
     }
+
+    @Test
+    public void testGetAllOrdersBySellerIdSuccess() {
+        int sellerId = 2;
+        List<Order> expectedOrders = Arrays.asList(new Order(), new Order());
+
+        Mockito.when(service.findAllOrdersBySellerId(sellerId)).thenReturn(expectedOrders);
+
+        ResponseEntity<List<Order>> response = controller.getAllOrdersBySellerId(sellerId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedOrders, response.getBody());
+    }
 }
