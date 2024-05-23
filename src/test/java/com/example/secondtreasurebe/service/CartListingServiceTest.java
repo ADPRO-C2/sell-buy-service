@@ -3,7 +3,6 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.CartListingRepository;
-import com.example.secondtreasurebe.repository.ListingRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,14 +133,20 @@ public class CartListingServiceTest {
         CartListing updated = cartListing;
         updated.setAmount(5);
 
-        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
+        Listing listing = new Listing();
+        listing.setPrice(BigDecimal.valueOf(50));
 
+        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
         when(cartListingRepository.save(any(CartListing.class))).thenReturn(updated);
+
+        when(listingService.findListingById("09ea05e7-fe39-459a-9298-24a6f4099bcf")).thenReturn(listing);
+
         CartListing result = service.updateAmount(cartListing.getCartListingId(), newAmount);
 
         verify(cartListingRepository, times(1)).save(any(CartListing.class));
 
         assertEquals(newAmount, result.getAmount());
+        assertEquals(BigDecimal.valueOf(250), result.getTotalPrice());
     }
 
     @Test
