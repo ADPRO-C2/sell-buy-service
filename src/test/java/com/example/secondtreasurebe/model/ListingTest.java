@@ -63,7 +63,7 @@ class ListingTest {
         assertEquals(0, this.listing.getRateCondition());
     }
 
-        @Test
+    @Test
     public void testValidateValidValues() {
         listing = new Listing();
         listing.setPrice(BigDecimal.valueOf(100));
@@ -72,7 +72,7 @@ class ListingTest {
         listing.validate();
     }
 
-        @Test
+    @Test
     public void testNegativePrice() {
         listing.setPrice(BigDecimal.valueOf(-100));
         assertThrows(IllegalArgumentException.class, listing::validate);
@@ -89,5 +89,4 @@ class ListingTest {
         listing.setRateCondition(10);
         assertThrows(IllegalArgumentException.class, listing::validate);
     }
-
 }
