@@ -28,6 +28,8 @@ public class CartListingController {
         try {
             CartListing cartListing = service.createCartListing(listingId, amount);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to process request: " + e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create cart listing", e);
         }
@@ -38,6 +40,8 @@ public class CartListingController {
         try {
             var res = service.updateAmount(cartListingId, amount);
             return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to process request: " + e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }

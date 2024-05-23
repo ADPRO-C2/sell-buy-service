@@ -42,11 +42,11 @@ public class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orders = new ArrayList<>();
-        Order order1 = new Order("cartlistingId-1");
+        Order order1 = new Order();
         order1.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
         order1.setUserId(11);
         orders.add(order1);
-        Order order2 = new Order("cartlistingId-2");
+        Order order2 = new Order();
         order2.setOrderId("bbd79f8c-3d06-423e-9693-02039d31401b");
         order2.setUserId(12);
         orders.add(order2);
