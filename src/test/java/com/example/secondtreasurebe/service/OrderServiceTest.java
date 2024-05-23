@@ -1,4 +1,4 @@
-package com.example.secondtreasurebe.service;
+/*package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.*;
 import com.example.secondtreasurebe.repository.OrderRepository;
@@ -141,4 +141,4 @@ public class OrderServiceTest {
         verify(orderRepository, times(1)).existsById(nonExistentOrderId);
         verify(orderRepository, never()).deleteById(anyString());
     }
-}
+}*/

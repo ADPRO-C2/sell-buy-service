@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 
 public class UpdateOrderStatusRequest {
-    private Order order;
+    private String orderId;
     private OrderStatus status;
 }
