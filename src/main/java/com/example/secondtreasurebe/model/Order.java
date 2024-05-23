@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Arrays;
-import java.util.UUID;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.*;
@@ -21,7 +20,6 @@ import static com.example.secondtreasurebe.model.OrderStatus.*;
 @Table(name="orders")
 @Entity
 public class Order {
-    //switch it to take listing name, price, amount, and maybe picture. date too, maybe.
     @Id
     @Size(max=100)
     @Column(name = "order_id", updatable = false, nullable = false)
@@ -39,10 +37,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
-
-    @NotNull
-    @Column(name = "cart_listing_id", nullable = false, updatable = false)
-    private String cartListingid;
 
     @NotNull
     @Column(name = "listing_name", updatable = false, nullable = false)
@@ -63,14 +57,13 @@ public class Order {
     @Column(name = "date_bought", updatable = false, nullable = false)
     private LocalDate dateBought;
 
-    public Order(String cartListingid) {
-        this.cartListingid = cartListingid;
-        this.orderId = UUID.randomUUID().toString();
-        this.status = DIKEMAS;
-    }
+    public Order(String cartListingId) {
 
+    }
     public boolean isValidStatus(OrderStatus status) {
-        List<OrderStatus> validStatuses = Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI);
-        return validStatuses.contains(status);
+        if (status == null || !Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI).contains(status)) {
+            throw new IllegalArgumentException("Invalid Order Status: " + status);
+        }
+        return true;
     }
 }

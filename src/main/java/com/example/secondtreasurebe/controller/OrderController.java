@@ -26,13 +26,14 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@PathVariable String cartListingId) {
         try {
             Order order = service.createOrder(cartListingId);
+
             return new ResponseEntity<>(order, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{orderId}")
     public ResponseEntity<Order> updateOrderStatus(@PathVariable String orderId, @RequestParam OrderStatus status) {
         try {
             var order = service.updateOrderStatus(orderId, status);
@@ -62,8 +63,8 @@ public class OrderController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrdersByUserId(@RequestBody int userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Order>> getAllOrdersByUserId(@PathVariable int userId) {
         List<Order> orders = service.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }

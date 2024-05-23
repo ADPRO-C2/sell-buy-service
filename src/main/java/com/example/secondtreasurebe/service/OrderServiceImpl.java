@@ -1,12 +1,14 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.model.OrderStatus;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,20 +23,38 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CartListingServiceImpl service;
 
+    @Autowired
+    private ListingServiceImpl listingService;
+
     @Override
     public Order createOrder(String cartListingId) {
         if (cartListingId == null || cartListingId.isEmpty()) {
             throw new IllegalArgumentException("CartListing ID cannot be null or empty.");
         }
 
-        Order order = new Order(cartListingId);
+        Order order = new Order();
         String id = UUID.randomUUID().toString();
 
         CartListing cartListing = service.findCartListingById(cartListingId);
+        String listingName = listingService.findListingById(cartListing.getListingId()).getName();
+        String listingPhoto = listingService.findListingById(cartListing.getListingId()).getPhotoUrl();
+        int sellerId = listingService.findListingById(cartListing.getListingId()).getUserId();
+
         order.setOrderId(id);
         order.setUserId(cartListing.getUserId());
+        order.setAmount(cartListing.getAmount());
+        order.setTotalPrice(cartListing.getTotalPrice());
+        order.setListingName(listingName);
+        order.setPhotoUrl(listingPhoto);
+        order.setSellerId(sellerId);
+        order.setDateBought(LocalDate.now());
+        order.setStatus(OrderStatus.DIKEMAS);
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+
+        service.deleteCartListing(cartListingId);
+
+        return savedOrder;
     }
 
     @Override
