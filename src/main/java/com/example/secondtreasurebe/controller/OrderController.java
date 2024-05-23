@@ -27,8 +27,10 @@ public class OrderController {
             Order order = service.createOrder(cartListingId);
 
             return new ResponseEntity<>(order, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to process request: " + e.getMessage());
+        }catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 

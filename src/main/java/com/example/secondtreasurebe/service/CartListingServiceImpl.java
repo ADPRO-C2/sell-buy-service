@@ -61,6 +61,11 @@ public class CartListingServiceImpl implements CartListingService {
                 .orElseThrow(() -> new NoSuchElementException("Cart listing not found"));
 
         cartListing.setAmount(newAmount);
+
+        Listing listing = listingService.findListingById(cartListing.getListingId());
+        BigDecimal newTotal = listing.getPrice().multiply(BigDecimal.valueOf(newAmount));
+        cartListing.setTotalPrice(newTotal);
+
         return cartListingRepository.save(cartListing);
     }
 

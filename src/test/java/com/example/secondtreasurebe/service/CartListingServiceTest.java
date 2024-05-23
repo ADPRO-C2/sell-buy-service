@@ -3,7 +3,6 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.CartListingRepository;
-import com.example.secondtreasurebe.repository.ListingRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
