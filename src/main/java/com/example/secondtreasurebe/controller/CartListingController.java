@@ -1,6 +1,6 @@
 package com.example.secondtreasurebe.controller;
 
-import gcom.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.service.CartListingServiceImpl;
 import com.example.secondtreasurebe.service.ListingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
