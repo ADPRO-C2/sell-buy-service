@@ -31,7 +31,7 @@ public class CartListingServiceTest {
     CartListingRepository cartListingRepository;
 
     @Mock
-    ListingRepository listingRepository;
+    ListingServiceImpl listingService;
 
     List<CartListing> cartListings;
 
@@ -63,30 +63,83 @@ public class CartListingServiceTest {
 
     @Test
     void testCreate() {
-        CartListing cartListing = cartListings.get(0);
-        doReturn(cartListing).when(cartListingRepository).save(cartListing);
+        Listing listing1 = new Listing();
+        int amount = 2;
+        listing1.setUserId(1);
+        listing1.setListingId("09ea05e7-fe39-459a-9298-24a6f4099bcf");
+        listing1.setName("Kemeja Linen Blend");
+        listing1.setStock(10);
+        listing1.setDescription("Kerah terbuka, bahan nyaman dipakai.");
+        listing1.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/467247/item/idgoods_09_467247.jpg?width=750");
+        listing1.setPrice(BigDecimal.valueOf(299000));
+        listing1.setRateCondition(0);
 
-        CartListing result = service.createCartListing(cartListing);
-        verify(cartListingRepository, times(1)).save(cartListing);
-        assertEquals(cartListing.getCartListingId(), result.getCartListingId());
+        doReturn(listing1).when(listingService).findListingById("09ea05e7-fe39-459a-9298-24a6f4099bcf");
+
+        CartListing.Builder builder = new CartListing.Builder();
+        builder.listingId("09ea05e7-fe39-459a-9298-24a6f4099bcf")
+                .amount(amount)
+                .totalPrice(listing1.getPrice().multiply(BigDecimal.valueOf(amount)));
+
+        CartListing cartListing = builder.build();
+        cartListing.setUserId(1);
+
+        when(cartListingRepository.save(any(CartListing.class))).thenReturn(cartListing);
+
+        CartListing result = service.createCartListing("09ea05e7-fe39-459a-9298-24a6f4099bcf", amount);
+
+        assertNotNull(result);
+        assertEquals(listing1.getListingId(), result.getListingId());
+        assertEquals(amount, result.getAmount());
+        assertEquals(BigDecimal.valueOf(299000).multiply(BigDecimal.valueOf(amount)), result.getTotalPrice());
+        assertEquals(1, result.getUserId());
+    }
+
+    @Test
+    void testCreateEmptyListingId() {
+        String listingId = "";
+        int amount = 2;
+
+        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount));
+    }
+
+    @Test
+    void testCreateZeroAmount() {
+        String listingId = "valid-listing-id";
+        int amount = 0;
+
+        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount));
+    }
+
+    @Test
+    void testCreateListingNotFound() {
+        String listingId = "listing-not-found";
+        int amount = 2;
+        doReturn(null).when(listingService).findListingById(listingId);
+
+        assertThrows(NoSuchElementException.class, () -> service.createCartListing(listingId, amount));
     }
 
     @Test
     void testUpdateAmount() {
-        CartListing cartListing = cartListings.get(0);
+        CartListing cartListing = new CartListing.Builder()
+                .listingId("09ea05e7-fe39-459a-9298-24a6f4099bcf")
+                .amount(4)
+                .userId(1)
+                .build();
+        cartListing.setCartListingId("7766d08b-aa3b-4364-af55-62c282fd2b05");
+
         int newAmount = 5;
 
-        CartListing updatedCartListing = new CartListing.Builder()
-                .listingId(cartListing.getListingId())
-                .amount(newAmount)
-                .build();
-        updatedCartListing.setCartListingId(cartListing.getCartListingId());
+        CartListing updated = cartListing;
+        updated.setAmount(5);
 
-        when(cartListingRepository.save(any(CartListing.class))).thenReturn(updatedCartListing);
+        when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
 
-        CartListing result = service.updateAmount(updatedCartListing, newAmount);
+        when(cartListingRepository.save(any(CartListing.class))).thenReturn(updated);
+        CartListing result = service.updateAmount(cartListing.getCartListingId(), newAmount);
 
-        verify(cartListingRepository, times(1)).save(updatedCartListing);
+        verify(cartListingRepository, times(1)).save(any(CartListing.class));
 
         assertEquals(newAmount, result.getAmount());
     }
@@ -100,20 +153,20 @@ public class CartListingServiceTest {
                 .totalPrice(BigDecimal.valueOf(30))
                 .build();
 
+        cartListing.setCartListingId("02bde298-d1c7-4bce-acc9-bf479a0d0154");
         int newAmount = -1;
 
-        assertThrows(IllegalArgumentException.class, () -> service.updateAmount(cartListing, newAmount));
+        assertThrows(IllegalArgumentException.class, () -> service.updateAmount(cartListing.getCartListingId(), newAmount));
     }
 
     @Test
     void testFindById() {
-        CartListing cartListing = cartListings.get(1);
+        CartListing cartListing = this.cartListings.get(1);
         when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
 
         CartListing result = service.findCartListingById(cartListing.getCartListingId());
         assertEquals(cartListing.getCartListingId(), result.getCartListingId());
     }
-
 
     @Test
     void testFindByIdIfNotExist() {

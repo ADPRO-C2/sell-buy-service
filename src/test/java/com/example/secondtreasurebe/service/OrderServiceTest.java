@@ -10,9 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,11 +23,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
+    CartListing.Builder builder;
+
     @InjectMocks
     OrderServiceImpl service;
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    ListingServiceImpl listingService;
+
+    @Mock
+    CartListingServiceImpl cartListingService;
 
     List<Order> orders;
 
@@ -49,16 +60,47 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        int userId = 13;
-        Order order = new Order("cartlistingId-1");
-        order.setUserId(userId);
-        when(orderRepository.save(order)).thenReturn(order);
+        Listing listing1 = new Listing();
+        listing1.setListingId("12345");
+        listing1.setName("thing");
+        listing1.setUserId(2);
+        listing1.setPhotoUrl("https://example.com/gadget.jpg");
 
-        Order result = service.createOrder(userId, order);
+        builder = new CartListing.Builder()
+                .listingId("12345")
+                .amount(2)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(20.00));
 
-        assertEquals(userId, result.getUserId());
-        assertNotNull(result.getOrderId());
-        assertEquals(order.getCartListingid(), result.getCartListingid());
+        CartListing cartListing = builder.build();
+        cartListing.setCartListingId("12");
+
+        Order order = new Order();
+
+        order.setOrderId(UUID.randomUUID().toString());
+        order.setUserId(cartListing.getUserId());
+        order.setAmount(cartListing.getAmount());
+        order.setTotalPrice(cartListing.getTotalPrice());
+        order.setListingName(listing1.getName());
+        order.setPhotoUrl(listing1.getPhotoUrl());
+        order.setSellerId(listing1.getUserId());
+        order.setDateBought(LocalDate.now());
+        order.setStatus(OrderStatus.DIKEMAS);
+
+        when(listingService.findListingById(listing1.getListingId())).thenReturn(listing1);
+        when(cartListingService.findCartListingById(cartListing.getCartListingId())).thenReturn(cartListing);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        Order result = service.createOrder("12");
+
+        assertEquals(cartListing.getUserId(), result.getUserId());
+        assertEquals(OrderStatus.DIKEMAS, result.getStatus());
+        assertEquals(cartListing.getAmount(), result.getAmount());
+        assertEquals(cartListing.getTotalPrice(), result.getTotalPrice());
+        assertEquals(listing1.getName(), result.getListingName());
+        assertEquals(listing1.getPhotoUrl(), result.getPhotoUrl());
+        assertEquals(listing1.getUserId(), result.getSellerId());
+        assertEquals(LocalDate.now(), result.getDateBought());
         assertEquals(OrderStatus.DIKEMAS, result.getStatus());
     }
 
@@ -71,7 +113,7 @@ public class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
         when(orderRepository.save(order)).thenReturn(order);
 
-        Order result = service.updateOrderStatus(order, newStatus);
+        Order result = service.updateOrderStatus(order.getOrderId(), newStatus);
 
         verify(orderRepository, times(1)).findById(orderId);
         verify(orderRepository, times(1)).save(order);
@@ -109,7 +151,7 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
-        Order order = new Order("77d9a3ef-6be7-4046-b940-8b1a24a24a6a");
+        Order order = new Order();
         order.setOrderId(orderId);
 
         when(orderRepository.save(order)).thenReturn(order);

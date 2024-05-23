@@ -3,38 +3,45 @@ package com.example.secondtreasurebe.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
+
     Order order;
 
     @BeforeEach
-    void setUp() {
-        order = new Order("5c0803ec-54aa-405c-8f46-460176365cf3");
+    public void setUp() {
+        this.order = new Order();
+        this.order.setOrderId("insert-order-id");
+        this.order.setUserId(1);
+        this.order.setSellerId(2);
+        this.order.setStatus(OrderStatus.DIKEMAS);
+        this.order.setListingName("nintendo swotch");
+        this.order.setAmount(3);
+        this.order.setTotalPrice(BigDecimal.valueOf(100.00));
+        this.order.setPhotoUrl("https://example.com/gadget.jpg");
+        this.order.setDateBought(LocalDate.now());
+    }
+    @Test
+    public void testValidOrderCreation() {
+        assertEquals("insert-order-id", this.order.getOrderId());
+        assertEquals(1, this.order.getUserId());
+        assertEquals(2, this.order.getSellerId());
+        assertEquals(OrderStatus.DIKEMAS, this.order.getStatus());
+        assertEquals("nintendo swotch", this.order.getListingName());
+        assertEquals(3, this.order.getAmount());
+        assertEquals(BigDecimal.valueOf(100.00), this.order.getTotalPrice());
+        assertEquals("https://example.com/gadget.jpg", this.order.getPhotoUrl());
+        assertEquals(LocalDate.now(), this.order.getDateBought());
     }
 
     @Test
-    void testCreateValidOrder() {
-        assertNotNull(order);
-        assertNotNull(order.getOrderId());
-        assertEquals("5c0803ec-54aa-405c-8f46-460176365cf3", order.getCartListingid());
-        assertEquals(OrderStatus.DIKEMAS, order.getStatus());
-    }
+    public void testInvalidStatus() {
+        String invalidStatus = "Invalid Status";
 
-    @Test
-    void testValidStatus() {
-        List<OrderStatus> validStatuses = Arrays.asList(OrderStatus.DIKEMAS, OrderStatus.DI_JALAN, OrderStatus.SUDAH_SAMPAI);
-        for (OrderStatus status : validStatuses) {
-            assertTrue(order.isValidStatus(status));
-        }
-    }
-
-    @Test
-    void testInvalidStatus() {
-        OrderStatus invalidStatus = null;
-        assertFalse(order.isValidStatus(invalidStatus));
+        assertThrows(IllegalArgumentException.class, () -> this.order.setStatus(OrderStatus.valueOf(invalidStatus)));
     }
 }

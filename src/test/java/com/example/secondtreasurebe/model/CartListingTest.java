@@ -1,4 +1,5 @@
-import com.example.secondtreasurebe.model.CartListing;
+package com.example.secondtreasurebe.model;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;

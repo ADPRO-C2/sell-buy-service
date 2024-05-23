@@ -1,9 +1,7 @@
 package com.example.secondtreasurebe.controller;
 
-import com.example.secondtreasurebe.dto.CreateOrderRequest;
-import com.example.secondtreasurebe.dto.UpdateOrderStatusRequest;
-import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Order;
+import com.example.secondtreasurebe.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,20 +21,21 @@ public class OrderController {
     @Autowired
     OrderServiceImpl service;
 
-    @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody CreateOrderRequest request) {
+    @PostMapping("/create/{cartListingId}")
+    public ResponseEntity<Order> createOrder(@PathVariable String cartListingId) {
         try {
-            service.createOrder(request.getUserId(), request.getOrder());
-            return new ResponseEntity<>(request.getOrder(), HttpStatus.CREATED);
+            Order order = service.createOrder(cartListingId);
+
+            return new ResponseEntity<>(order, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Order> updateOrderStatus(@RequestBody UpdateOrderStatusRequest request) {
+    @PutMapping("/update/{orderId}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable String orderId, @RequestParam OrderStatus status) {
         try {
-            var order = service.updateOrderStatus(request.getOrder(), request.getStatus());
+            var order = service.updateOrderStatus(orderId, status);
             return new ResponseEntity<>(order, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
@@ -63,8 +62,8 @@ public class OrderController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrdersByUserId(@RequestBody int userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Order>> getAllOrdersByUserId(@PathVariable int userId) {
         List<Order> orders = service.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
