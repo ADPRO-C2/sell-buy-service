@@ -1,6 +1,5 @@
 package com.example.secondtreasurebe.controller;
 
-import com.example.secondtreasurebe.dto.UpdateOrderStatusRequest;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
