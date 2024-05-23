@@ -57,13 +57,9 @@ public class Order {
     @Column(name = "date_bought", updatable = false, nullable = false)
     private LocalDate dateBought;
 
-    public Order(String cartListingId) {
-
-    }
-    public boolean isValidStatus(OrderStatus status) {
+    public void isValidStatus() {
         if (status == null || !Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI).contains(status)) {
             throw new IllegalArgumentException("Invalid Order Status: " + status);
         }
-        return true;
     }
 }

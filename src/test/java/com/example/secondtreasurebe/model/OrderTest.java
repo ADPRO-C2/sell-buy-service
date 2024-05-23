@@ -41,7 +41,12 @@ public class OrderTest {
     @Test
     public void testInvalidStatus() {
         String invalidStatus = "Invalid Status";
+        assertThrows(IllegalArgumentException.class, () -> order.setStatus(OrderStatus.valueOf(invalidStatus)));
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> this.order.setStatus(OrderStatus.valueOf(invalidStatus)));
+    @Test
+    public void testNullStatus() {
+        order.setStatus(null);
+        assertThrows(IllegalArgumentException.class, this.order::isValidStatus);
     }
 }
