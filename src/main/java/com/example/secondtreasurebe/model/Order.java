@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Arrays;
-import java.util.UUID;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import static com.example.secondtreasurebe.model.OrderStatus.*;
 
 @Getter @Setter
 @NoArgsConstructor
-@Table(name="order")
+@Table(name="orders")
 @Entity
 public class Order {
     @Id
@@ -24,53 +26,44 @@ public class Order {
     private String orderId;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private int userId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<CartListing> items;
-
-    @ManyToOne
-    @JoinColumn(name = "checkout_id", referencedColumnName = "user_id")
-    private Checkout checkout;
-
     @NotNull
-    @Min(value = 0, message = "Price total has to be zero or above.")
-    @Column(name = "price_total", nullable = false)
-    private double priceTotal;
+    @Column(name = "seller_id", nullable = false, updatable = false)
+    private int sellerId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
 
-    public Order(Cart cart) {
-        UUID uuid = UUID.randomUUID();
-        this.orderId = uuid.toString();
-        this.userId = cart.getUserId();
-        this.items = cart.getItems();
-        this.priceTotal = calculatePriceTotal();
-        this.status = DIKEMAS;
-    }
+    @NotNull
+    @Column(name = "listing_name", updatable = false, nullable = false)
+    private String listingName;
 
-    private double calculatePriceTotal() {
-        double total = 0;
-        for (CartListing item : items) {
-            total += item.getAmount() * item.getListing().getPrice();
+    @NotNull
+    @Column(name = "amount", updatable = false, nullable = false)
+    private int amount;
+
+    @NotNull
+    @Column(name = "total_price", updatable = false, nullable = false)
+    private BigDecimal totalPrice;
+
+    @Column(name = "listing_photo", updatable = false)
+    private String photoUrl;
+
+    @NotNull
+    @Column(name = "date_bought", updatable = false, nullable = false)
+    private LocalDate dateBought;
+
+    public Order(String cartListingId) {
+
+    }
+    public boolean isValidStatus(OrderStatus status) {
+        if (status == null || !Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI).contains(status)) {
+            throw new IllegalArgumentException("Invalid Order Status: " + status);
         }
-        return total;
-    }
-
-    public void validateOrder() {
-        if (this.priceTotal < 0) {
-            throw new IllegalArgumentException("Price total should be more than 0.");
-        } else if (!isValidStatus(this.status)) {
-            throw new IllegalArgumentException("Invalid order status.");
-        }
-    }
-
-    private boolean isValidStatus(OrderStatus status) {
-        List<OrderStatus> validStatuses = Arrays.asList(DIKEMAS, DI_JALAN, SUDAH_SAMPAI);
-        return validStatuses.contains(status);
+        return true;
     }
 }

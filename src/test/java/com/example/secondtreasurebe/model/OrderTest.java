@@ -3,85 +3,45 @@ package com.example.secondtreasurebe.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
+
     Order order;
 
     @BeforeEach
-    void setUp() {
-        Cart tempCart = new Cart(11);
-
-        List<CartListing> items = new ArrayList<>();
-        Listing listing1 = new Listing();
-        Listing listing2 = new Listing();
-
-        CartListing cartListing1 = new CartListing.Builder()
-                .listing(listing1)
-                .amount(2)
-                .build();
-        CartListing cartListing2 = new CartListing.Builder()
-                .listing(listing2)
-                .amount(3)
-                .build();
-        items.add(cartListing1);
-        items.add(cartListing2);
-        tempCart.setItems(items);
-
-        order = new Order(tempCart);
-        order.setOrderId("059680d7-9977-4828-9d86-ff6d245bc052");
-        order.setStatus(OrderStatus.DIKEMAS);
-    }
-
-    @Test
-    void testEmptyOrder() {
-        Cart cart = new Cart(12);
-        Order emptyOrder = new Order(cart);
-        assertTrue(emptyOrder.getItems().isEmpty());
-    }
-
-    @Test
-    void testCreateValidOrder() {
-        assertNotNull(order);
-
-        assertEquals(11, order.getUserId());
-        assertEquals("059680d7-9977-4828-9d86-ff6d245bc052", order.getOrderId());
-        assertEquals(OrderStatus.DIKEMAS, order.getStatus());
-
-        List<CartListing> items = order.getItems();
-        assertEquals(2, items.size());
-
-        Listing listing1 = new Listing();
-        Listing listing2 = new Listing();
-
-        CartListing cartListing1 = items.get(0);
-        assertEquals(listing1.getUserId(), cartListing1.getListing().getUserId());
-        assertEquals(listing1.getListingId(), cartListing1.getListing().getListingId());
-
-        CartListing cartListing2 = items.get(1);
-        assertEquals(listing2.getUserId(), cartListing2.getListing().getUserId());
-        assertEquals(listing2.getListingId(), cartListing2.getListing().getListingId());
-    }
-
-    @Test
-    void testNegativePriceTotal() {
-        this.order.setPriceTotal(-100);
-        assertThrows(IllegalArgumentException.class, this.order::validateOrder);
-    }
-
-    @Test
-    void testValidStatus() {
+    public void setUp() {
+        this.order = new Order();
+        this.order.setOrderId("insert-order-id");
+        this.order.setUserId(1);
+        this.order.setSellerId(2);
         this.order.setStatus(OrderStatus.DIKEMAS);
+        this.order.setListingName("nintendo swotch");
+        this.order.setAmount(3);
+        this.order.setTotalPrice(BigDecimal.valueOf(100.00));
+        this.order.setPhotoUrl("https://example.com/gadget.jpg");
+        this.order.setDateBought(LocalDate.now());
+    }
+    @Test
+    public void testValidOrderCreation() {
+        assertEquals("insert-order-id", this.order.getOrderId());
+        assertEquals(1, this.order.getUserId());
+        assertEquals(2, this.order.getSellerId());
         assertEquals(OrderStatus.DIKEMAS, this.order.getStatus());
+        assertEquals("nintendo swotch", this.order.getListingName());
+        assertEquals(3, this.order.getAmount());
+        assertEquals(BigDecimal.valueOf(100.00), this.order.getTotalPrice());
+        assertEquals("https://example.com/gadget.jpg", this.order.getPhotoUrl());
+        assertEquals(LocalDate.now(), this.order.getDateBought());
     }
 
     @Test
-    void testInvalidStatus() {
-        OrderStatus invalid = null;
-        this.order.setStatus(invalid);
-        assertThrows(IllegalArgumentException.class, this.order::validateOrder);
+    public void testInvalidStatus() {
+        String invalidStatus = "Invalid Status";
+
+        assertThrows(IllegalArgumentException.class, () -> this.order.setStatus(OrderStatus.valueOf(invalidStatus)));
     }
 }

@@ -10,15 +10,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
+
+    CartListing.Builder builder;
 
     @InjectMocks
     OrderServiceImpl service;
@@ -27,23 +32,26 @@ public class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    private CartService cartService;
+    ListingServiceImpl listingService;
 
     @Mock
-    private CheckoutService checkoutService;
+    CartListingServiceImpl cartListingService;
 
     List<Order> orders;
 
     @BeforeEach
     void setUp() {
         orders = new ArrayList<>();
-        Order order1 = new Order(new Cart(11));
+        Order order1 = new Order("cartlistingId-1");
         order1.setOrderId("a006d26e-b675-4919-bfc9-4a8936af9bba");
+        order1.setUserId(11);
         orders.add(order1);
-        Order order2 = new Order(new Cart(13));
+        Order order2 = new Order("cartlistingId-2");
         order2.setOrderId("bbd79f8c-3d06-423e-9693-02039d31401b");
+        order2.setUserId(12);
         orders.add(order2);
     }
+
 
     @AfterEach
     void tearDown() {
@@ -52,25 +60,48 @@ public class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        int userId = 14;
+        Listing listing1 = new Listing();
+        listing1.setListingId("12345");
+        listing1.setName("thing");
+        listing1.setUserId(2);
+        listing1.setPhotoUrl("https://example.com/gadget.jpg");
+
+        builder = new CartListing.Builder()
+                .listingId("12345")
+                .amount(2)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(20.00));
+
+        CartListing cartListing = builder.build();
+        cartListing.setCartListingId("12");
+
         Order order = new Order();
-        Cart cart = new Cart(userId);
-        cart.setItems(List.of(new CartListing()));
-        Checkout checkout = new Checkout(userId);
 
-        when(cartService.findById(userId)).thenReturn(cart);
-        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(checkoutService.findCheckoutById(userId)).thenReturn(checkout);
+        order.setOrderId(UUID.randomUUID().toString());
+        order.setUserId(cartListing.getUserId());
+        order.setAmount(cartListing.getAmount());
+        order.setTotalPrice(cartListing.getTotalPrice());
+        order.setListingName(listing1.getName());
+        order.setPhotoUrl(listing1.getPhotoUrl());
+        order.setSellerId(listing1.getUserId());
+        order.setDateBought(LocalDate.now());
+        order.setStatus(OrderStatus.DIKEMAS);
 
-        Order createdOrder = service.createOrder(userId, order);
+        when(listingService.findListingById(listing1.getListingId())).thenReturn(listing1);
+        when(cartListingService.findCartListingById(cartListing.getCartListingId())).thenReturn(cartListing);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        assertEquals(userId, createdOrder.getUserId());
-        assertFalse(createdOrder.getItems().isEmpty());
+        Order result = service.createOrder("12");
 
-        verify(orderRepository, times(1)).save(any(Order.class));
-        verify(checkoutService, times(1)).findCheckoutById(userId);
-        verify(checkoutService, times(1)).createCheckout(any(Checkout.class));
-        verify(cartService, times(1)).createCart(any(Cart.class));
+        assertEquals(cartListing.getUserId(), result.getUserId());
+        assertEquals(OrderStatus.DIKEMAS, result.getStatus());
+        assertEquals(cartListing.getAmount(), result.getAmount());
+        assertEquals(cartListing.getTotalPrice(), result.getTotalPrice());
+        assertEquals(listing1.getName(), result.getListingName());
+        assertEquals(listing1.getPhotoUrl(), result.getPhotoUrl());
+        assertEquals(listing1.getUserId(), result.getSellerId());
+        assertEquals(LocalDate.now(), result.getDateBought());
+        assertEquals(OrderStatus.DIKEMAS, result.getStatus());
     }
 
     @Test
@@ -82,7 +113,7 @@ public class OrderServiceTest {
         when(orderRepository.findById(orderId)).thenReturn(java.util.Optional.of(order));
         when(orderRepository.save(order)).thenReturn(order);
 
-        Order result = service.updateOrderStatus(order, newStatus);
+        Order result = service.updateOrderStatus(order.getOrderId(), newStatus);
 
         verify(orderRepository, times(1)).findById(orderId);
         verify(orderRepository, times(1)).save(order);
@@ -110,7 +141,7 @@ public class OrderServiceTest {
 
         when(orderRepository.findAllByUserId(userId)).thenReturn(userOrders);
 
-        List<Order> result = service.findAllOrdersFromUser(userId);
+        List<Order> result = service.findAllOrdersByUserId(userId);
 
         verify(orderRepository, times(1)).findAllByUserId(userId);
         assertEquals(userOrders.size(), result.size());
@@ -120,7 +151,7 @@ public class OrderServiceTest {
     @Test
     void testDeleteOrder() {
         String orderId = "a006d26e-b675-4919-bfc9-4a8936af9bba";
-        Order order = new Order(new Cart(15));
+        Order order = new Order();
         order.setOrderId(orderId);
 
         when(orderRepository.save(order)).thenReturn(order);

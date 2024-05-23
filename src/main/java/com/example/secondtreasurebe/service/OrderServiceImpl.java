@@ -1,67 +1,86 @@
 package com.example.secondtreasurebe.service;
 
-import com.example.secondtreasurebe.model.Cart;
-import com.example.secondtreasurebe.model.Checkout;
+import com.example.secondtreasurebe.model.CartListing;
+import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.model.OrderStatus;
-import com.example.secondtreasurebe.repository.CartRepository;
-import com.example.secondtreasurebe.repository.CheckoutRepository;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final CartService cartService;
-    private final CheckoutService checkoutService;
-    private final OrderRepository orderRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
-    public OrderServiceImpl(CartService cartService, CheckoutService checkoutService, OrderRepository orderRepository) {
-        this.cartService = cartService;
-        this.checkoutService = checkoutService;
-        this.orderRepository = orderRepository;
-    }
+    private CartListingServiceImpl service;
+
+    @Autowired
+    private ListingServiceImpl listingService;
 
     @Override
-    public Order createOrder(int userId, Order order) {
-        Cart cart = cartService.findById(userId);
-        if (cart != null && !cart.getItems().isEmpty()) {
-            order.setUserId(userId);
-            order.setItems(cart.getItems());
-            order = orderRepository.save(order);
-
-            Checkout checkout = checkoutService.findCheckoutById(userId);
-            if (checkout == null) {
-                checkout = new Checkout(userId);
-                checkout.setUserId(userId);
-            }
-            checkout.setUserId(userId);
-            checkout.addToOrders(order);
-            checkoutService.createCheckout(checkout);
-
-            cart.setItems(new ArrayList<>());
-            cartService.createCart(cart);
-            return order;
-        } else {
-            throw new IllegalStateException("Cannot place order: Cart is empty");
+    public Order createOrder(String cartListingId) {
+        if (cartListingId == null || cartListingId.isEmpty()) {
+            throw new IllegalArgumentException("CartListing ID cannot be null or empty.");
         }
+
+        Order order = new Order();
+        String id = UUID.randomUUID().toString();
+
+        CartListing cartListing = service.findCartListingById(cartListingId);
+        String listingName = listingService.findListingById(cartListing.getListingId()).getName();
+        String listingPhoto = listingService.findListingById(cartListing.getListingId()).getPhotoUrl();
+        int sellerId = listingService.findListingById(cartListing.getListingId()).getUserId();
+
+        order.setOrderId(id);
+        order.setUserId(cartListing.getUserId());
+        order.setAmount(cartListing.getAmount());
+        order.setTotalPrice(cartListing.getTotalPrice());
+        order.setListingName(listingName);
+        order.setPhotoUrl(listingPhoto);
+        order.setSellerId(sellerId);
+        order.setDateBought(LocalDate.now());
+        order.setStatus(OrderStatus.DIKEMAS);
+
+        Order savedOrder = orderRepository.save(order);
+
+        service.deleteCartListing(cartListingId);
+
+        return savedOrder;
     }
 
     @Override
-    public Order updateOrderStatus(Order order, OrderStatus status) {
-        Order existingOrder = orderRepository.findById(order.getOrderId())
-                .orElseThrow(() -> new NoSuchElementException("Order not found for ID: " + order.getOrderId()));
+    public Order updateOrderStatus(String orderId, OrderStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("OrderStatus cannot be null");
+        }
+
+        try {
+
+            String statusStr = status.toString();
+            if (!Arrays.asList(OrderStatus.values()).stream().anyMatch(s -> s.toString().equals(statusStr.toUpperCase()))) {
+                throw new IllegalArgumentException("Invalid OrderStatus: " + status);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid OrderStatus: " + status);
+        }
+
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Order not found for ID: " + orderId));
 
         existingOrder.setStatus(status);
 
         return orderRepository.save(existingOrder);
     }
+
 
     @Override
     public Order findOrderById(String orderId) {
@@ -79,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllOrdersFromUser(int userId) {
+    public List<Order> findAllOrdersByUserId(int userId) {
         return orderRepository.findAllByUserId(userId);
     }
 }

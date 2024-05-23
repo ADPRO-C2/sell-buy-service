@@ -1,17 +1,15 @@
 package com.example.secondtreasurebe.controller;
 
-import com.example.secondtreasurebe.dto.UpdateCartListingRequest;
 import com.example.secondtreasurebe.model.CartListing;
-import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.service.CartListingServiceImpl;
 import com.example.secondtreasurebe.service.ListingServiceImpl;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -26,11 +24,9 @@ public class CartListingController {
     private ListingServiceImpl listingService;
 
     @PostMapping("/cart-listings/{listingId}")
-    public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestBody CartListing cartListing) {
+    public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestParam int amount) {
         try {
-            Listing listing = listingService.findListingById(listingId);
-            cartListing.setListing(listing);
-            service.createCartListing(cartListing);
+            CartListing cartListing = service.createCartListing(listingId, amount);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create cart listing", e);
@@ -38,9 +34,9 @@ public class CartListingController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<CartListing> updateAmount(@RequestBody UpdateCartListingRequest request) {
+    public ResponseEntity<CartListing> updateAmount(@RequestParam String cartListingId, @RequestParam int amount) {
         try {
-            var res = service.updateAmount(request.getCartListing(), request.getAmount());
+            var res = service.updateAmount(cartListingId, amount);
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
@@ -50,10 +46,20 @@ public class CartListingController {
     @GetMapping("/{cartListingId}")
     public ResponseEntity<CartListing> getCartListingById(@PathVariable String cartListingId) {
         try {
-            var cartListing = service.findById(cartListingId);
+            var cartListing = service.findCartListingById(cartListingId);
             return new ResponseEntity<>(cartListing, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CartListing ID " + cartListingId + " not found");
+        }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CartListing>> getAllCartListingsByUserId(@PathVariable int userId) {
+        try {
+            var cartListings = service.findAllCartListingsByUserId(userId);
+            return new ResponseEntity<>(cartListings, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
     }
 
