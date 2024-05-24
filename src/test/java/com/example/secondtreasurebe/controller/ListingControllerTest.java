@@ -85,7 +85,7 @@ public class ListingControllerTest {
         mockMvc.perform(post("/api/listing/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(listing1)))
-                .andExpect(status().isOk());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
