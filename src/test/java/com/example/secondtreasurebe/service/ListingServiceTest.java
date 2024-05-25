@@ -3,6 +3,8 @@ package com.example.secondtreasurebe.service;
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.ListingRepository;
 
+import com.example.secondtreasurebe.strategydp.SortByNameStrategy;
+import com.example.secondtreasurebe.strategydp.SortByPriceStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,7 @@ public class ListingServiceTest {
     @InjectMocks
     private ListingServiceImpl service;
 
-    private Listing listing1, listing2;
+    private Listing listing1, listing2, listing3;
 
     @BeforeEach
     void setUp() {
@@ -51,6 +53,15 @@ public class ListingServiceTest {
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing2.setPrice(BigDecimal.valueOf(149000));
         listing2.setRateCondition(2);
+
+        listing3 = new Listing();
+        listing3.setUserId(1);
+        listing3.setName("Atasan Cantik");
+        listing3.setStock(50);
+        listing3.setDescription("Enak dipakai");
+        listing3.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
+        listing3.setPrice(BigDecimal.valueOf(199000));
+        listing3.setRateCondition(2);
     }
 
     @Test
@@ -172,5 +183,33 @@ public class ListingServiceTest {
         List<Listing> actualListings = service.getListingByUserId(1);
 
         assertEquals(mockedListings, actualListings);
+    }
+
+    @Test
+    public void testSortByName() {
+        List<Listing> listings = new ArrayList<>();
+        listings.add(listing1);
+        listings.add(listing3);
+        listings.add(listing2);
+
+        List<Listing> sortedListings = service.getSortedListingsByName(listings);
+
+        assertEquals("Atasan Cantik", sortedListings.get(0).getName());
+        assertEquals("Kemeja Linen Blend", sortedListings.get(1).getName());
+        assertEquals("T-Shirt Kerah Bulat", sortedListings.get(2).getName());
+    }
+
+    @Test
+    public void testSortByPrice() {
+        List<Listing> listings = new ArrayList<>();
+        listings.add(listing1);
+        listings.add(listing2);
+        listings.add(listing3);
+
+        List<Listing> sortedListings = service.getSortedListingsByPrice(listings);
+
+        assertEquals(BigDecimal.valueOf(149000), sortedListings.get(0).getPrice());
+        assertEquals(BigDecimal.valueOf(199000), sortedListings.get(1).getPrice());
+        assertEquals(BigDecimal.valueOf(299000), sortedListings.get(2).getPrice());
     }
 }
