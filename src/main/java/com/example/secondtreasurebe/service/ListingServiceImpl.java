@@ -2,6 +2,8 @@ package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.repository.ListingRepository;
+import com.example.secondtreasurebe.strategydp.SortByNameStrategy;
+import com.example.secondtreasurebe.strategydp.SortByPriceStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -82,5 +84,19 @@ public class ListingServiceImpl implements ListingServiceInterface{
     @Override
     public List<Listing> getListingByUserId(int id){
         return listingRepository.findByUserId(id);
+    }
+
+    @Override
+    public List<Listing> getSortedListingsByName(List<Listing> listings){
+        SortByNameStrategy sorter = new SortByNameStrategy();
+
+        return sorter.sort(listings);
+    }
+
+    @Override
+    public List<Listing> getSortedListingsByPrice(List<Listing> listings){
+        SortByPriceStrategy sorter = new SortByPriceStrategy();
+
+        return sorter.sort(listings);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,6 +63,17 @@ public class ListingController {
         }
     }
 
+    @PostMapping("/listing/report/{id}")
+    public ResponseEntity<String> reportListing(@PathVariable("id") String id) {
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.getForObject("http://34.87.41.75/staff/reported-listing/add/%s", String.class);
+            return new ResponseEntity<>("The listing has been reported", HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete-listing/{id}")
     public ResponseEntity<String> deleteListing(@PathVariable("id") String id) {
         try {
@@ -78,6 +90,24 @@ public class ListingController {
             return service.getListingByUserId(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Listing " + id + " not found");
+        }
+    }
+
+    @PostMapping("/seller-listings/sorted-by-name")
+    private List<Listing> getSortedListingsByName(@RequestBody List<Listing> listings) {
+        try {
+            return service.getSortedListingsByName(listings);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/seller-listings/sorted-by-price")
+    private List<Listing> getSortedListingsByPrice(@RequestBody List<Listing> listings) {
+        try {
+            return service.getSortedListingsByPrice(listings);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 }
