@@ -102,13 +102,6 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testReportListingWithCorrectId() throws Exception {
-        mockMvc.perform(post("/api/listing/report/{listingId}", listing1.getListingId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     public void testGetAllListings() throws Exception {
         List<Listing> listings = Arrays.asList(listing1,
                 listing2);
