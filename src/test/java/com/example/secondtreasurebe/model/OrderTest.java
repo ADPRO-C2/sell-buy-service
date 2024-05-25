@@ -27,6 +27,18 @@ public class OrderTest {
     }
     @Test
     public void testValidOrderCreation() {
+        order.setOrderId("insert-order-id");
+        order.setStatus(OrderStatus.DIKEMAS);
+        order.setUserId(1);
+        order.setSellerId(2);
+        order.setTotalPrice(BigDecimal.valueOf(100.00));
+        order.setListingName("nintendo swotch");
+        order.setAmount(3);
+        order.setPhotoUrl("https://example.com/gadget.jpg");
+        order.setDateBought(LocalDate.now());
+
+        order.isValidStatus();
+
         assertEquals("insert-order-id", this.order.getOrderId());
         assertEquals(1, this.order.getUserId());
         assertEquals(2, this.order.getSellerId());
@@ -49,4 +61,5 @@ public class OrderTest {
         order.setStatus(null);
         assertThrows(IllegalArgumentException.class, this.order::isValidStatus);
     }
+
 }

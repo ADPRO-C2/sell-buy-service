@@ -138,7 +138,6 @@ public class CartListingServiceTest {
 
         when(cartListingRepository.findById(cartListing.getCartListingId())).thenReturn(Optional.of(cartListing));
         when(cartListingRepository.save(any(CartListing.class))).thenReturn(updated);
-
         when(listingService.findListingById("09ea05e7-fe39-459a-9298-24a6f4099bcf")).thenReturn(listing);
 
         CartListing result = service.updateAmount(cartListing.getCartListingId(), newAmount);
@@ -163,6 +162,17 @@ public class CartListingServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> service.updateAmount(cartListing.getCartListingId(), newAmount));
     }
+
+    @Test
+    void testUpdateAmountCartListingNotFound() {
+        String cartListingId = "nonexistent";
+        int newAmount = 5;
+
+        when(cartListingRepository.findById(cartListingId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> service.updateAmount(cartListingId, newAmount));
+    }
+
 
     @Test
     void testFindById() {
