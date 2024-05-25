@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/order")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class OrderController {
 
     @Autowired
