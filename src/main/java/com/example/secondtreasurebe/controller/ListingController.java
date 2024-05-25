@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -57,6 +58,17 @@ public class ListingController {
             listing.validate();
             var res = service.edit(listing);
             return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/listing/report/{id}")
+    public ResponseEntity<String> reportListing(@PathVariable("id") String id) {
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.getForObject("http://34.87.41.75/staff/reported-listing/add/%s", String.class);
+            return new ResponseEntity<>("The listing has been reported", HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
