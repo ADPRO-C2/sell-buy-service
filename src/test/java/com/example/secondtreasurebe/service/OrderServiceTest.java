@@ -1,6 +1,7 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.*;
+import com.example.secondtreasurebe.repository.ListingRepository;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ public class OrderServiceTest {
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    ListingRepository listingRepository;
 
     @Mock
     ListingServiceImpl listingService;
@@ -67,8 +71,9 @@ public class OrderServiceTest {
         listing1.setName("thing");
         listing1.setUserId(2);
         listing1.setPhotoUrl("https://example.com/gadget.jpg");
+        listing1.setStock(10); // Setting stock
 
-        builder = new CartListing.Builder()
+        CartListing.Builder builder = new CartListing.Builder()
                 .listingId("12345")
                 .amount(2)
                 .userId(1)
@@ -78,7 +83,6 @@ public class OrderServiceTest {
         cartListing.setCartListingId("12");
 
         Order order = new Order();
-
         order.setOrderId(UUID.randomUUID().toString());
         order.setUserId(cartListing.getUserId());
         order.setAmount(cartListing.getAmount());
@@ -89,12 +93,15 @@ public class OrderServiceTest {
         order.setDateBought(LocalDate.now());
         order.setStatus(OrderStatus.DIKEMAS);
 
+        // Mocking the services
         when(listingService.findListingById(listing1.getListingId())).thenReturn(listing1);
         when(cartListingService.findCartListingById(cartListing.getCartListingId())).thenReturn(cartListing);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(listingRepository.save(any(Listing.class))).thenReturn(listing1); // Mocking the save operation
 
         Order result = service.createOrder("12");
 
+        // Verifying the results
         assertEquals(cartListing.getUserId(), result.getUserId());
         assertEquals(OrderStatus.DIKEMAS, result.getStatus());
         assertEquals(cartListing.getAmount(), result.getAmount());
@@ -104,7 +111,12 @@ public class OrderServiceTest {
         assertEquals(listing1.getUserId(), result.getSellerId());
         assertEquals(LocalDate.now(), result.getDateBought());
         assertEquals(OrderStatus.DIKEMAS, result.getStatus());
+
+        // Verifying stock update
+        verify(listingService, times(1)).findListingById(listing1.getListingId()); // once in test, once in service
+        assertEquals(8, listing1.getStock()); // Initial stock was 10, after order of 2, stock should be 8
     }
+
 
     @Test
     void testUpdateOrderStatus() {

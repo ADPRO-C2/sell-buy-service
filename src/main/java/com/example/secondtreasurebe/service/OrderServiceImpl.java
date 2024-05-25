@@ -4,6 +4,7 @@ import com.example.secondtreasurebe.model.CartListing;
 import com.example.secondtreasurebe.model.Listing;
 import com.example.secondtreasurebe.model.Order;
 import com.example.secondtreasurebe.model.OrderStatus;
+import com.example.secondtreasurebe.repository.ListingRepository;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private ListingRepository listingRepository;
+
+    @Autowired
     private CartListingServiceImpl service;
 
     @Autowired
@@ -32,29 +36,43 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("CartListing ID cannot be null or empty.");
         }
 
-        Order order = new Order();
-        String id = UUID.randomUUID().toString();
-
         CartListing cartListing = service.findCartListingById(cartListingId);
-        String listingName = listingService.findListingById(cartListing.getListingId()).getName();
-        String listingPhoto = listingService.findListingById(cartListing.getListingId()).getPhotoUrl();
-        int sellerId = listingService.findListingById(cartListing.getListingId()).getUserId();
+        Listing listing = listingService.findListingById(cartListing.getListingId());
 
-        order.setOrderId(id);
-        order.setUserId(cartListing.getUserId());
-        order.setAmount(cartListing.getAmount());
-        order.setTotalPrice(cartListing.getTotalPrice());
-        order.setListingName(listingName);
-        order.setPhotoUrl(listingPhoto);
-        order.setSellerId(sellerId);
-        order.setDateBought(LocalDate.now());
-        order.setStatus(OrderStatus.DIKEMAS);
+        String listingName = listing.getName();
+        String listingPhoto = listing.getPhotoUrl();
+        int sellerId = listing.getUserId();
 
-        Order savedOrder = orderRepository.save(order);
+        int stock = listing.getStock();
+        int amount = cartListing.getAmount();
 
-        service.deleteCartListing(cartListingId);
+        if(stock>=amount){
+            Order order = new Order();
+            String id = UUID.randomUUID().toString();
 
-        return savedOrder;
+            order.setOrderId(id);
+            order.setUserId(cartListing.getUserId());
+            order.setAmount(cartListing.getAmount());
+            order.setTotalPrice(cartListing.getTotalPrice());
+            order.setListingName(listingName);
+            order.setPhotoUrl(listingPhoto);
+            order.setSellerId(sellerId);
+            order.setDateBought(LocalDate.now());
+            order.setStatus(OrderStatus.DIKEMAS);
+
+            int newStock = stock - cartListing.getAmount();
+
+            listing.setStock(newStock);
+            listingRepository.save(listing);
+
+            Order savedOrder = orderRepository.save(order);
+
+            service.deleteCartListing(cartListingId);
+
+            return savedOrder;
+        }
+
+        throw new IllegalArgumentException("Stock Habis");
     }
 
     @Override
