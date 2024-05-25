@@ -102,13 +102,6 @@ public class ListingControllerTest {
     }
 
     @Test
-    public void testReportListingWithCorrectId() throws Exception {
-        mockMvc.perform(post("/api/listing/report/{listingId}", listing1.getListingId())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     public void testGetAllListings() throws Exception {
         List<Listing> listings = Arrays.asList(listing1,
                 listing2);
@@ -211,14 +204,9 @@ public class ListingControllerTest {
     public void testGetSortedListingsByPrice() throws Exception {
         List<Listing> sortedListings = Arrays.asList(listing2, listing3, listing1);
 
-        when(listingService.getSortedListingsByPrice(ArgumentMatchers.anyList())).thenReturn(sortedListings);
+        when(listingService.getSortedListingsByPrice(1)).thenReturn(sortedListings);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String listingsJson = objectMapper.writeValueAsString(listings);
-
-        mockMvc.perform(post("/api/seller-listings/sorted-by-price")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(listingsJson))
+        mockMvc.perform(get("/api/seller-listings/sorted-by-price/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].price").value(149000))
                 .andExpect(jsonPath("$[1].price").value(199000))
@@ -229,14 +217,9 @@ public class ListingControllerTest {
     public void testGetSortedListingsByName() throws Exception {
         List<Listing> sortedListings = Arrays.asList(listing3, listing1, listing2);
 
-        when(listingService.getSortedListingsByName(ArgumentMatchers.anyList())).thenReturn(sortedListings);
+        when(listingService.getSortedListingsByName(1)).thenReturn(sortedListings);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String listingsJson = objectMapper.writeValueAsString(listings);
-
-        mockMvc.perform(post("/api/seller-listings/sorted-by-name")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(listingsJson))
+        mockMvc.perform(get("/api/seller-listings/sorted-by-name/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Atasan Cantik"))
                 .andExpect(jsonPath("$[1].name").value("Kemeja Linen Blend"))
@@ -245,28 +228,18 @@ public class ListingControllerTest {
 
     @Test
     public void testGetSortedListingsByPrice_noSuchElementException() throws Exception {
-        when(listingService.getSortedListingsByPrice(ArgumentMatchers.anyList())).thenThrow(new NoSuchElementException("No such element"));
+        when(listingService.getSortedListingsByPrice(1)).thenThrow(new NoSuchElementException("No such element"));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String listingsJson = objectMapper.writeValueAsString(listings);
-
-        mockMvc.perform(post("/api/seller-listings/sorted-by-price")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(listingsJson))
+        mockMvc.perform(get("/api/seller-listings/sorted-by-price/1"))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertEquals("400 BAD_REQUEST \"Failed to process request: No such element\"", result.getResolvedException().getMessage()));
     }
 
     @Test
     public void testGetSortedListingsByName_noSuchElementException() throws Exception {
-        when(listingService.getSortedListingsByName(ArgumentMatchers.anyList())).thenThrow(new NoSuchElementException("No such element"));
+        when(listingService.getSortedListingsByName(1)).thenThrow(new NoSuchElementException("No such element"));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String listingsJson = objectMapper.writeValueAsString(listings);
-
-        mockMvc.perform(post("/api/seller-listings/sorted-by-name")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(listingsJson))
+        mockMvc.perform(get("/api/seller-listings/sorted-by-name/1"))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertEquals("400 BAD_REQUEST \"Failed to process request: No such element\"", result.getResolvedException().getMessage()));
     }

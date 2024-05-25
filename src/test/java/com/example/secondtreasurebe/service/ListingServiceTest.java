@@ -32,6 +32,7 @@ public class ListingServiceTest {
     private ListingServiceImpl service;
 
     private Listing listing1, listing2, listing3;
+    private List<Listing> listings;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +63,8 @@ public class ListingServiceTest {
         listing3.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing3.setPrice(BigDecimal.valueOf(199000));
         listing3.setRateCondition(2);
+
+        listings = Arrays.asList(listing1, listing3);
     }
 
     @Test
@@ -187,29 +190,28 @@ public class ListingServiceTest {
 
     @Test
     public void testSortByName() {
-        List<Listing> listings = new ArrayList<>();
-        listings.add(listing1);
-        listings.add(listing3);
-        listings.add(listing2);
+        List<Listing> mockedListings = new ArrayList<>();
+        mockedListings.add(listing1);
+        mockedListings.add(listing3);
 
-        List<Listing> sortedListings = service.getSortedListingsByName(listings);
+        when(listingRepository.findByUserId(1)).thenReturn(mockedListings);
+
+        List<Listing> sortedListings = service.getSortedListingsByName(1);
 
         assertEquals("Atasan Cantik", sortedListings.get(0).getName());
         assertEquals("Kemeja Linen Blend", sortedListings.get(1).getName());
-        assertEquals("T-Shirt Kerah Bulat", sortedListings.get(2).getName());
     }
 
     @Test
     public void testSortByPrice() {
-        List<Listing> listings = new ArrayList<>();
-        listings.add(listing1);
-        listings.add(listing2);
-        listings.add(listing3);
+        List<Listing> mockedListings = new ArrayList<>();
+        mockedListings.add(listing1);
+        mockedListings.add(listing3);
 
-        List<Listing> sortedListings = service.getSortedListingsByPrice(listings);
+        when(listingRepository.findByUserId(1)).thenReturn(mockedListings);
+        List<Listing> sortedListings = service.getSortedListingsByPrice(1);
 
-        assertEquals(BigDecimal.valueOf(149000), sortedListings.get(0).getPrice());
-        assertEquals(BigDecimal.valueOf(199000), sortedListings.get(1).getPrice());
-        assertEquals(BigDecimal.valueOf(299000), sortedListings.get(2).getPrice());
+        assertEquals(BigDecimal.valueOf(199000), sortedListings.get(0).getPrice());
+        assertEquals(BigDecimal.valueOf(299000), sortedListings.get(1).getPrice());
     }
 }

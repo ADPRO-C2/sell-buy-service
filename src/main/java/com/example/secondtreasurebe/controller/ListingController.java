@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class ListingController {
 
     @Autowired
@@ -63,17 +63,6 @@ public class ListingController {
         }
     }
 
-    @PostMapping("/listing/report/{id}")
-    public ResponseEntity<String> reportListing(@PathVariable("id") String id) {
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            restTemplate.getForObject("http://34.87.41.75/staff/reported-listing/add/%s", String.class);
-            return new ResponseEntity<>("The listing has been reported", HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
-        }
-    }
-
     @DeleteMapping("/delete-listing/{id}")
     public ResponseEntity<String> deleteListing(@PathVariable("id") String id) {
         try {
@@ -93,19 +82,19 @@ public class ListingController {
         }
     }
 
-    @PostMapping("/seller-listings/sorted-by-name")
-    private List<Listing> getSortedListingsByName(@RequestBody List<Listing> listings) {
+    @GetMapping("/seller-listings/sorted-by-name/{id}")
+    private List<Listing> getSortedListingsByName(@PathVariable("id") int id) {
         try {
-            return service.getSortedListingsByName(listings);
+            return service.getSortedListingsByName(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 
-    @PostMapping("/seller-listings/sorted-by-price")
-    private List<Listing> getSortedListingsByPrice(@RequestBody List<Listing> listings) {
+    @GetMapping("/seller-listings/sorted-by-price/{id}")
+    private List<Listing> getSortedListingsByPrice(@PathVariable("id") int id) {
         try {
-            return service.getSortedListingsByPrice(listings);
+            return service.getSortedListingsByPrice(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
