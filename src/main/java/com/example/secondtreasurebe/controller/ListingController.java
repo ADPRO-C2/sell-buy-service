@@ -63,17 +63,6 @@ public class ListingController {
         }
     }
 
-    @PostMapping("/listing/report/{id}")
-    public ResponseEntity<String> reportListing(@PathVariable("id") String id) {
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            restTemplate.getForObject("http://34.87.41.75/staff/reported-listing/add/%s", String.class);
-            return new ResponseEntity<>("The listing has been reported", HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
-        }
-    }
-
     @DeleteMapping("/delete-listing/{id}")
     public ResponseEntity<String> deleteListing(@PathVariable("id") String id) {
         try {
