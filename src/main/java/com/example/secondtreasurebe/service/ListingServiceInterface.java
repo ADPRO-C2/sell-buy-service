@@ -11,4 +11,6 @@ public interface ListingServiceInterface {
     public Listing edit(Listing newListing);
     public void deleteListing(String id);
     public List<Listing> getListingByUserId(int id);
+    public List<Listing> getSortedListingsByName(List<Listing> listings);
+    public List<Listing> getSortedListingsByPrice(List<Listing> listings);
 }
