@@ -92,4 +92,22 @@ public class ListingController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id Listing " + id + " not found");
         }
     }
+
+    @PostMapping("/seller-listings/sorted-by-name")
+    private List<Listing> getSortedListingsByName(@RequestBody List<Listing> listings) {
+        try {
+            return service.getSortedListingsByName(listings);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/seller-listings/sorted-by-price")
+    private List<Listing> getSortedListingsByPrice(@RequestBody List<Listing> listings) {
+        try {
+            return service.getSortedListingsByPrice(listings);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
+        }
+    }
 }

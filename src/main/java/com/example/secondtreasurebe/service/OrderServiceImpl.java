@@ -101,4 +101,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllOrdersByUserId(int userId) {
         return orderRepository.findAllByUserId(userId);
     }
+
+    @Override
+    public List<Order> findAllOrdersBySellerId(int sellerId) {
+        return orderRepository.findAllBySellerId(sellerId);
+    }
 }

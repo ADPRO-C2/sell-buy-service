@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,8 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 public class ListingControllerTest {
-    Listing listing1;
-    Listing listing2;
+    Listing listing1, listing2, listing3;
+
+    List<Listing> listings;
     private MockMvc mockMvc;
 
     @Mock
@@ -62,6 +64,17 @@ public class ListingControllerTest {
         listing2.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
         listing2.setPrice(BigDecimal.valueOf(149000));
         listing2.setRateCondition(2);
+
+        listing3 = new Listing();
+        listing3.setUserId(1);
+        listing3.setName("Atasan Cantik");
+        listing3.setStock(50);
+        listing3.setDescription("Enak dipakai");
+        listing3.setPhotoUrl("https://image.uniqlo.com/UQ/ST3/id/imagesgoods/424873/item/idgoods_08_424873.jpg?width=320");
+        listing3.setPrice(BigDecimal.valueOf(199000));
+        listing3.setRateCondition(2);
+
+        listings = Arrays.asList(listing1, listing2, listing3);
     }
 
     @Test
@@ -192,5 +205,69 @@ public class ListingControllerTest {
 
         mockMvc.perform(get("/api/seller-listings/9"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetSortedListingsByPrice() throws Exception {
+        List<Listing> sortedListings = Arrays.asList(listing2, listing3, listing1);
+
+        when(listingService.getSortedListingsByPrice(ArgumentMatchers.anyList())).thenReturn(sortedListings);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingsJson = objectMapper.writeValueAsString(listings);
+
+        mockMvc.perform(post("/api/seller-listings/sorted-by-price")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingsJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].price").value(149000))
+                .andExpect(jsonPath("$[1].price").value(199000))
+                .andExpect(jsonPath("$[2].price").value(299000));
+    }
+
+    @Test
+    public void testGetSortedListingsByName() throws Exception {
+        List<Listing> sortedListings = Arrays.asList(listing3, listing1, listing2);
+
+        when(listingService.getSortedListingsByName(ArgumentMatchers.anyList())).thenReturn(sortedListings);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingsJson = objectMapper.writeValueAsString(listings);
+
+        mockMvc.perform(post("/api/seller-listings/sorted-by-name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingsJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Atasan Cantik"))
+                .andExpect(jsonPath("$[1].name").value("Kemeja Linen Blend"))
+                .andExpect(jsonPath("$[2].name").value("T-Shirt Kerah Bulat"));
+    }
+
+    @Test
+    public void testGetSortedListingsByPrice_noSuchElementException() throws Exception {
+        when(listingService.getSortedListingsByPrice(ArgumentMatchers.anyList())).thenThrow(new NoSuchElementException("No such element"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingsJson = objectMapper.writeValueAsString(listings);
+
+        mockMvc.perform(post("/api/seller-listings/sorted-by-price")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingsJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertEquals("400 BAD_REQUEST \"Failed to process request: No such element\"", result.getResolvedException().getMessage()));
+    }
+
+    @Test
+    public void testGetSortedListingsByName_noSuchElementException() throws Exception {
+        when(listingService.getSortedListingsByName(ArgumentMatchers.anyList())).thenThrow(new NoSuchElementException("No such element"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String listingsJson = objectMapper.writeValueAsString(listings);
+
+        mockMvc.perform(post("/api/seller-listings/sorted-by-name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(listingsJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertEquals("400 BAD_REQUEST \"Failed to process request: No such element\"", result.getResolvedException().getMessage()));
     }
 }

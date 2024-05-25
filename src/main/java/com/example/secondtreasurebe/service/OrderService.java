@@ -13,4 +13,5 @@ public interface OrderService {
     public Order findOrderById(String orderId);
     public void deleteOrder(String orderId);
     public List<Order> findAllOrdersByUserId(int userId);
+    public List<Order> findAllOrdersBySellerId(int sellerId);
 }

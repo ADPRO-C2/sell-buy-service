@@ -69,4 +69,10 @@ public class OrderController {
         List<Order> orders = service.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<Order>> getAllOrdersBySellerId(@PathVariable int sellerId) {
+        List<Order> orders = service.findAllOrdersBySellerId(sellerId);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 }
