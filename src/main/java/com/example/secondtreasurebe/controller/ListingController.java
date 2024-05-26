@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = "*")
 public class ListingController {
 
     @Autowired
