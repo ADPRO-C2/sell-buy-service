@@ -117,6 +117,45 @@ public class OrderServiceTest {
         assertEquals(8, listing1.getStock()); // Initial stock was 10, after order of 2, stock should be 8
     }
 
+    @Test
+    void testCreateOrder_NullOrEmptyCartListingId() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder(null);
+        });
+        assertEquals("CartListing ID cannot be null or empty.", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder("");
+        });
+        assertEquals("CartListing ID cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    void testCreateOrder_InsufficientStock() {
+        String cartListingId = "12345";
+
+        CartListing cartListing = new CartListing.Builder()
+                .listingId("67890")
+                .amount(5)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(100))
+                .build();
+
+        Listing listing = new Listing();
+        listing.setListingId("67890");
+        listing.setName("Test Item");
+        listing.setUserId(2);
+        listing.setPhotoUrl("http://example.com/photo.jpg");
+        listing.setStock(3); // Stock is less than amount in cartListing
+
+        when(cartListingService.findCartListingById(cartListingId)).thenReturn(cartListing);
+        when(listingService.findListingById("67890")).thenReturn(listing);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder(cartListingId);
+        });
+        assertEquals("Stock Habis", exception.getMessage());
+    }
 
     @Test
     void testUpdateOrderStatus() {
@@ -133,6 +172,18 @@ public class OrderServiceTest {
         verify(orderRepository, times(1)).save(order);
         assertEquals(newStatus, result.getStatus());
     }
+
+    @Test
+    void testUpdateOrderStatus_NullStatus() {
+        String orderId = "12345";
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateOrderStatus(orderId, null);
+        });
+
+        assertEquals("OrderStatus cannot be null", exception.getMessage());
+    }
+
 
     @Test
     void testFindOrderById() {
