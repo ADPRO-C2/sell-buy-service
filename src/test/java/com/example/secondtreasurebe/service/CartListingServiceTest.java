@@ -85,7 +85,7 @@ public class CartListingServiceTest {
 
         when(cartListingRepository.save(any(CartListing.class))).thenReturn(cartListing);
 
-        CartListing result = service.createCartListing("09ea05e7-fe39-459a-9298-24a6f4099bcf", amount);
+        CartListing result = service.createCartListing("09ea05e7-fe39-459a-9298-24a6f4099bcf", amount, 1);
 
         assertNotNull(result);
         assertEquals(listing1.getListingId(), result.getListingId());
@@ -99,7 +99,7 @@ public class CartListingServiceTest {
         String listingId = "";
         int amount = 2;
 
-        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount));
+        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount, 1));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class CartListingServiceTest {
         String listingId = "valid-listing-id";
         int amount = 0;
 
-        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount));
+        assertThrows(IllegalArgumentException.class, () -> service.createCartListing(listingId, amount, 1));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class CartListingServiceTest {
         int amount = 2;
         doReturn(null).when(listingService).findListingById(listingId);
 
-        assertThrows(NoSuchElementException.class, () -> service.createCartListing(listingId, amount));
+        assertThrows(NoSuchElementException.class, () -> service.createCartListing(listingId, amount, 1));
     }
 
     @Test

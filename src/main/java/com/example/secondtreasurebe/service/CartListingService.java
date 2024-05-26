@@ -6,7 +6,7 @@ import java.util.List;
 
 @Service
 public interface CartListingService {
-    public CartListing createCartListing(String listingId, int amount);
+    public CartListing createCartListing(String listingId, int amount, int userId);
     public CartListing updateAmount(String cartListingId, int newAmount);
     public void deleteCartListing(String cartListingId);
     public CartListing findCartListingById(String cartListingId);

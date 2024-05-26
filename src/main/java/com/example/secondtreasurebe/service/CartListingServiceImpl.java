@@ -21,7 +21,7 @@ public class CartListingServiceImpl implements CartListingService {
     private ListingServiceImpl listingService;
 
     @Override
-    public CartListing createCartListing(String listingId, int amount) {
+    public CartListing createCartListing(String listingId, int amount, int userId) {
         if (listingId == null || listingId.isEmpty()) {
             throw new IllegalArgumentException("Listing ID cannot be null or empty.");
         }
@@ -46,7 +46,7 @@ public class CartListingServiceImpl implements CartListingService {
 
         String id = UUID.randomUUID().toString();
         cartListing.setCartListingId(id);
-        cartListing.setUserId(1); //manually set for now
+        cartListing.setUserId(userId);
 
         return cartListingRepository.save(cartListing);
     }

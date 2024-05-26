@@ -24,9 +24,9 @@ public class CartListingController {
     private ListingServiceImpl listingService;
 
     @PostMapping("/cart-listings/{listingId}")
-    public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestParam int amount) {
+    public ResponseEntity<CartListing> createCartListing(@PathVariable String listingId, @RequestParam int amount, @RequestParam int userId) {
         try {
-            CartListing cartListing = service.createCartListing(listingId, amount);
+            CartListing cartListing = service.createCartListing(listingId, amount, userId);
             return new ResponseEntity<>(cartListing, HttpStatus.CREATED);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to process request: " + e.getMessage());

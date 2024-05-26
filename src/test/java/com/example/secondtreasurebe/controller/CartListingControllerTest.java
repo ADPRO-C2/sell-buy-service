@@ -44,9 +44,9 @@ public class CartListingControllerTest {
         expectedCartListing.setListingId(listingId);
         expectedCartListing.setAmount(amount);
 
-        Mockito.when(service.createCartListing(listingId, amount)).thenReturn(expectedCartListing);
+        Mockito.when(service.createCartListing(listingId, amount, 1)).thenReturn(expectedCartListing);
 
-        ResponseEntity<CartListing> response = controller.createCartListing(listingId, amount);
+        ResponseEntity<CartListing> response = controller.createCartListing(listingId, amount, 1);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(expectedCartListing, response.getBody());
@@ -57,10 +57,10 @@ public class CartListingControllerTest {
         String listingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
         int amount = 2;
 
-        Mockito.when(service.createCartListing(listingId, amount)).thenThrow(new NoSuchElementException("Listing not found"));
+        Mockito.when(service.createCartListing(listingId, amount, 1)).thenThrow(new NoSuchElementException("Listing not found"));
 
         try {
-            controller.createCartListing(listingId, amount);
+            controller.createCartListing(listingId, amount, 1);
             fail("Expected ResponseStatusException");
         } catch (ResponseStatusException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
