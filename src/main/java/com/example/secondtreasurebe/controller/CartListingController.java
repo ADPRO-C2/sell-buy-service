@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/cartlisting")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3001/", "https://frontend-adpro-c2.vercel.app/"})
 public class CartListingController {
 
     @Autowired
