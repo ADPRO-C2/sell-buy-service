@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,9 +53,9 @@ public class CartListingControllerTest {
         expectedCartListing.setListingId(listingId);
         expectedCartListing.setAmount(amount);
 
-        Mockito.when(service.createCartListing(listingId, amount)).thenReturn(expectedCartListing);
+        when(service.createCartListing(listingId, amount, 1)).thenReturn(expectedCartListing);
 
-        ResponseEntity<CartListing> response = controller.createCartListing(listingId, amount);
+        ResponseEntity<CartListing> response = controller.createCartListing(listingId, amount, 1);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(expectedCartListing, response.getBody());
@@ -65,10 +66,10 @@ public class CartListingControllerTest {
         String listingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
         int amount = 2;
 
-        Mockito.when(service.createCartListing(listingId, amount)).thenThrow(new NoSuchElementException("Listing not found"));
+        when(service.createCartListing(listingId, amount, 1)).thenThrow(new NoSuchElementException("Listing not found"));
 
         try {
-            controller.createCartListing(listingId, amount);
+            controller.createCartListing(listingId, amount, 1);
             fail("Expected ResponseStatusException");
         } catch (ResponseStatusException e) {
             assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
@@ -80,14 +81,15 @@ public class CartListingControllerTest {
     void testCreateCartListingBadRequest() throws Exception {
         String listingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
         int newAmount = -1;
+        int userId = 1;
 
-        // Mock the service to throw IllegalArgumentException
         doThrow(new IllegalArgumentException("New amount must be greater than 0."))
-                .when(service).createCartListing(listingId, newAmount);
+                .when(service).createCartListing(listingId, newAmount, userId);
+
 
         mockMvc.perform(post("/cartlisting/cart-listings/02bde298-d1c7-4bce-acc9-bf479a0d0154")
-                        .param("listingId", listingId)
-                        .param("amount", String.valueOf(newAmount)))
+                        .param("amount", String.valueOf(newAmount))
+                        .param("userId", String.valueOf(userId)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -100,7 +102,7 @@ public class CartListingControllerTest {
         expectedCartListing.setCartListingId(cartListingId);
         expectedCartListing.setAmount(newAmount);
 
-        Mockito.when(service.updateAmount(cartListingId, newAmount)).thenReturn(expectedCartListing);
+        when(service.updateAmount(cartListingId, newAmount)).thenReturn(expectedCartListing);
 
         ResponseEntity<CartListing> response = controller.updateAmount(cartListingId, newAmount);
 
@@ -113,7 +115,7 @@ public class CartListingControllerTest {
         String cartListingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
         int newAmount = 3;
 
-        Mockito.when(service.updateAmount(cartListingId, newAmount)).thenThrow(new NoSuchElementException("CartListing not found"));
+        when(service.updateAmount(cartListingId, newAmount)).thenThrow(new NoSuchElementException("CartListing not found"));
 
         try {
             controller.updateAmount(cartListingId, newAmount);
@@ -129,7 +131,6 @@ public class CartListingControllerTest {
         String cartListingId = "02bde298-d1c7-4bce-acc9-bf479a0d0154";
         int newAmount = -1;
 
-        // Mock the service to throw IllegalArgumentException
         doThrow(new IllegalArgumentException("New amount must be greater than 0."))
                 .when(service).updateAmount(cartListingId, newAmount);
 
@@ -146,7 +147,7 @@ public class CartListingControllerTest {
         CartListing expectedCartListing = new CartListing();
         expectedCartListing.setCartListingId(cartListingId);
 
-        Mockito.when(service.findCartListingById(cartListingId)).thenReturn(expectedCartListing);
+        when(service.findCartListingById(cartListingId)).thenReturn(expectedCartListing);
 
         ResponseEntity<CartListing> response = controller.getCartListingById(cartListingId);
 
@@ -174,7 +175,7 @@ public class CartListingControllerTest {
         int userId = 1;
         List<CartListing> expectedCartListings = Arrays.asList(new CartListing(), new CartListing());
 
-        Mockito.when(service.findAllCartListingsByUserId(userId)).thenReturn(expectedCartListings);
+        when(service.findAllCartListingsByUserId(userId)).thenReturn(expectedCartListings);
 
         ResponseEntity<List<CartListing>> response = controller.getAllCartListingsByUserId(userId);
 
@@ -186,7 +187,7 @@ public class CartListingControllerTest {
     public void testGetAllCartListingsByUserId_UserNotFound() {
         int userId = 10;
 
-        Mockito.when(service.findAllCartListingsByUserId(userId)).thenThrow(new NoSuchElementException("User not found"));
+        when(service.findAllCartListingsByUserId(userId)).thenThrow(new NoSuchElementException("User not found"));
 
         try {
             controller.getAllCartListingsByUserId(userId);
