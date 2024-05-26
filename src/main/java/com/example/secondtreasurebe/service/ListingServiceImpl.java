@@ -87,14 +87,16 @@ public class ListingServiceImpl implements ListingServiceInterface{
     }
 
     @Override
-    public List<Listing> getSortedListingsByName(List<Listing> listings){
+    public List<Listing> getSortedListingsByName(int id){
+        List<Listing> listings = listingRepository.findByUserId(id);
         SortByNameStrategy sorter = new SortByNameStrategy();
 
         return sorter.sort(listings);
     }
 
     @Override
-    public List<Listing> getSortedListingsByPrice(List<Listing> listings){
+    public List<Listing> getSortedListingsByPrice(int id){
+        List<Listing> listings = listingRepository.findByUserId(id);
         SortByPriceStrategy sorter = new SortByPriceStrategy();
 
         return sorter.sort(listings);

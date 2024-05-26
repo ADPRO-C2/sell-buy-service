@@ -38,4 +38,9 @@ public class CartListingTest {
     void testZeroAmount() {
         assertThrows(IllegalArgumentException.class, () -> builder.amount(0).build());
     }
+
+    @Test
+    void testNullListingId() {
+        assertThrows(IllegalArgumentException.class, () -> builder.listingId(null).build());
+    }
 }

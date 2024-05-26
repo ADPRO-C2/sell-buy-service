@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class ListingController {
 
     @Autowired
@@ -82,19 +82,19 @@ public class ListingController {
         }
     }
 
-    @PostMapping("/seller-listings/sorted-by-name")
-    private List<Listing> getSortedListingsByName(@RequestBody List<Listing> listings) {
+    @GetMapping("/seller-listings/sorted-by-name/{id}")
+    private List<Listing> getSortedListingsByName(@PathVariable("id") int id) {
         try {
-            return service.getSortedListingsByName(listings);
+            return service.getSortedListingsByName(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }
     }
 
-    @PostMapping("/seller-listings/sorted-by-price")
-    private List<Listing> getSortedListingsByPrice(@RequestBody List<Listing> listings) {
+    @GetMapping("/seller-listings/sorted-by-price/{id}")
+    private List<Listing> getSortedListingsByPrice(@PathVariable("id") int id) {
         try {
-            return service.getSortedListingsByPrice(listings);
+            return service.getSortedListingsByPrice(id);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to process request: " + e.getMessage());
         }

@@ -1,6 +1,7 @@
 package com.example.secondtreasurebe.service;
 
 import com.example.secondtreasurebe.model.*;
+import com.example.secondtreasurebe.repository.ListingRepository;
 import com.example.secondtreasurebe.repository.OrderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ public class OrderServiceTest {
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    ListingRepository listingRepository;
 
     @Mock
     ListingServiceImpl listingService;
@@ -67,8 +71,9 @@ public class OrderServiceTest {
         listing1.setName("thing");
         listing1.setUserId(2);
         listing1.setPhotoUrl("https://example.com/gadget.jpg");
+        listing1.setStock(10); // Setting stock
 
-        builder = new CartListing.Builder()
+        CartListing.Builder builder = new CartListing.Builder()
                 .listingId("12345")
                 .amount(2)
                 .userId(1)
@@ -78,7 +83,6 @@ public class OrderServiceTest {
         cartListing.setCartListingId("12");
 
         Order order = new Order();
-
         order.setOrderId(UUID.randomUUID().toString());
         order.setUserId(cartListing.getUserId());
         order.setAmount(cartListing.getAmount());
@@ -89,12 +93,15 @@ public class OrderServiceTest {
         order.setDateBought(LocalDate.now());
         order.setStatus(OrderStatus.DIKEMAS);
 
+        // Mocking the services
         when(listingService.findListingById(listing1.getListingId())).thenReturn(listing1);
         when(cartListingService.findCartListingById(cartListing.getCartListingId())).thenReturn(cartListing);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(listingRepository.save(any(Listing.class))).thenReturn(listing1); // Mocking the save operation
 
         Order result = service.createOrder("12");
 
+        // Verifying the results
         assertEquals(cartListing.getUserId(), result.getUserId());
         assertEquals(OrderStatus.DIKEMAS, result.getStatus());
         assertEquals(cartListing.getAmount(), result.getAmount());
@@ -104,6 +111,50 @@ public class OrderServiceTest {
         assertEquals(listing1.getUserId(), result.getSellerId());
         assertEquals(LocalDate.now(), result.getDateBought());
         assertEquals(OrderStatus.DIKEMAS, result.getStatus());
+
+        // Verifying stock update
+        verify(listingService, times(1)).findListingById(listing1.getListingId()); // once in test, once in service
+        assertEquals(8, listing1.getStock()); // Initial stock was 10, after order of 2, stock should be 8
+    }
+
+    @Test
+    void testCreateOrder_NullOrEmptyCartListingId() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder(null);
+        });
+        assertEquals("CartListing ID cannot be null or empty.", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder("");
+        });
+        assertEquals("CartListing ID cannot be null or empty.", exception.getMessage());
+    }
+
+    @Test
+    void testCreateOrder_InsufficientStock() {
+        String cartListingId = "12345";
+
+        CartListing cartListing = new CartListing.Builder()
+                .listingId("67890")
+                .amount(5)
+                .userId(1)
+                .totalPrice(BigDecimal.valueOf(100))
+                .build();
+
+        Listing listing = new Listing();
+        listing.setListingId("67890");
+        listing.setName("Test Item");
+        listing.setUserId(2);
+        listing.setPhotoUrl("http://example.com/photo.jpg");
+        listing.setStock(3); // Stock is less than amount in cartListing
+
+        when(cartListingService.findCartListingById(cartListingId)).thenReturn(cartListing);
+        when(listingService.findListingById("67890")).thenReturn(listing);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.createOrder(cartListingId);
+        });
+        assertEquals("Stock Habis", exception.getMessage());
     }
 
     @Test
@@ -121,6 +172,18 @@ public class OrderServiceTest {
         verify(orderRepository, times(1)).save(order);
         assertEquals(newStatus, result.getStatus());
     }
+
+    @Test
+    void testUpdateOrderStatus_NullStatus() {
+        String orderId = "12345";
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.updateOrderStatus(orderId, null);
+        });
+
+        assertEquals("OrderStatus cannot be null", exception.getMessage());
+    }
+
 
     @Test
     void testFindOrderById() {

@@ -13,6 +13,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
@@ -20,6 +22,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CartListingControllerTest {
@@ -30,8 +35,11 @@ public class CartListingControllerTest {
     @Mock
     private CartListingServiceImpl service;
 
+    private MockMvc mockMvc;
+
     @BeforeEach
     public void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         MockitoAnnotations.initMocks(this);
     }
 
@@ -69,6 +77,21 @@ public class CartListingControllerTest {
     }
 
     @Test
+    void testCreateCartListingBadRequest() throws Exception {
+        String listingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
+        int newAmount = -1;
+
+        // Mock the service to throw IllegalArgumentException
+        doThrow(new IllegalArgumentException("New amount must be greater than 0."))
+                .when(service).createCartListing(listingId, newAmount);
+
+        mockMvc.perform(post("/cartlisting/cart-listings/02bde298-d1c7-4bce-acc9-bf479a0d0154")
+                        .param("listingId", listingId)
+                        .param("amount", String.valueOf(newAmount)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testUpdateAmountSuccess() {
         String cartListingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
         int newAmount = 3;
@@ -102,6 +125,21 @@ public class CartListingControllerTest {
     }
 
     @Test
+    void testUpdateAmountBadRequest() throws Exception {
+        String cartListingId = "02bde298-d1c7-4bce-acc9-bf479a0d0154";
+        int newAmount = -1;
+
+        // Mock the service to throw IllegalArgumentException
+        doThrow(new IllegalArgumentException("New amount must be greater than 0."))
+                .when(service).updateAmount(cartListingId, newAmount);
+
+        mockMvc.perform(put("/cartlisting/update")
+                        .param("cartListingId", cartListingId)
+                        .param("amount", String.valueOf(newAmount)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testGetCartListingByIdSuccess() {
         String cartListingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
 
@@ -114,6 +152,21 @@ public class CartListingControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedCartListing, response.getBody());
+    }
+
+    @Test
+    public void testGetCartListingById_CartListingNotFound() {
+        String cartListingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
+
+        doThrow(new NoSuchElementException("CartListing not found")).when(service).findCartListingById(cartListingId);
+
+        try {
+            controller.getCartListingById(cartListingId);
+            fail("Expected ResponseStatusException");
+        } catch (ResponseStatusException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+            assertTrue(e.getMessage().contains("CartListing ID 0f952a49-324a-436c-bb24-5b0ce9fc9981 not found"));
+        }
     }
 
     @Test
@@ -160,7 +213,7 @@ public class CartListingControllerTest {
     public void testDeleteCartListing_CartListingNotFound() {
         String cartListingId = "0f952a49-324a-436c-bb24-5b0ce9fc9981";
 
-        Mockito.doThrow(new NoSuchElementException("CartListing not found")).when(service).deleteCartListing(cartListingId);
+        doThrow(new NoSuchElementException("CartListing not found")).when(service).deleteCartListing(cartListingId);
 
         try {
             controller.deleteCartListing(cartListingId);

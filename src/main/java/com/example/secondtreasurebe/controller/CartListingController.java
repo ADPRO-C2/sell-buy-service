@@ -31,7 +31,7 @@ public class CartListingController {
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to process request: " + e.getMessage());
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create cart listing", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to create cart listing", e);
         }
     }
 
